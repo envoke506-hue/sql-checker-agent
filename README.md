@@ -91,7 +91,11 @@ sql-checker-agent/
 │   │   ├── health_controller.py     # GET  /api/v1/health (全链路体检)
 │   │   ├── knowledge_controller.py  # POST /api/v1/knowledge/indices (索引重构)
 │   │   ├── sql_audit_controller.py  # POST /api/v1/sql/audits (SQL 合规审查)
-│   │   └── spec_query_controller.py # POST /api/v1/spec/queries (规范知识问答)
+│   │   ├── spec_query_controller.py # POST /api/v1/spec/queries (规范知识问答)
+│   │   └── web_controller.py        # GET  / 与 GET /ui (Web 交互控制台单页面路由)
+│   │
+│   ├── static/                  # 前端静态单页面资源
+│   │   └── index.html           # 现代单页面应用 (Vue 3 + Tailwind CSS + Highlight.js)
 │   │
 │   └── main.py                  # FastAPI 应用入口与全局异常拦截器挂载
 │
@@ -107,8 +111,28 @@ sql-checker-agent/
     ├── test_phase1_controllers.py   # RESTful 控制器与全局异常拦截测试
     ├── test_phase2_indexing.py      # AST 切块、向量检索、BM25 检索测试
     ├── test_phase3_retrieval.py     # SQL 特征提取、RRF 数学算法融合测试
-    └── test_phase4_audit_e2e.py     # 端到端审查、Double Check、Markdown 渲染全量测试
+    ├── test_phase4_audit_e2e.py     # 端到端审查、Double Check、Markdown 渲染全量测试
+    └── test_web_ui.py               # Web 前端控制台界面交付与路由端点测试
 ```
+
+---
+
+## 🖥️ 交互式 Web 操作控制台 (SPA)
+
+项目内置了现代化的单页面控制台（SPA），**无需配置 Node.js 或执行 npm build**，启动后端即可通过浏览器开箱即用：
+
+- **访问地址**：`http://127.0.0.1:8000/` 或 `http://127.0.0.1:8000/ui`
+- **核心功能板块**：
+  1. **📋 SQL 合规审查与一键重构**：
+     - 提供“🚨 典型违规反例”与“🌟 100%合规正例”一键快速填入按钮；
+     - 实时执行 RAG 审查并可视化渲染“合规健康得分卡片”、“违规明细对照表”与“推荐合规重构 SQL”；
+     - 支持“一键复制代码”与“查看展开标准 Markdown 报告全文”。
+  2. **💡 数据库规范知识库智能问答**：
+     - 支持常见高频规范快捷提问气泡（如金额类型、基类审计字段、主键类型等）；
+     - 显示带有 `[1]`, `[2]` 规范角标引用的专业解答与原文溯源附录。
+  3. **📚 知识库切块与索引管理运维**：
+     - 直观查看 6 大原子切块统计、向量维度（2560维）、文档哈希值与双路索引状态；
+     - 提供“⚡ 强制全量重建双路索引”一键运维触发功能。
 
 ---
 
@@ -155,8 +179,9 @@ STORAGE_DIR=data/indices
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-启动后访问交互式 API 文档 (Swagger UI)：
-👉 **http://127.0.0.1:8000/docs**
+服务成功启动后，即可在浏览器直接体验：
+- 🌟 **交互式 Web 控制台 (推荐)**：👉 **http://127.0.0.1:8000/** 或 **http://127.0.0.1:8000/ui**
+- 📖 **Swagger 交互式 API 文档**：👉 **http://127.0.0.1:8000/docs**
 
 ---
 
@@ -177,6 +202,9 @@ python tests/test_phase3_retrieval.py
 
 # 4. 运行 Phase 4: 端到端智能审查与规范问答全链路测试
 python tests/test_phase4_audit_e2e.py
+
+# 5. 运行 Web UI 前端交互与路由端点测试
+python tests/test_web_ui.py
 ```
 
 ---

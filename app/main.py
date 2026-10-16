@@ -25,6 +25,7 @@ from app.controllers.health_controller import router as health_router
 from app.controllers.sql_audit_controller import router as sql_audit_router
 from app.controllers.spec_query_controller import router as spec_query_router
 from app.controllers.knowledge_controller import router as knowledge_router
+from app.controllers.web_controller import router as web_router
 from app.models.dto.common import ApiResponse, ErrorCode
 from app.services.health_service import HealthService
 from app.services.knowledge_service import KnowledgeService
@@ -159,11 +160,8 @@ app.include_router(sql_audit_router, prefix="/api/v1")
 app.include_router(spec_query_router, prefix="/api/v1")
 app.include_router(knowledge_router, prefix="/api/v1")
 
-
-@app.get("/", include_in_schema=False)
-async def root_redirect():
-    """根路径访问重定向至 Swagger 交互式文档页面"""
-    return RedirectResponse(url="/docs", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+# ---------------- 注册 Web UI 界面路由 (挂载在根路径 / 与 /ui) ----------------
+app.include_router(web_router)
 
 
 if __name__ == "__main__":

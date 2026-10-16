@@ -217,7 +217,54 @@ async def test_4_sql_audit_e2e():
     print("-------------------------------------------------------")
     print(report[:600])
     print("-------------------------------------------------------")
-    print("[PASS] 端到端 SQL 审查报告生成成功，排版与内容完全符合规范！")
+    print("[PASS] 端到端违规反例审查报告生成成功，排版与内容完全符合规范！")
+
+
+async def test_4b_compliant_sql_positive():
+    """测试 4b: 真实完全合规正例 SQL 端到端审查 (100分通过测试)"""
+    print("\n--- [测试 4b: SqlAuditService 完全合规正例 SQL 审查 (正例测试)] ---")
+    service = get_sql_audit_service()
+
+    # 100% 严格符合规范的正例 SQL：
+    # 1. db_ 开头表名
+    # 2. id BIGINT UNSIGNED 主键
+    # 3. 命名规范：本表字段无冗余前缀、金额 order_money、类型 decimal(20, 6)
+    # 4. 无外键
+    # 5. 严格包含 7 大基类审计字段 (version, deleted, disabled, create_id, create_time, modify_id, modify_time)
+    # 6. InnoDB 引擎、utf8mb4、完整中文注释
+    perfect_sql = """
+    CREATE TABLE `db_order_info` (
+      `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+      `code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '订单编码',
+      `order_money` DECIMAL(20, 6) NOT NULL DEFAULT '0.000000' COMMENT '订单金额',
+      `status` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '订单状态',
+      `version` INT NOT NULL DEFAULT 0 COMMENT '乐观锁版本号',
+      `deleted` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '逻辑删除',
+      `disabled` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '禁用标记',
+      `create_id` BIGINT NOT NULL DEFAULT 0 COMMENT '创建人ID',
+      `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+      `modify_id` BIGINT NOT NULL DEFAULT 0 COMMENT '更新人ID',
+      `modify_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标准合规订单表';
+    """
+
+    request = SqlAuditRequest(sql_text=perfect_sql)
+    print("[INFO] 提交完全合规正例 SQL，验证模型与 DoubleCheck 是否评定 100 分及零违规...")
+
+    audit_result = await service.audit_sql(request)
+
+    print(f"\n[正例审查看板]:")
+    print(f" - 是否合规: {audit_result.is_compliant} (预期 True)")
+    print(f" - 合规评分: {audit_result.score} / 100 (预期 100)")
+    print(f" - 违规条数: {len(audit_result.violations)} 项 (预期 0)")
+    print(f" - 核心总结: {audit_result.summary}")
+
+    assert audit_result.is_compliant, f"合规正例 SQL 判定错误: {audit_result.violations}"
+    assert audit_result.score == 100, f"合规正例得分应为 100，实际: {audit_result.score}"
+    assert len(audit_result.violations) == 0, f"合规正例不应产生违规条目: {audit_result.violations}"
+    assert "完全合规" in audit_result.markdown_report
+    print("[PASS] 完全合规正例 SQL 审查验证通过！系统评定 100 分满分！")
 
 
 def test_5_http_controller_endpoints():
@@ -256,9 +303,10 @@ async def main():
     test_2_double_check_anti_hallucination()
     await test_3_spec_query_e2e()
     await test_4_sql_audit_e2e()
+    await test_4b_compliant_sql_positive()
     test_5_http_controller_endpoints()
     print("\n=======================================================")
-    print(">>> 恭喜！第四阶段：上下文编排、Double Check 与端到端审查全部通过！<<<")
+    print(">>> 恭喜！第四与第五阶段：智能审查、正反例端到端测试全部通过！<<<")
     print("=======================================================\n")
 
 

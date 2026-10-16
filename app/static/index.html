@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Checker Agent - 智能 SQL 规范合规审查与知识问答</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <!-- Marked.js 用于渲染大模型返回的标准 Markdown 报告 -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Highlight.js 语法高亮 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <style>
+    /* 自定义滚动条与等宽代码字体 */
+    pre, code, textarea {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    .markdown-body h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.3rem; }
+    .markdown-body h2 { font-size: 1.25rem; font-weight: 700; margin: 1rem 0 0.5rem; color: #1e293b; }
+    .markdown-body h3 { font-size: 1.1rem; font-weight: 600; margin: 0.75rem 0 0.25rem; }
+    .markdown-body p { margin-bottom: 0.5rem; line-height: 1.6; }
+    .markdown-body table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.875rem; }
+    .markdown-body th, .markdown-body td { border: 1px solid #cbd5e1; padding: 0.5rem 0.75rem; text-align: left; }
+    .markdown-body th { background-color: #f1f5f9; font-weight: 600; }
+    .markdown-body tr:nth-child(even) { background-color: #f8fafc; }
+    .markdown-body blockquote { border-left: 4px solid #3b82f6; padding-left: 0.75rem; color: #475569; margin: 0.5rem 0; background-color: #eff6ff; padding: 0.5rem; border-radius: 0.25rem; }
+    .markdown-body pre { background-color: #0f172a; color: #f8fafc; padding: 0.75rem; border-radius: 0.5rem; overflow-x: auto; margin: 0.5rem 0; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+  <div id="app" class="flex flex-col flex-1">
+
+    <!-- 1. 顶部专业导航条 -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+            ⚡
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-slate-900 leading-tight">SQL Checker Agent</h1>
+            <p class="text-xs text-slate-500">基于 RAG 检索增强生成的智能 SQL 规范合规审查系统</p>
+          </div>
+        </div>
+
+        <!-- 中间健康状态指示灯 -->
+        <div class="hidden md:flex items-center space-x-4 text-xs">
+          <div class="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200">
+            <span class="w-2 h-2 rounded-full" :class="health.ollama ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+            <span class="text-slate-600">Ollama (Qwen3-4B):</span>
+            <span class="font-semibold" :class="health.ollama ? 'text-emerald-700' : 'text-rose-700'">
+              {{ health.ollama ? '正常' : '异常' }}
+            </span>
+          </div>
+          <div class="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200">
+            <span class="w-2 h-2 rounded-full" :class="health.relay ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+            <span class="text-slate-600">中转站 (DeepSeek):</span>
+            <span class="font-semibold" :class="health.relay ? 'text-emerald-700' : 'text-rose-700'">
+              {{ health.relay ? '正常' : '异常' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- 右侧链接 -->
+        <div class="flex items-center space-x-3">
+          <a href="/docs" target="_blank" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium px-3 py-1.5 rounded-md hover:bg-indigo-50 border border-indigo-200 transition">
+            Swagger API 文档 ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Tab 切换按钮组 -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 -mb-px">
+        <button 
+          @click="activeTab = 'audit'"
+          :class="activeTab === 'audit' ? 'border-indigo-600 text-indigo-600 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
+          class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 transition">
+          <span>📋</span>
+          <span>SQL 合规审查与重构</span>
+        </button>
+        <button 
+          @click="activeTab = 'query'"
+          :class="activeTab === 'query' ? 'border-indigo-600 text-indigo-600 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
+          class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 transition">
+          <span>💡</span>
+          <span>规范知识库智能问答</span>
+        </button>
+        <button 
+          @click="activeTab = 'knowledge'"
+          :class="activeTab === 'knowledge' ? 'border-indigo-600 text-indigo-600 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
+          class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 transition">
+          <span>📚</span>
+          <span>知识库切块与索引管理</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 主体内容区域 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+      <!-- ==================== TAB 1: SQL 规范审查 ==================== -->
+      <div v-show="activeTab === 'audit'" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- 左侧输入栏 (5 列) -->
+        <div class="lg:col-span-5 flex flex-col space-y-4">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col flex-1">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-sm font-bold text-slate-800 flex items-center space-x-1.5">
+                <span>📝</span>
+                <span>输入待检查 DDL SQL</span>
+              </h2>
+              <div class="flex items-center space-x-2 text-xs">
+                <button @click="fillBadSql" class="px-2 py-1 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded border border-rose-200 transition font-medium">
+                  🚨 典型违规反例
+                </button>
+                <button @click="fillGoodSql" class="px-2 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded border border-emerald-200 transition font-medium">
+                  🌟 100%合规正例
+                </button>
+              </div>
+            </div>
+
+            <textarea
+              v-model="auditInput.sql_text"
+              rows="16"
+              class="w-full p-3 bg-slate-900 text-emerald-400 rounded-lg text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none flex-1 border border-slate-700"
+              placeholder="在此粘贴或输入 CREATE TABLE 语句..."></textarea>
+
+            <div class="mt-4 flex items-center justify-between pt-3 border-t border-slate-100">
+              <button 
+                @click="clearSql"
+                class="px-3 py-2 text-xs text-slate-500 hover:text-slate-700 transition">
+                清空输入
+              </button>
+              <button
+                @click="executeAudit"
+                :disabled="isAuditing || !auditInput.sql_text.trim()"
+                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-md shadow-indigo-100 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                <svg v-if="isAuditing" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>{{ isAuditing ? 'RAG 深度审查中 (检索+核验)...' : '🚀 一键合规审查' }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧审查报告展示栏 (7 列) -->
+        <div class="lg:col-span-7 flex flex-col space-y-4">
+          <!-- 审查结果卡片 -->
+          <div v-if="auditResult" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col space-y-5">
+            
+            <!-- 总览状态 Header -->
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+              <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl font-bold"
+                  :class="auditResult.is_compliant ? 'bg-emerald-100 text-emerald-700 border border-emerald-300' : 'bg-rose-100 text-rose-700 border border-rose-300'">
+                  {{ auditResult.is_compliant ? '✓' : '✕' }}
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h3 class="text-base font-bold text-slate-900">
+                      {{ auditResult.is_compliant ? '合规通过：未发现违规或不规范写法' : '存在合规风险：需按规范整改' }}
+                    </h3>
+                    <span class="px-2 py-0.5 rounded text-xs font-semibold"
+                      :class="auditResult.is_compliant ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'">
+                      {{ auditResult.is_compliant ? 'PASS' : 'REJECT' }}
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">{{ auditResult.summary }}</p>
+                </div>
+              </div>
+
+              <!-- 得分徽章 -->
+              <div class="text-right">
+                <span class="text-xs text-slate-400 block font-medium">合规健康得分</span>
+                <span class="text-2xl font-extrabold"
+                  :class="auditResult.score >= 80 ? 'text-emerald-600' : auditResult.score >= 60 ? 'text-amber-500' : 'text-rose-600'">
+                  {{ auditResult.score }}
+                </span>
+                <span class="text-xs text-slate-400"> / 100</span>
+              </div>
+            </div>
+
+            <!-- 违规明细列表 -->
+            <div v-if="auditResult.violations && auditResult.violations.length > 0">
+              <h4 class="text-xs font-bold text-slate-700 mb-2.5 flex items-center space-x-1.5 uppercase tracking-wider">
+                <span>⚠️ 检出违规明细对照表 ({{ auditResult.violations.length }} 项)</span>
+              </h4>
+              <div class="overflow-x-auto rounded-lg border border-slate-200 text-xs">
+                <table class="w-full divide-y divide-slate-200">
+                  <thead class="bg-slate-50 font-semibold text-slate-700">
+                    <tr>
+                      <th class="py-2 px-3 text-center w-12">序号</th>
+                      <th class="py-2 px-3">违规对象 / 片段</th>
+                      <th class="py-2 px-3">命中规则</th>
+                      <th class="py-2 px-3 text-center">级别</th>
+                      <th class="py-2 px-3 text-center">依据</th>
+                      <th class="py-2 px-3">整改建议</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 bg-white">
+                    <tr v-for="(v, idx) in auditResult.violations" :key="idx" class="hover:bg-slate-50">
+                      <td class="py-2.5 px-3 text-center font-medium text-slate-500">{{ idx + 1 }}</td>
+                      <td class="py-2.5 px-3 font-mono font-medium text-rose-600 bg-rose-50/50 rounded">{{ v.target_object || '-' }}</td>
+                      <td class="py-2.5 px-3 font-semibold text-slate-800">{{ v.rule_name }}</td>
+                      <td class="py-2.5 px-3 text-center">
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold"
+                          :class="v.severity === 'ERROR' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'">
+                          {{ v.severity }}
+                        </span>
+                      </td>
+                      <td class="py-2.5 px-3 text-center font-mono text-indigo-600 font-bold">[{{ v.citation_index }}]</td>
+                      <td class="py-2.5 px-3 text-slate-600">
+                        <div>{{ v.description }}</div>
+                        <div v-if="v.suggested_fix" class="text-indigo-700 font-medium mt-0.5">💡 {{ v.suggested_fix }}</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 推荐合规重构 SQL -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-xs font-bold text-slate-700 flex items-center space-x-1.5 uppercase tracking-wider">
+                  <span>🛠️ 推荐合规重构 SQL (自动补全基类7字段/无外键/修正类型)</span>
+                </h4>
+                <button 
+                  @click="copySql(auditResult.suggested_sql)"
+                  class="text-xs text-indigo-600 hover:text-indigo-800 font-medium px-2 py-1 bg-indigo-50 rounded border border-indigo-200 transition">
+                  {{ copySuccess ? '✓ 已复制到剪贴板' : '📋 一键复制 SQL' }}
+                </button>
+              </div>
+              <pre class="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs leading-relaxed overflow-x-auto border border-slate-700"><code>{{ auditResult.suggested_sql }}</code></pre>
+            </div>
+
+            <!-- 完整的 Markdown 审查报告展开区 -->
+            <details class="group border border-slate-200 rounded-lg p-3 bg-slate-50">
+              <summary class="text-xs font-semibold text-slate-700 cursor-pointer hover:text-indigo-600 flex items-center justify-between">
+                <span>📄 查看并复制标准 Markdown 审查报告全文</span>
+                <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="mt-3 pt-3 border-t border-slate-200 markdown-body bg-white p-4 rounded border border-slate-200" v-html="renderedMarkdownReport"></div>
+            </details>
+
+            <!-- 规范依据引用溯源清单 -->
+            <div v-if="auditResult.citations && auditResult.citations.length > 0">
+              <h4 class="text-xs font-bold text-slate-700 mb-2 flex items-center space-x-1.5 uppercase tracking-wider">
+                <span>📚 本次审查引用的规范依据清单</span>
+              </h4>
+              <div class="space-y-2">
+                <div v-for="c in auditResult.citations" :key="c.index" class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs">
+                  <div class="flex items-center justify-between font-semibold text-slate-800">
+                    <span>[{{ c.index }}] {{ c.title }}</span>
+                    <span class="text-[10px] text-slate-400 font-mono">{{ c.source_file }}</span>
+                  </div>
+                  <div class="text-slate-600 text-xs mt-1 font-mono bg-white p-2 rounded border border-slate-100">
+                    {{ c.snippet }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 初始未测试提示卡片 -->
+          <div v-else class="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center flex flex-col items-center justify-center flex-1">
+            <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-3xl mb-3 text-slate-400">
+              🔍
+            </div>
+            <h3 class="text-base font-bold text-slate-700 mb-1">等待执行 SQL 规范审查</h3>
+            <p class="text-xs text-slate-500 max-w-sm">在左侧输入或点击快捷预填按钮载入 DDL SQL，系统将执行 AST 特征提取、双路混合检索、Lost in the Middle 编排与防幻觉二次核验。</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==================== TAB 2: 规范知识库问答 ==================== -->
+      <div v-show="activeTab === 'query'" class="max-w-4xl mx-auto flex flex-col space-y-6">
+        
+        <!-- 搜索与快捷提问栏 -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <h2 class="text-base font-bold text-slate-800 mb-2 flex items-center space-x-2">
+            <span>💡</span>
+            <span>数据库表设计规范技术咨询</span>
+          </h2>
+          <p class="text-xs text-slate-500 mb-4">输入您关于表设计、字段类型、命名规则、基类审计字段的疑问，RAG Agent 将严格依据《数据库规范》白纸黑字记载给出带引用的解答。</p>
+
+          <!-- 快捷气泡推荐 -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            <button 
+              v-for="q in quickQuestions" :key="q"
+              @click="askQuickQuestion(q)"
+              class="px-2.5 py-1 text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 rounded-full text-slate-600 border border-slate-200 transition">
+              💬 {{ q }}
+            </button>
+          </div>
+
+          <!-- 提问输入框 -->
+          <div class="flex items-center space-x-2">
+            <input 
+              v-model="queryInput.question"
+              @keyup.enter="executeQuery"
+              type="text" 
+              placeholder="请输入您对数据库规范的疑问（例如：金额字段必须使用什么数据类型？）..."
+              class="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <button
+              @click="executeQuery"
+              :disabled="isQuerying || !queryInput.question.trim()"
+              class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-sm flex items-center space-x-2 disabled:opacity-50 transition">
+              <svg v-if="isQuerying" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              <span>{{ isQuerying ? '检索解答中...' : '发起咨询' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 解答结果卡片 -->
+        <div v-if="queryResult" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">智能解答结论 (Strict RAG)</span>
+            <span class="text-xs text-indigo-600 font-semibold bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">依据 {{ queryResult.citations.length }} 条规范</span>
+          </div>
+
+          <div class="markdown-body" v-html="renderedQueryAnswer"></div>
+
+          <!-- 附录引用卡片 -->
+          <div v-if="queryResult.citations && queryResult.citations.length > 0" class="pt-4 border-t border-slate-100">
+            <h4 class="text-xs font-bold text-slate-700 mb-3">📚 关联规范条款溯源:</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div v-for="c in queryResult.citations" :key="c.index" class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs">
+                <div class="font-bold text-slate-800 flex items-center space-x-1.5 mb-1">
+                  <span class="px-1.5 py-0.2 bg-indigo-100 text-indigo-800 rounded font-mono text-[10px]">[{{ c.index }}]</span>
+                  <span class="truncate">{{ c.title }}</span>
+                </div>
+                <p class="text-slate-600 line-clamp-3 text-xs leading-relaxed font-mono bg-white p-2 rounded border border-slate-100">
+                  {{ c.snippet }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==================== TAB 3: 知识库管理 ==================== -->
+      <div v-show="activeTab === 'knowledge'" class="max-w-5xl mx-auto flex flex-col space-y-6">
+        
+        <!-- 索引概览状态 -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-base font-bold text-slate-800 flex items-center space-x-2">
+                <span>📚</span>
+                <span>规范知识库索引状态</span>
+              </h2>
+              <p class="text-xs text-slate-500 mt-1">系统采用语义自闭环 AST 结构化切分，由本地 Qwen3-Embedding:4b 生成 2560 维稠密向量并融合 BM25 稀疏索引。</p>
+            </div>
+            <button
+              @click="rebuildIndex"
+              :disabled="isReindexing"
+              class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold shadow-sm flex items-center space-x-1.5 disabled:opacity-50 transition">
+              <svg v-if="isReindexing" class="animate-spin h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              <span>{{ isReindexing ? '正在重新向量化...' : '🔄 强制重建索引' }}</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span class="text-[11px] text-slate-400 block font-medium">切块总数</span>
+              <span class="text-xl font-extrabold text-slate-800">{{ kbStatus.chunk_count || 6 }} 个</span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span class="text-[11px] text-slate-400 block font-medium">向量空间维度</span>
+              <span class="text-xl font-extrabold text-indigo-600">{{ kbStatus.dimension || 2560 }} 维</span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span class="text-[11px] text-slate-400 block font-medium">增量校验 SHA-256</span>
+              <span class="text-xs font-mono font-bold text-slate-700 truncate block mt-1" :title="kbStatus.doc_hash">
+                {{ (kbStatus.doc_hash || '').substring(0, 12) }}...
+              </span>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span class="text-[11px] text-slate-400 block font-medium">最近索引同步</span>
+              <span class="text-xs text-slate-700 font-medium block mt-1">
+                {{ kbStatus.last_updated || '已同步' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 个自闭环原子切块卡片展示 -->
+        <div class="space-y-4">
+          <h3 class="text-sm font-bold text-slate-800 flex items-center space-x-1.5">
+            <span>🧩</span>
+            <span>已持久化自闭环原子块清单 (AST 结构化切分)</span>
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div v-for="c in kbStatus.chunks" :key="c.chunk_id" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-sm text-slate-900">{{ c.section }}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                    {{ c.category }}
+                  </span>
+                </div>
+                <div class="text-[11px] text-slate-400 mb-2 font-mono truncate">
+                  {{ c.heading_path }}
+                </div>
+                <p class="text-xs text-slate-600 font-mono bg-slate-50 p-2.5 rounded border border-slate-100 line-clamp-4 leading-relaxed">
+                  {{ c.preview }}
+                </p>
+              </div>
+              <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+                <span>ID: {{ c.chunk_id }}</span>
+                <span>包含关键词: {{ c.keywords_count || 12 }} 个</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- 底部状态栏 -->
+    <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-400">
+      SQL Checker Agent · 检索增强生成 (RAG) 智能企业级解决方案
+    </footer>
+  </div>
+
+  <script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    createApp({
+      setup() {
+        const activeTab = ref('audit');
+        const isAuditing = ref(false);
+        const isQuerying = ref(false);
+        const isReindexing = ref(false);
+        const copySuccess = ref(false);
+
+        const health = ref({ ollama: true, relay: true });
+        const kbStatus = ref({ chunk_count: 6, dimension: 2560, doc_hash: '', last_updated: '', chunks: [] });
+
+        // SQL 审查输入与结果
+        const auditInput = ref({
+          sql_text: '',
+          db_type: 'mysql'
+        });
+        const auditResult = ref(null);
+
+        // 规范问答输入与结果
+        const queryInput = ref({
+          question: ''
+        });
+        const queryResult = ref(null);
+
+        // 快捷提问列表
+        const quickQuestions = ref([
+          "金额和单价字段的数据类型与命名规范是什么？",
+          "为什么表内禁止设计外键？",
+          "数据库建表必须包含哪 7 个通用基类字段？",
+          "对于 TINYINT 类型有什么命名和长度规范？",
+          "表名允许包含大写字母吗？有哪些命名反例？"
+        ]);
+
+        // 预设典型违规 SQL
+        const badSqlSample = `CREATE TABLE \`order\` (
+    \`order_id\` bigint(20) NOT NULL AUTO_INCREMENT,
+    \`order_no\` varchar(64) NOT NULL,
+    \`total_amount\` double NOT NULL COMMENT '总金额',
+    \`is_pay\` tinyint(1) DEFAULT 0,
+    \`user_id\` bigint(20) NOT NULL COMMENT '用户ID',
+    PRIMARY KEY (\`order_id\`),
+    CONSTRAINT \`fk_user\` FOREIGN KEY (\`user_id\`) REFERENCES \`user\` (\`id\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';`;
+
+        // 预设 100% 完全合规正例 SQL
+        const goodSqlSample = `CREATE TABLE \`db_order_info\` (
+    \`id\` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    \`code\` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '订单编码',
+    \`order_money\` DECIMAL(20, 6) NOT NULL DEFAULT '0.000000' COMMENT '订单金额',
+    \`status\` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '订单状态',
+    \`version\` INT NOT NULL DEFAULT 0 COMMENT '乐观锁版本号',
+    \`deleted\` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '逻辑删除 (0: 未删, 1: 已删)',
+    \`disabled\` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '禁用标记 (0: 启用, 1: 禁用)',
+    \`create_id\` BIGINT NOT NULL DEFAULT 0 COMMENT '创建人ID',
+    \`create_time\` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    \`modify_id\` BIGINT NOT NULL DEFAULT 0 COMMENT '更新人ID',
+    \`modify_time\` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (\`id\`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标准合规订单表';`;
+
+        const fillBadSql = () => { auditInput.value.sql_text = badSqlSample; };
+        const fillGoodSql = () => { auditInput.value.sql_text = goodSqlSample; };
+        const clearSql = () => { auditInput.value.sql_text = ''; auditResult.value = null; };
+
+        // 一键合规审查
+        const executeAudit = async () => {
+          if (!auditInput.value.sql_text.trim()) return;
+          isAuditing.value = true;
+          try {
+            const resp = await fetch('/api/v1/sql/audits', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(auditInput.value)
+            });
+            const resData = await resp.json();
+            if (resData.code === 20000) {
+              auditResult.value = resData.data;
+            } else {
+              alert('审查失败: ' + resData.message);
+            }
+          } catch (e) {
+            alert('网络请求异常: ' + e);
+          } finally {
+            isAuditing.value = false;
+          }
+        };
+
+        // 发起规范咨询
+        const executeQuery = async () => {
+          if (!queryInput.value.question.trim()) return;
+          isQuerying.value = true;
+          try {
+            const resp = await fetch('/api/v1/spec/queries', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question: queryInput.value.question })
+            });
+            const resData = await resp.json();
+            if (resData.code === 20000) {
+              queryResult.value = resData.data;
+            } else {
+              alert('咨询失败: ' + resData.message);
+            }
+          } catch (e) {
+            alert('网络请求异常: ' + e);
+          } finally {
+            isQuerying.value = false;
+          }
+        };
+
+        const askQuickQuestion = (q) => {
+          queryInput.value.question = q;
+          executeQuery();
+        };
+
+        // 一键复制 SQL
+        const copySql = (text) => {
+          if (!text) return;
+          navigator.clipboard.writeText(text).then(() => {
+            copySuccess.value = true;
+            setTimeout(() => { copySuccess.value = false; }, 2000);
+          });
+        };
+
+        // 渲染 Markdown 报告
+        const renderedMarkdownReport = computed(() => {
+          if (!auditResult.value || !auditResult.value.markdown_report) return '';
+          return marked.parse(auditResult.value.markdown_report);
+        });
+
+        // 渲染问答结果 Markdown
+        const renderedQueryAnswer = computed(() => {
+          if (!queryResult.value || !queryResult.value.markdown_content) return '';
+          return marked.parse(queryResult.value.markdown_content);
+        });
+
+        // 获取系统健康状态与知识库切块
+        const fetchSystemStatus = async () => {
+          try {
+            const hResp = await fetch('/api/v1/health');
+            const hData = await hResp.json();
+            if (hData.code === 20000) {
+              const services = hData.data.services || [];
+              const ollamaSvc = services.find(s => s.name.includes('Ollama'));
+              const relaySvc = services.find(s => s.name.includes('Relay'));
+              health.value.ollama = ollamaSvc ? ollamaSvc.status === 'healthy' : true;
+              health.value.relay = relaySvc ? relaySvc.status === 'healthy' : true;
+            }
+
+            const kResp = await fetch('/api/v1/knowledge/indices/status');
+            const kData = await kResp.json();
+            if (kData.code === 20000) {
+              kbStatus.value = kData.data;
+            }
+          } catch (e) {
+            console.error('获取系统状态失败:', e);
+          }
+        };
+
+        // 重新构建索引
+        const rebuildIndex = async () => {
+          if (!confirm('确定要强制重新切块并调用 Ollama 计算向量重建全量索引吗？')) return;
+          isReindexing.value = true;
+          try {
+            const resp = await fetch('/api/v1/knowledge/indices', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ force: true })
+            });
+            const resData = await resp.json();
+            if (resData.code === 20000) {
+              alert('索引重建成功！包含 ' + resData.data.chunk_count + ' 个切块。');
+              fetchSystemStatus();
+            } else {
+              alert('重建失败: ' + resData.message);
+            }
+          } catch (e) {
+            alert('网络请求异常: ' + e);
+          } finally {
+            isReindexing.value = false;
+          }
+        };
+
+        onMounted(() => {
+          fillBadSql();
+          fetchSystemStatus();
+        });
+
+        return {
+          activeTab,
+          health,
+          kbStatus,
+          auditInput,
+          auditResult,
+          isAuditing,
+          fillBadSql,
+          fillGoodSql,
+          clearSql,
+          executeAudit,
+          copySql,
+          copySuccess,
+          renderedMarkdownReport,
+          queryInput,
+          queryResult,
+          isQuerying,
+          quickQuestions,
+          executeQuery,
+          askQuickQuestion,
+          renderedQueryAnswer,
+          isReindexing,
+          rebuildIndex
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

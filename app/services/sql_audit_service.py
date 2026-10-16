@@ -92,38 +92,50 @@ class SqlAuditService:
     @staticmethod
     def _extract_json_from_llm(llm_output: str) -> Dict[str, Any]:
         """
-        从大模型返回的文本中安全提取合法的 JSON 数据
-        自动过滤 <think> 标签，优先定位最外层 { ... } 闭包
+        从大模型返回的文本中安全提取合法的根 JSON 数据
+        自动兼容思维链前缀、多段代码块与嵌套代码围栏
         """
         cleaned = llm_output.strip()
 
-        # 1. 过滤思维链 <think>...</think> 标签
+        # 1. 过滤思维链 <think>...</think> 标签 (若存在)
         cleaned = re.sub(r"<think>[\s\S]*?</think>", "", cleaned).strip()
 
-        # 2. 优先提取最外层的首个 '{' 到最后一个 '}'
-        start_idx = cleaned.find("{")
-        end_idx = cleaned.rfind("}")
+        # 2. 策略 A: 优先正则靶向匹配包含 "is_compliant" 的核心根 JSON 闭包
+        root_json_match = re.search(r"(\{\s*\"is_compliant\"[\s\S]*\})", cleaned)
+        if root_json_match:
+            candidate = root_json_match.group(1).strip()
+            # 从后向前扫描找到真正匹配闭合的最长合法 JSON
+            for end_pos in range(len(candidate), 0, -1):
+                if candidate[end_pos - 1] == '}':
+                    sub = candidate[:end_pos]
+                    try:
+                        return json.loads(sub)
+                    except Exception:
+                        continue
 
-        if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
-            candidate = cleaned[start_idx : end_idx + 1].strip()
-            try:
-                return json.loads(candidate)
-            except Exception:
-                # 尝试修复换行符或常见转义问题
-                try:
-                    fixed_candidate = re.sub(r"(?<!\\)\n", "\\n", candidate)
-                    return json.loads(fixed_candidate)
-                except Exception:
-                    pass
+        # 3. 策略 B: 从后往前寻找平衡的大括号 { ... }
+        # 因为在含思考推导的输出中，真正的最终交付 JSON 总是位于文本末尾
+        last_brace_end = cleaned.rfind("}")
+        if last_brace_end != -1:
+            for start_pos in range(last_brace_end - 1, -1, -1):
+                if cleaned[start_pos] == '{':
+                    sub = cleaned[start_pos : last_brace_end + 1]
+                    try:
+                        parsed = json.loads(sub)
+                        if isinstance(parsed, dict) and "is_compliant" in parsed:
+                            return parsed
+                    except Exception:
+                        continue
 
-        # 3. 兜底尝试提取 ```json { ... } ```
-        json_match = re.search(r"```(?:json)?\s*(\{[\s\S]*\})\s*```", cleaned)
+        # 4. 策略 C: 提取 Markdown 代码块 ```json { ... } ```
+        json_match = re.search(r"```(?:json)?\s*(\{[\s\S]*?\})\s*```", cleaned)
         if json_match:
             try:
                 return json.loads(json_match.group(1).strip())
             except Exception:
                 pass
 
+        # 5. 兜底直接尝试解析整个文本
         try:
             return json.loads(cleaned)
         except Exception as e:
