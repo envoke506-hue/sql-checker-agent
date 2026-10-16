@@ -34,8 +34,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
-  <!-- Marked.js 用于渲染 Markdown -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Marked.js 采用稳定版本 4.3.0 (原生支持 gfm、breaks，排版极度稳定可靠) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
   <style>
     /* 全局滚动条美化 */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -656,16 +656,35 @@
       });
     };
 
-    // 配置 Marked.js 自定义代码块渲染器 (添加顶部标题栏 + 语言徽章 + 复制按钮)
+    // 配置 Marked.js 自定义代码块渲染器 (万能兼容不同版本的入参签名)
     const customRenderer = new marked.Renderer();
-    customRenderer.code = function(code, lang) {
-      const language = (lang && hljs.getLanguage(lang)) ? lang : 'sql';
-      let highlighted = code;
-      try {
-        highlighted = hljs.highlight(code, { language }).value;
-      } catch (e) {
-        highlighted = hljs.highlightAuto(code).value;
+    customRenderer.code = function(arg1, arg2) {
+      // 兼容 Marked.js 旧版 (code, lang) 与新版 ({ text, lang })
+      let codeStr = '';
+      let langStr = '';
+      if (typeof arg1 === 'object' && arg1 !== null) {
+        codeStr = String(arg1.text || arg1.raw || '');
+        langStr = String(arg1.lang || '');
+      } else {
+        codeStr = String(arg1 || '');
+        langStr = String(arg2 || '');
       }
+
+      // 提取纯语言标识 (如 sql)
+      const cleanLang = (langStr.split(/\s+/)[0] || 'sql').toLowerCase();
+      const language = (hljs.getLanguage(cleanLang)) ? cleanLang : 'sql';
+
+      let highlighted = '';
+      try {
+        highlighted = hljs.highlight(codeStr, { language }).value;
+      } catch (e) {
+        try {
+          highlighted = hljs.highlightAuto(codeStr).value;
+        } catch (e2) {
+          highlighted = codeStr.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+      }
+
       return `
         <div class="code-block-container my-3.5 rounded-xl overflow-hidden border border-slate-700 shadow-md">
           <div class="bg-[#1f2430] text-slate-300 text-[11px] px-3.5 py-1.5 flex items-center justify-between font-mono border-b border-slate-700/80">
@@ -678,7 +697,15 @@
         </div>
       `;
     };
-    marked.use({ renderer: customRenderer });
+
+    // 配置全局选项并注入渲染器
+    marked.setOptions({
+      renderer: customRenderer,
+      gfm: true,
+      breaks: true,
+      headerIds: false,
+      mangle: false
+    });
   </script>
 
   <!-- Vue 3 核心业务逻辑脚本 -->
@@ -741,13 +768,19 @@
           }
         };
 
-        // 使用 Marked.js 渲染 Markdown
+        // 使用 Marked.js 渲染 Markdown (带全局错误捕获与换行排版保护)
         const renderMarkdown = (text) => {
           if (!text) return '';
           try {
             return marked.parse(text);
           } catch (e) {
-            return text;
+            console.error('Marked 解析发生异常:', e);
+            try {
+              // 降级使用基础 marked 解析
+              return marked(text);
+            } catch (e2) {
+              return '<div class="whitespace-pre-wrap font-mono text-xs bg-slate-50 p-4 rounded-lg border border-slate-200">' + text + '</div>';
+            }
           }
         };
 
