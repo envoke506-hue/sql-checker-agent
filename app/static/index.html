@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="dark">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Checker Agent - 智能 SQL 规范合规审查大模型</title>
+  <title>SQL Checker Agent - 智能 SQL 规范合规审查</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            deepseek: {
-              bg: '#13141b',
-              sidebar: '#1a1c26',
-              card: '#222533',
-              border: '#2e3347',
-              primary: '#4d6bfe',
-              accent: '#38bdf8',
-              hover: '#292d3e',
+            ds: {
+              blue: '#4d6bfe',
+              blueHover: '#3b5af0',
+              sidebar: '#f7f8fa',
+              border: '#e5e7eb',
+              textPrimary: '#1f2328',
+              textSecondary: '#656d76',
+              bgMain: '#ffffff',
+              hover: '#eaecee',
+              thinkBg: '#f8f9fa',
+              thinkBorder: '#e2e5e9',
             }
           }
         }
@@ -30,135 +32,141 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <!-- Marked.js 用于将大模型返回的内容渲染为 Markdown -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <!-- Highlight.js 代码高亮 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <!-- Highlight.js 代码高亮 (经典代码块深色黑底，正文浅白底，完美契合 DeepSeek 风格) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
   <style>
-    /* 全局滚动条美化 */
+    /* 全局滚动条美化 (纯净浅色) */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-    /* 等宽字体 */
+    /* 等宽代码字体 */
     pre, code, textarea {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
 
-    /* Markdown 渲染排版 */
+    /* DeepSeek 浅色 Markdown 排版规范 */
     .markdown-body {
-      color: #e2e8f0;
-      line-height: 1.7;
-      font-size: 0.925rem;
+      color: #1f2328;
+      line-height: 1.75;
+      font-size: 0.935rem;
     }
     .markdown-body h1 {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       font-weight: 700;
-      margin: 1.2rem 0 0.6rem;
-      color: #f8fafc;
-      border-bottom: 1px solid #334155;
+      margin: 1.25rem 0 0.6rem;
+      color: #0f172a;
+      border-bottom: 1px solid #e2e8f0;
       padding-bottom: 0.4rem;
     }
     .markdown-body h2 {
       font-size: 1.2rem;
       font-weight: 700;
-      margin: 1rem 0 0.5rem;
-      color: #38bdf8;
+      margin: 1.1rem 0 0.5rem;
+      color: #1e3a8a;
     }
     .markdown-body h3 {
       font-size: 1.05rem;
       font-weight: 600;
-      margin: 0.8rem 0 0.4rem;
-      color: #cbd5e1;
+      margin: 0.85rem 0 0.4rem;
+      color: #334155;
     }
-    .markdown-body p { margin-bottom: 0.6rem; }
+    .markdown-body p { margin-bottom: 0.65rem; }
     .markdown-body ul, .markdown-body ol {
-      margin-left: 1.25rem;
-      margin-bottom: 0.6rem;
+      margin-left: 1.35rem;
+      margin-bottom: 0.65rem;
       list-style-type: disc;
     }
     .markdown-body ol { list-style-type: decimal; }
     .markdown-body li { margin-bottom: 0.25rem; }
-    .markdown-body strong { color: #f1f5f9; font-weight: 600; }
+    .markdown-body strong { color: #0f172a; font-weight: 600; }
     
-    /* 表格排版 */
+    /* 浅色表格排版 */
     .markdown-body table {
       width: 100%;
       border-collapse: collapse;
-      margin: 0.75rem 0;
-      font-size: 0.85rem;
+      margin: 0.85rem 0;
+      font-size: 0.875rem;
       border-radius: 0.5rem;
       overflow: hidden;
+      border: 1px solid #e2e8f0;
     }
     .markdown-body th, .markdown-body td {
-      border: 1px solid #334155;
-      padding: 0.5rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      padding: 0.55rem 0.85rem;
       text-align: left;
     }
     .markdown-body th {
-      background-color: #1e293b;
-      color: #94a3b8;
+      background-color: #f8fafc;
+      color: #475569;
       font-weight: 600;
     }
-    .markdown-body tr:nth-child(even) { background-color: #0f172a; }
+    .markdown-body tr:nth-child(even) { background-color: #fcfdfe; }
+    .markdown-body tr:hover { background-color: #f1f5f9; }
 
-    /* 针对违规项、不合规、反例的自动标红样式 */
-    .markdown-body tr:hover { background-color: #1e293b; }
+    /* 针对违规项、不合规、反例的自动浅红警示排版 */
     .markdown-body blockquote {
       border-left: 4px solid #ef4444;
-      background: rgba(239, 68, 68, 0.08);
-      padding: 0.6rem 0.9rem;
-      margin: 0.6rem 0;
+      background: #fef2f2;
+      padding: 0.65rem 0.95rem;
+      margin: 0.65rem 0;
       border-radius: 0.25rem;
-      color: #fca5a5;
+      color: #991b1b;
+      font-weight: 500;
     }
     .markdown-body code:not(pre code) {
-      background-color: #1e293b;
-      color: #38bdf8;
+      background-color: #f1f5f9;
+      color: #0284c7;
       padding: 0.15rem 0.35rem;
       border-radius: 0.25rem;
-      font-size: 0.85em;
+      font-size: 0.86em;
+      border: 1px solid #e2e8f0;
     }
     .markdown-body pre {
-      background-color: #0b0f19 !important;
-      border: 1px solid #1e293b;
-      border-radius: 0.5rem;
-      padding: 0.85rem;
-      margin: 0.6rem 0;
+      background-color: #1e293b !important;
+      border-radius: 0.6rem;
+      padding: 0.9rem;
+      margin: 0.75rem 0;
       overflow-x: auto;
+      border: 1px solid #334155;
     }
 
-    /* 仿 DeepSeek 呼吸灯闪烁 */
-    @keyframes pulse-glow {
-      0%, 100% { opacity: 0.8; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.05); }
+    /* DeepSeek 经典呼吸光效 */
+    @keyframes ds-pulse {
+      0%, 100% { opacity: 0.9; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.04); }
     }
-    .pulse-ai { animation: pulse-glow 2.5s infinite ease-in-out; }
+    .ds-avatar-pulse { animation: ds-pulse 3s infinite ease-in-out; }
   </style>
 </head>
-<body class="bg-deepseek-bg text-slate-100 min-h-screen flex antialiased">
+<body class="bg-white text-slate-800 min-h-screen flex antialiased">
   <div id="app" class="flex flex-1 w-full h-screen overflow-hidden">
 
-    <!-- 1. 左侧可折叠功能侧边栏 (DeepSeek 风格) -->
+    <!-- 1. 左侧功能侧边栏 (DeepSeek 经典浅色风格) -->
     <aside 
-      class="bg-deepseek-sidebar border-r border-deepseek-border flex flex-col justify-between transition-all duration-300 z-30 flex-shrink-0"
+      class="bg-ds-sidebar border-r border-ds-border flex flex-col justify-between transition-all duration-300 z-30 flex-shrink-0"
       :class="isSidebarOpen ? 'w-72' : 'w-16'">
       
       <!-- 侧边栏头部 -->
-      <div class="p-3 border-b border-deepseek-border flex items-center justify-between">
+      <div class="p-3.5 border-b border-ds-border flex items-center justify-between">
         <div class="flex items-center space-x-2.5 overflow-hidden" v-show="isSidebarOpen">
-          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-black text-base shadow-lg shadow-blue-500/20 pulse-ai">
-            ⚡
+          <!-- DeepSeek 标志性蓝色鲸鱼 / AI 图标 -->
+          <div class="w-8 h-8 rounded-lg bg-ds-blue flex items-center justify-center text-white font-black text-sm shadow-sm ds-avatar-pulse flex-shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
           </div>
           <div class="truncate">
-            <h1 class="text-sm font-bold text-white tracking-wide truncate">SQL Checker Agent</h1>
-            <p class="text-[10px] text-blue-400 font-medium">DeepSeek · RAG 驱动</p>
+            <h1 class="text-sm font-bold text-slate-900 tracking-tight truncate">SQL Checker Agent</h1>
+            <p class="text-[11px] text-ds-blue font-medium">DeepSeek · 规范审查</p>
           </div>
         </div>
         <button 
           @click="isSidebarOpen = !isSidebarOpen"
-          class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-deepseek-hover transition"
+          class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-ds-hover transition"
           :title="isSidebarOpen ? '收起侧边栏' : '展开侧边栏'">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -166,84 +174,84 @@
         </button>
       </div>
 
-      <!-- 侧边栏主体内容 -->
+      <!-- 侧边栏列表内容 -->
       <div class="flex-1 overflow-y-auto p-3 space-y-4" v-show="isSidebarOpen">
         
-        <!-- 新建会话按钮 -->
+        <!-- 新建会话按钮 (DeepSeek 纯白卡片加微阴影) -->
         <button 
           @click="startNewChat"
-          class="w-full flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium text-xs shadow-md shadow-blue-500/20 transition duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          class="w-full flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-white border border-ds-border hover:border-slate-300 hover:bg-slate-50 text-slate-800 font-semibold text-xs shadow-sm transition duration-150">
+          <svg class="w-4 h-4 text-ds-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
-          <span>新建审查会话</span>
+          <span>开启新审查会话</span>
         </button>
 
         <!-- 快捷场景推荐 -->
         <div>
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-1 mb-2">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-1 mb-2">
             🚀 快捷测试场景
           </div>
           <div class="space-y-1.5">
             <button 
               @click="quickRunBadSql"
-              class="w-full text-left p-2.5 rounded-lg bg-rose-950/20 hover:bg-rose-900/30 border border-rose-800/40 text-rose-300 text-xs transition flex items-start space-x-2">
-              <span class="text-rose-400 mt-0.5">🚨</span>
+              class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-rose-50/60 border border-slate-200 hover:border-rose-300 text-slate-700 text-xs transition flex items-start space-x-2.5 shadow-sm group">
+              <span class="text-rose-500 mt-0.5 text-sm">🚨</span>
               <div>
-                <div class="font-semibold text-rose-200">典型违规反例审查</div>
-                <div class="text-[10px] text-rose-400/80">包含 order 保留字/order_id/double/外键</div>
+                <div class="font-bold text-rose-700 group-hover:text-rose-800">典型违规反例审查</div>
+                <div class="text-[11px] text-slate-500">含 order 保留字/order_id/double/外键</div>
               </div>
             </button>
 
             <button 
               @click="quickRunGoodSql"
-              class="w-full text-left p-2.5 rounded-lg bg-emerald-950/20 hover:bg-emerald-900/30 border border-emerald-800/40 text-emerald-300 text-xs transition flex items-start space-x-2">
-              <span class="text-emerald-400 mt-0.5">🌟</span>
+              class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-emerald-50/60 border border-slate-200 hover:border-emerald-300 text-slate-700 text-xs transition flex items-start space-x-2.5 shadow-sm group">
+              <span class="text-emerald-500 mt-0.5 text-sm">🌟</span>
               <div>
-                <div class="font-semibold text-emerald-200">100% 合规正例验证</div>
-                <div class="text-[10px] text-emerald-400/80">标准 7 大基类字段与规范字段定义</div>
+                <div class="font-bold text-emerald-700 group-hover:text-emerald-800">100% 合规正例验证</div>
+                <div class="text-[11px] text-slate-500">标准 7 大基类字段与规范字段定义</div>
               </div>
             </button>
 
             <button 
               @click="quickAskMoney"
-              class="w-full text-left p-2.5 rounded-lg bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700 text-slate-300 text-xs transition flex items-center space-x-2">
-              <span class="text-amber-400">💡</span>
-              <span class="truncate">规范中金额类型规定？</span>
+              class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 text-slate-700 text-xs transition flex items-center space-x-2 shadow-sm">
+              <span class="text-amber-500">💡</span>
+              <span class="truncate font-medium">规范中金额类型规定？</span>
             </button>
 
             <button 
               @click="quickAskAuditFields"
-              class="w-full text-left p-2.5 rounded-lg bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700 text-slate-300 text-xs transition flex items-center space-x-2">
-              <span class="text-sky-400">💡</span>
-              <span class="truncate">建表模板必须包含哪些字段？</span>
+              class="w-full text-left p-2.5 rounded-xl bg-white hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 text-slate-700 text-xs transition flex items-center space-x-2 shadow-sm">
+              <span class="text-sky-500">📋</span>
+              <span class="truncate font-medium">建表模板必须包含哪些字段？</span>
             </button>
           </div>
         </div>
 
         <!-- 知识库运维与索引卡片 -->
-        <div class="pt-3 border-t border-deepseek-border">
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-1 mb-2">
+        <div class="pt-3 border-t border-ds-border">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-1 mb-2">
             📚 知识库与引擎状态
           </div>
-          <div class="bg-deepseek-card rounded-lg p-3 border border-deepseek-border space-y-2 text-xs">
-            <div class="flex items-center justify-between text-slate-400">
+          <div class="bg-white rounded-xl p-3 border border-ds-border space-y-2 text-xs shadow-sm">
+            <div class="flex items-center justify-between text-slate-600">
               <span>切块数量:</span>
-              <span class="font-mono text-blue-400 font-bold">{{ knowledgeMeta.total_chunks || 6 }} 个原子块</span>
+              <span class="font-mono text-ds-blue font-bold">{{ knowledgeMeta.total_chunks || 6 }} 个原子块</span>
             </div>
-            <div class="flex items-center justify-between text-slate-400">
+            <div class="flex items-center justify-between text-slate-600">
               <span>向量维度:</span>
-              <span class="font-mono text-emerald-400 font-bold">2560 维 (Qwen3)</span>
+              <span class="font-mono text-emerald-600 font-bold">2560 维 (Qwen3)</span>
             </div>
-            <div class="flex items-center justify-between text-slate-400">
+            <div class="flex items-center justify-between text-slate-600">
               <span>双路索引:</span>
-              <span class="text-emerald-400 font-semibold">Dense + BM25 正常</span>
+              <span class="text-emerald-600 font-semibold">Dense + BM25 正常</span>
             </div>
             <button 
               @click="rebuildIndices"
               :disabled="isRebuilding"
-              class="w-full mt-1 py-1.5 px-2 bg-deepseek-hover hover:bg-slate-700 rounded text-slate-300 text-[11px] font-medium border border-slate-700 transition flex items-center justify-center space-x-1">
-              <svg v-if="isRebuilding" class="animate-spin h-3 w-3 text-blue-400" fill="none" viewBox="0 0 24 24">
+              class="w-full mt-1.5 py-1.5 px-2 bg-slate-50 hover:bg-slate-100 rounded-lg text-slate-700 text-[11px] font-semibold border border-slate-200 transition flex items-center justify-center space-x-1">
+              <svg v-if="isRebuilding" class="animate-spin h-3.5 w-3.5 text-ds-blue" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
               </svg>
@@ -255,103 +263,105 @@
       </div>
 
       <!-- 侧边栏底部 (健康灯与 API 文档) -->
-      <div class="p-3 border-t border-deepseek-border bg-deepseek-sidebar">
+      <div class="p-3.5 border-t border-ds-border bg-ds-sidebar">
         <div v-show="isSidebarOpen" class="space-y-2 text-xs">
-          <div class="flex items-center justify-between text-slate-400 text-[11px]">
+          <div class="flex items-center justify-between text-slate-500 text-[11px]">
             <span class="flex items-center space-x-1.5">
-              <span class="w-2 h-2 rounded-full" :class="health.ollama ? 'bg-emerald-400' : 'bg-rose-500'"></span>
+              <span class="w-2 h-2 rounded-full" :class="health.ollama ? 'bg-emerald-500' : 'bg-rose-500'"></span>
               <span>Ollama Embedding</span>
             </span>
-            <span :class="health.ollama ? 'text-emerald-400' : 'text-rose-400'">{{ health.ollama ? '在线' : '离线' }}</span>
+            <span class="font-medium" :class="health.ollama ? 'text-emerald-600' : 'text-rose-600'">{{ health.ollama ? '在线' : '离线' }}</span>
           </div>
-          <div class="flex items-center justify-between text-slate-400 text-[11px]">
+          <div class="flex items-center justify-between text-slate-500 text-[11px]">
             <span class="flex items-center space-x-1.5">
-              <span class="w-2 h-2 rounded-full" :class="health.relay ? 'bg-emerald-400' : 'bg-rose-500'"></span>
+              <span class="w-2 h-2 rounded-full" :class="health.relay ? 'bg-emerald-500' : 'bg-rose-500'"></span>
               <span>DeepSeek LLM</span>
             </span>
-            <span :class="health.relay ? 'text-emerald-400' : 'text-rose-400'">{{ health.relay ? '在线' : '离线' }}</span>
+            <span class="font-medium" :class="health.relay ? 'text-emerald-600' : 'text-rose-600'">{{ health.relay ? '在线' : '离线' }}</span>
           </div>
-          <a href="/docs" target="_blank" class="block text-center text-blue-400 hover:text-blue-300 py-1 text-[11px] underline">
+          <a href="/docs" target="_blank" class="block text-center text-ds-blue hover:text-blue-700 py-1 text-[11px] font-medium hover:underline">
             查看 Swagger RESTful API ↗
           </a>
         </div>
         <div v-show="!isSidebarOpen" class="flex flex-col items-center space-y-2">
-          <span class="w-2.5 h-2.5 rounded-full" :class="health.relay ? 'bg-emerald-400' : 'bg-rose-500'" title="LLM 状态"></span>
+          <span class="w-2.5 h-2.5 rounded-full" :class="health.relay ? 'bg-emerald-500' : 'bg-rose-500'" title="LLM 状态"></span>
         </div>
       </div>
     </aside>
 
-    <!-- 2. 中间对话流主体容器 (DeepSeek 风格流式对话界面) -->
-    <main class="flex-1 flex flex-col h-full bg-deepseek-bg relative overflow-hidden">
+    <!-- 2. 中间对话流主体容器 (DeepSeek 纯白主视觉对话流) -->
+    <main class="flex-1 flex flex-col h-full bg-white relative overflow-hidden">
       
-      <!-- 顶部移动端或极简栏 -->
-      <header class="h-12 border-b border-deepseek-border flex items-center justify-between px-6 bg-deepseek-bg/80 backdrop-blur z-20">
-        <div class="flex items-center space-x-2">
-          <span class="text-sm font-semibold text-slate-200">会话审查流</span>
-          <span class="px-2 py-0.5 rounded-full text-[10px] bg-blue-900/40 text-blue-400 border border-blue-800">
+      <!-- 顶部轻量导航条 -->
+      <header class="h-14 border-b border-slate-200 flex items-center justify-between px-6 bg-white/90 backdrop-blur z-20">
+        <div class="flex items-center space-x-2.5">
+          <span class="text-sm font-bold text-slate-900">合规审查会话</span>
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] bg-blue-50 text-ds-blue border border-blue-200 font-medium">
             Lost-in-the-Middle · Double Check 防幻觉
           </span>
         </div>
-        <div class="text-xs text-slate-400">
-          模型: <span class="text-slate-200 font-mono">deepseek-flash</span>
+        <div class="text-xs text-slate-500">
+          驱动模型: <span class="text-slate-800 font-mono font-semibold">deepseek-flash</span>
         </div>
       </header>
 
       <!-- 对话消息列表视窗 -->
       <div ref="chatContainer" class="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6">
         
-        <!-- 空状态 / 欢迎界面 -->
-        <div v-if="messages.length === 0" class="max-w-2xl mx-auto py-12 flex flex-col items-center text-center space-y-6">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-3xl text-white shadow-xl shadow-blue-500/20 pulse-ai">
-            ⚡
+        <!-- 空状态 / 欢迎界面 (DeepSeek 经典风格大标题与卡片) -->
+        <div v-if="messages.length === 0" class="max-w-2xl mx-auto py-10 flex flex-col items-center text-center space-y-6">
+          <div class="w-16 h-16 rounded-2xl bg-ds-blue flex items-center justify-center text-white shadow-md ds-avatar-pulse">
+            <svg class="w-10 h-10" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
           </div>
           <div>
-            <h2 class="text-2xl font-bold text-white mb-2">您好，我是 SQL 合规审查 Agent</h2>
-            <p class="text-sm text-slate-400 leading-relaxed max-w-lg">
-              基于企业级《数据库规范》知识库，采用 AST 特征感知提取、双路混合检索、RRF 排序融合以及 Double Check 二次断言技术，为您提供高精度的 DDL 规范审查与咨询。
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">我是 SQL 规范合规审查 Agent</h2>
+            <p class="text-sm text-slate-500 leading-relaxed max-w-lg">
+              基于企业级《数据库规范》白皮书，通过 AST 意图分解、双路混合检索与确定性 Double Check 防幻觉核验，对建表 DDL 进行全方位规范合规把关。
             </p>
           </div>
 
           <!-- 推荐提问卡片 -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full text-left">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 w-full text-left">
             <div 
               @click="quickRunBadSql"
-              class="p-4 rounded-xl bg-deepseek-card border border-deepseek-border hover:border-rose-500/50 hover:bg-deepseek-hover cursor-pointer transition group">
-              <div class="flex items-center space-x-2 text-rose-400 text-sm font-semibold mb-1">
+              class="p-4 rounded-xl bg-white border border-slate-200 hover:border-rose-400 hover:bg-rose-50/40 cursor-pointer transition shadow-sm group">
+              <div class="flex items-center space-x-2 text-rose-600 text-sm font-bold mb-1">
                 <span>🚨</span>
-                <span class="group-hover:text-rose-300">审查典型违规 DDL</span>
+                <span class="group-hover:text-rose-700">审查典型违规 DDL</span>
               </div>
-              <p class="text-xs text-slate-400">测试表名保留字、order_id 冗余前缀、double 浮点及外键违规</p>
+              <p class="text-xs text-slate-500">测试表名保留字、order_id 冗余前缀、double 浮点及外键违规</p>
             </div>
 
             <div 
               @click="quickRunGoodSql"
-              class="p-4 rounded-xl bg-deepseek-card border border-deepseek-border hover:border-emerald-500/50 hover:bg-deepseek-hover cursor-pointer transition group">
-              <div class="flex items-center space-x-2 text-emerald-400 text-sm font-semibold mb-1">
+              class="p-4 rounded-xl bg-white border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/40 cursor-pointer transition shadow-sm group">
+              <div class="flex items-center space-x-2 text-emerald-600 text-sm font-bold mb-1">
                 <span>🌟</span>
-                <span class="group-hover:text-emerald-300">验证 100% 合规建表 SQL</span>
+                <span class="group-hover:text-emerald-700">验证 100% 合规建表 SQL</span>
               </div>
-              <p class="text-xs text-slate-400">体验包含完整 7 大审计字段、无符号主键与规范注释放行</p>
+              <p class="text-xs text-slate-500">体验包含完整 7 大审计字段、无符号主键与规范注释放行</p>
             </div>
 
             <div 
               @click="quickAskMoney"
-              class="p-4 rounded-xl bg-deepseek-card border border-deepseek-border hover:border-blue-500/50 hover:bg-deepseek-hover cursor-pointer transition group">
-              <div class="flex items-center space-x-2 text-blue-400 text-sm font-semibold mb-1">
+              class="p-4 rounded-xl bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 cursor-pointer transition shadow-sm group">
+              <div class="flex items-center space-x-2 text-ds-blue text-sm font-bold mb-1">
                 <span>💡</span>
-                <span class="group-hover:text-blue-300">咨询金额与单价字段要求</span>
+                <span class="group-hover:text-blue-700">咨询金额与单价字段要求</span>
               </div>
-              <p class="text-xs text-slate-400">检索 decimal 精度规范及 money / price 命名后缀要求</p>
+              <p class="text-xs text-slate-500">检索 decimal 精度规范及 money / price 命名后缀要求</p>
             </div>
 
             <div 
               @click="quickAskAuditFields"
-              class="p-4 rounded-xl bg-deepseek-card border border-deepseek-border hover:border-indigo-500/50 hover:bg-deepseek-hover cursor-pointer transition group">
-              <div class="flex items-center space-x-2 text-indigo-400 text-sm font-semibold mb-1">
+              class="p-4 rounded-xl bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50/40 cursor-pointer transition shadow-sm group">
+              <div class="flex items-center space-x-2 text-indigo-600 text-sm font-bold mb-1">
                 <span>📋</span>
-                <span class="group-hover:text-indigo-300">咨询建表必须包含的基础字段</span>
+                <span class="group-hover:text-indigo-700">咨询建表必须包含的基础字段</span>
               </div>
-              <p class="text-xs text-slate-400">检索 create_time、modify_time 等 7 大审计基类规范</p>
+              <p class="text-xs text-slate-500">检索 create_time、modify_time 等 7 大审计基类规范</p>
             </div>
           </div>
         </div>
@@ -359,42 +369,44 @@
         <!-- 对话流消息列表 -->
         <div v-for="(msg, index) in messages" :key="index" class="max-w-4xl mx-auto space-y-4">
           
-          <!-- 用户消息 (User Message) -->
+          <!-- 用户消息 (User Message - 浅蓝背景浅边框) -->
           <div v-if="msg.role === 'user'" class="flex justify-end items-start space-x-3 pl-12">
-            <div class="bg-deepseek-card border border-deepseek-border text-slate-100 rounded-2xl rounded-tr-none px-4 py-3 max-w-2xl shadow-md">
-              <div v-if="msg.is_sql" class="mb-1 text-xs text-blue-400 font-semibold flex items-center space-x-1">
+            <div class="bg-slate-100 border border-slate-200 text-slate-900 rounded-2xl rounded-tr-none px-4 py-3 max-w-2xl shadow-sm">
+              <div v-if="msg.is_sql" class="mb-1 text-xs text-ds-blue font-bold flex items-center space-x-1">
                 <span>📝</span>
                 <span>提交审查的 DDL 语句：</span>
               </div>
-              <pre v-if="msg.is_sql" class="text-xs bg-slate-950 p-3 rounded-lg overflow-x-auto text-emerald-400 border border-slate-800"><code>{{ msg.content }}</code></pre>
-              <div v-else class="text-sm whitespace-pre-wrap">{{ msg.content }}</div>
+              <pre v-if="msg.is_sql" class="text-xs bg-slate-900 p-3 rounded-lg overflow-x-auto text-emerald-400 border border-slate-800"><code>{{ msg.content }}</code></pre>
+              <div v-else class="text-sm whitespace-pre-wrap leading-relaxed">{{ msg.content }}</div>
             </div>
-            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs text-white font-bold flex-shrink-0 mt-1">
+            <div class="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-xs text-slate-700 font-bold flex-shrink-0 mt-1">
               我
             </div>
           </div>
 
-          <!-- AI 助手消息 (Assistant Message) -->
-          <div v-else class="flex justify-start items-start space-x-3 pr-4 md:pr-12">
-            <!-- AI 头像 -->
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-md shadow-blue-500/20">
-              ⚡
+          <!-- AI 助手消息 (Assistant Message - DeepSeek 经典布局) -->
+          <div v-else class="flex justify-start items-start space-x-3 pr-2 md:pr-10">
+            <!-- AI 小蓝鲸头像 -->
+            <div class="w-8 h-8 rounded-full bg-ds-blue flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 shadow-sm">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+              </svg>
             </div>
 
             <!-- 回答主体容器 -->
-            <div class="flex-1 bg-deepseek-card border border-deepseek-border rounded-2xl rounded-tl-none p-5 space-y-4 shadow-lg overflow-hidden">
+            <div class="flex-1 bg-white border border-slate-200 rounded-2xl rounded-tl-none p-5 space-y-4 shadow-sm overflow-hidden">
               
-              <!-- 1. DeepSeek 风格思考过程折叠条 (深度思考) -->
-              <details class="group bg-slate-900/60 rounded-xl border border-slate-800 p-3 text-xs">
-                <summary class="cursor-pointer font-medium text-slate-400 hover:text-blue-400 flex items-center justify-between select-none">
+              <!-- 1. DeepSeek 风格“深度思考”折叠条 (浅灰细边框) -->
+              <details class="group bg-ds-thinkBg rounded-xl border border-ds-thinkBorder p-3 text-xs">
+                <summary class="cursor-pointer font-medium text-slate-500 hover:text-ds-blue flex items-center justify-between select-none">
                   <span class="flex items-center space-x-2">
-                    <span class="text-blue-400">💭</span>
+                    <span class="text-ds-blue">💭</span>
                     <span>已完成深度思考 (RAG 意图拆解 · 双路 RRF 检索 · Double Check 核验)</span>
                   </span>
-                  <span class="text-slate-500 text-[10px] group-open:rotate-180 transition-transform">▼</span>
+                  <span class="text-slate-400 text-[10px] group-open:rotate-180 transition-transform">▼</span>
                 </summary>
-                <div class="mt-3 pt-3 border-t border-slate-800 text-slate-400 font-mono text-[11px] space-y-2 leading-relaxed">
-                  <div class="text-blue-300 font-semibold">【思考推导链路】：</div>
+                <div class="mt-3 pt-3 border-t border-slate-200 text-slate-600 font-mono text-[11px] space-y-1.5 leading-relaxed">
+                  <div class="text-ds-blue font-bold">【思考推导链路】：</div>
                   <div>• 意图分解: 识别 DDL 核心对象、约束与潜在反例模式；</div>
                   <div>• 双路检索: 结合 Qwen3 (2560维向量) 与 BM25 进行 RRF 融合排序；</div>
                   <div>• 编排注入: 运用 Lost-in-the-Middle 策略将关键条款交替排布于头尾；</div>
@@ -403,61 +415,61 @@
               </details>
 
               <!-- 2. 【核心要求：不满足项醒目标红展示卡片】 -->
-              <div v-if="msg.audit_data && !msg.audit_data.is_compliant" class="rounded-xl border-2 border-rose-600/80 bg-rose-950/30 p-4 space-y-3 shadow-lg shadow-rose-950/50">
-                <!-- 违规总评 Header -->
-                <div class="flex items-center justify-between pb-2 border-b border-rose-800/50">
+              <div v-if="msg.audit_data && !msg.audit_data.is_compliant" class="rounded-xl border-2 border-rose-400 bg-rose-50/70 p-4 space-y-3 shadow-sm">
+                <!-- 违规总评 Header (标红) -->
+                <div class="flex items-center justify-between pb-2 border-b border-rose-200">
                   <div class="flex items-center space-x-2">
                     <span class="text-xl">🚨</span>
                     <div>
-                      <h4 class="text-sm font-bold text-rose-300">
+                      <h4 class="text-sm font-bold text-rose-800">
                         合规判定不通过：检出 {{ (msg.audit_data.violations || []).length }} 项不满足规范项
                       </h4>
-                      <p class="text-xs text-rose-400/90 mt-0.5">{{ msg.audit_data.summary }}</p>
+                      <p class="text-xs text-rose-700 mt-0.5">{{ msg.audit_data.summary }}</p>
                     </div>
                   </div>
                   <!-- 得分徽章 (标红) -->
                   <div class="text-right">
-                    <span class="text-[10px] text-rose-400 block font-medium">合规得分</span>
-                    <span class="text-2xl font-black text-rose-500">{{ msg.audit_data.score }}</span>
-                    <span class="text-xs text-rose-400"> / 100</span>
+                    <span class="text-[10px] text-rose-500 block font-bold">合规得分</span>
+                    <span class="text-2xl font-black text-rose-600">{{ msg.audit_data.score }}</span>
+                    <span class="text-xs text-rose-500"> / 100</span>
                   </div>
                 </div>
 
                 <!-- 逐条标红不满足项清单 -->
-                <div class="space-y-2">
-                  <div class="text-xs font-bold text-rose-200 uppercase tracking-wider">
+                <div class="space-y-2.5">
+                  <div class="text-xs font-bold text-rose-900 uppercase tracking-wider">
                     ⚠️ 不满足项明细排查清单 (必须整改)：
                   </div>
                   <div 
                     v-for="(v, vIdx) in msg.audit_data.violations" 
                     :key="vIdx" 
-                    class="p-3 rounded-lg bg-rose-900/30 border border-rose-600/50 space-y-1.5 text-xs">
+                    class="p-3 rounded-lg bg-white border border-rose-300 space-y-2 text-xs shadow-sm">
                     
                     <div class="flex items-center justify-between flex-wrap gap-1">
                       <div class="flex items-center space-x-2">
-                        <!-- 违规对象 (强力标红突出) -->
+                        <!-- 违规对象 (强力红底白字高亮) -->
                         <span class="px-2 py-0.5 rounded bg-rose-600 text-white font-mono font-bold text-xs shadow-sm">
                           {{ v.target_object || '违规片段' }}
                         </span>
-                        <span class="font-bold text-rose-200">{{ v.rule_name }}</span>
+                        <span class="font-bold text-rose-800">{{ v.rule_name }}</span>
                       </div>
                       <div class="flex items-center space-x-2">
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-                          :class="v.severity === 'ERROR' ? 'bg-rose-500 text-white' : 'bg-amber-500 text-slate-900'">
+                          :class="v.severity === 'ERROR' ? 'bg-rose-100 text-rose-700 border border-rose-300' : 'bg-amber-100 text-amber-700 border border-amber-300'">
                           {{ v.severity }}
                         </span>
-                        <span class="font-mono text-indigo-300 font-bold">[{{ v.citation_index }}]</span>
+                        <span class="font-mono text-ds-blue font-bold">[{{ v.citation_index }}]</span>
                       </div>
                     </div>
 
-                    <!-- 违规原因描述 -->
-                    <div class="text-rose-200/90 leading-relaxed">
+                    <!-- 违规原因描述 (红字加深) -->
+                    <div class="text-rose-900 leading-relaxed font-medium">
                       {{ v.description }}
                     </div>
 
-                    <!-- 整改建议 (高亮提示) -->
-                    <div v-if="v.suggested_fix" class="text-emerald-300 font-medium bg-slate-950/50 p-2 rounded border border-emerald-900/40 flex items-start space-x-1.5">
-                      <span class="text-emerald-400 mt-0.5">💡</span>
+                    <!-- 整改建议 (浅绿高亮框) -->
+                    <div v-if="v.suggested_fix" class="text-emerald-800 font-medium bg-emerald-50 p-2 rounded-lg border border-emerald-200 flex items-start space-x-1.5">
+                      <span class="text-emerald-600 mt-0.5">💡</span>
                       <span><strong>整改建议：</strong>{{ v.suggested_fix }}</span>
                     </div>
 
@@ -466,21 +478,21 @@
               </div>
 
               <!-- 若 100% 合规通过，显示绿标通过卡片 -->
-              <div v-else-if="msg.audit_data && msg.audit_data.is_compliant" class="rounded-xl border border-emerald-500/50 bg-emerald-950/20 p-4 space-y-2">
+              <div v-else-if="msg.audit_data && msg.audit_data.is_compliant" class="rounded-xl border border-emerald-300 bg-emerald-50/60 p-4 space-y-2 shadow-sm">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-2">
-                    <span class="text-2xl text-emerald-400">✅</span>
+                    <span class="text-2xl text-emerald-600">✅</span>
                     <div>
-                      <h4 class="text-sm font-bold text-emerald-300">
+                      <h4 class="text-sm font-bold text-emerald-800">
                         合规审查通过：未检出任何违规项
                       </h4>
-                      <p class="text-xs text-emerald-400/90 mt-0.5">{{ msg.audit_data.summary }}</p>
+                      <p class="text-xs text-emerald-700 mt-0.5">{{ msg.audit_data.summary }}</p>
                     </div>
                   </div>
                   <div class="text-right">
-                    <span class="text-[10px] text-emerald-400 block font-medium">合规得分</span>
-                    <span class="text-2xl font-black text-emerald-400">{{ msg.audit_data.score }}</span>
-                    <span class="text-xs text-emerald-400"> / 100</span>
+                    <span class="text-[10px] text-emerald-600 block font-bold">合规得分</span>
+                    <span class="text-2xl font-black text-emerald-600">{{ msg.audit_data.score }}</span>
+                    <span class="text-xs text-emerald-600"> / 100</span>
                   </div>
                 </div>
               </div>
@@ -489,25 +501,25 @@
               <div class="markdown-body" v-html="renderMarkdown(msg.markdown_content || msg.content)"></div>
 
               <!-- 4. 推荐合规重构 SQL (带一键复制) -->
-              <div v-if="msg.audit_data && msg.audit_data.suggested_sql" class="mt-4 pt-3 border-t border-deepseek-border">
+              <div v-if="msg.audit_data && msg.audit_data.suggested_sql" class="mt-4 pt-3 border-t border-slate-200">
                 <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs font-bold text-emerald-400 flex items-center space-x-1.5">
+                  <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
                     <span>🛠️</span>
                     <span>推荐合规重构 SQL (自动补全基类7字段/无外键/修正类型)：</span>
                   </span>
                   <button 
                     @click="copyText(msg.audit_data.suggested_sql)"
-                    class="text-xs text-blue-400 hover:text-blue-300 px-2.5 py-1 rounded bg-deepseek-hover border border-slate-700 transition flex items-center space-x-1">
+                    class="text-xs text-ds-blue hover:text-blue-700 px-2.5 py-1 rounded-md bg-blue-50 border border-blue-200 transition font-medium flex items-center space-x-1">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                    <span>{{ isCopied ? '已复制！' : '一键复制完整 SQL' }}</span>
+                    <span>{{ isCopied ? '✓ 已复制！' : '一键复制完整 SQL' }}</span>
                   </button>
                 </div>
-                <pre class="text-xs bg-slate-950 p-3.5 rounded-lg text-slate-100 overflow-x-auto border border-slate-800 leading-relaxed font-mono"><code>{{ msg.audit_data.suggested_sql }}</code></pre>
+                <pre class="text-xs bg-slate-900 p-3.5 rounded-lg text-emerald-400 overflow-x-auto border border-slate-800 leading-relaxed font-mono"><code>{{ msg.audit_data.suggested_sql }}</code></pre>
               </div>
 
               <!-- 5. 规范依据清单 (Citations 溯源) -->
-              <div v-if="msg.citations && msg.citations.length > 0" class="mt-3 pt-3 border-t border-deepseek-border">
-                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center space-x-1">
+              <div v-if="msg.citations && msg.citations.length > 0" class="mt-3 pt-3 border-t border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center space-x-1">
                   <span>📚</span>
                   <span>本次回答引用的规范出处：</span>
                 </div>
@@ -515,12 +527,12 @@
                   <div 
                     v-for="c in msg.citations" 
                     :key="c.index"
-                    class="p-2.5 rounded bg-slate-900/50 border border-slate-800 text-[11px]">
-                    <div class="flex items-center justify-between font-semibold text-blue-300">
+                    class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px]">
+                    <div class="flex items-center justify-between font-bold text-slate-800">
                       <span>[{{ c.index }}] {{ c.title }}</span>
-                      <span class="text-[10px] text-slate-500 font-mono">{{ c.source_file }}</span>
+                      <span class="text-[10px] text-slate-400 font-mono">{{ c.source_file }}</span>
                     </div>
-                    <div class="text-slate-400 text-[11px] mt-1 font-mono truncate">
+                    <div class="text-slate-600 text-[11px] mt-1 font-mono truncate">
                       {{ c.snippet }}
                     </div>
                   </div>
@@ -534,36 +546,38 @@
 
         <!-- 加载中态 (DeepSeek 动态打字/思考状态) -->
         <div v-if="isLoading" class="max-w-4xl mx-auto flex justify-start items-start space-x-3">
-          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 pulse-ai">
-            ⚡
+          <div class="w-8 h-8 rounded-full bg-ds-blue flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1 ds-avatar-pulse">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
           </div>
-          <div class="bg-deepseek-card border border-deepseek-border rounded-2xl rounded-tl-none p-4 shadow-lg text-xs text-slate-400 flex items-center space-x-3">
-            <svg class="animate-spin h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24">
+          <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-none p-4 shadow-sm text-xs text-slate-600 flex items-center space-x-3">
+            <svg class="animate-spin h-4 w-4 text-ds-blue" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
             </svg>
-            <span class="font-medium text-slate-300">DeepSeek 正在执行 AST 意图提取、双路 RRF 检索与 Double Check 断言核验...</span>
+            <span class="font-medium text-slate-700">DeepSeek 正在执行 AST 意图提取、双路 RRF 检索与 Double Check 断言核验...</span>
           </div>
         </div>
 
       </div>
 
-      <!-- 3. 底部悬浮输入卡片 (DeepSeek 风格沉浸式输入框) -->
-      <footer class="p-4 md:p-6 bg-gradient-to-t from-deepseek-bg via-deepseek-bg to-transparent">
+      <!-- 3. 底部悬浮输入卡片 (DeepSeek 纯白圆角浮动卡片) -->
+      <footer class="p-4 md:p-6 bg-gradient-to-t from-white via-white to-transparent">
         <div class="max-w-4xl mx-auto">
           
           <!-- 快捷操作标签栏 -->
-          <div class="flex items-center justify-between mb-2 px-1 text-xs">
+          <div class="flex items-center justify-between mb-2.5 px-1 text-xs">
             <div class="flex items-center space-x-2">
               <button 
                 @click="fillBadSqlInput"
-                class="px-2.5 py-1 rounded-full bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/50 text-[11px] font-medium transition flex items-center space-x-1">
+                class="px-3 py-1 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[11px] font-semibold transition flex items-center space-x-1 shadow-sm">
                 <span>🚨</span>
                 <span>填入典型违规反例</span>
               </button>
               <button 
                 @click="fillGoodSqlInput"
-                class="px-2.5 py-1 rounded-full bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-300 border border-emerald-800/50 text-[11px] font-medium transition flex items-center space-x-1">
+                class="px-3 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] font-semibold transition flex items-center space-x-1 shadow-sm">
                 <span>🌟</span>
                 <span>填入合规正例</span>
               </button>
@@ -571,13 +585,13 @@
             <button 
               v-if="messages.length > 0"
               @click="clearMessages"
-              class="text-slate-500 hover:text-slate-400 text-[11px]">
+              class="text-slate-400 hover:text-slate-600 text-[11px] font-medium">
               清空上下文
             </button>
           </div>
 
-          <!-- 输入框容器 -->
-          <div class="bg-deepseek-card rounded-2xl border border-deepseek-border focus-within:border-blue-500/80 shadow-2xl p-3 flex flex-col transition duration-200">
+          <!-- 输入框卡片容器 (纯白、大圆角、微阴影、聚焦蓝圈) -->
+          <div class="bg-white rounded-2xl border border-slate-300 focus-within:border-ds-blue focus-within:ring-2 focus-within:ring-blue-100 shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-3.5 flex flex-col transition duration-200">
             <textarea
               ref="inputTextarea"
               v-model="userInput"
@@ -585,19 +599,20 @@
               @input="adjustTextareaHeight"
               rows="3"
               placeholder="在此粘贴 CREATE TABLE 语句执行深度审查，或输入任何数据库规范疑问..."
-              class="w-full bg-transparent text-slate-100 text-sm placeholder-slate-500 focus:outline-none resize-none leading-relaxed"
+              class="w-full bg-transparent text-slate-800 text-sm placeholder-slate-400 focus:outline-none resize-none leading-relaxed"
             ></textarea>
 
             <!-- 底部发送与说明工具条 -->
-            <div class="flex items-center justify-between pt-2 border-t border-deepseek-border/50 text-xs">
-              <span class="text-[11px] text-slate-500">
-                按 <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono text-[10px]">Enter</kbd> 发送，<kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono text-[10px]">Shift+Enter</kbd> 换行
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs mt-1">
+              <span class="text-[11px] text-slate-400">
+                按 <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono text-[10px]">Enter</kbd> 发送，<kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono text-[10px]">Shift+Enter</kbd> 换行
               </span>
 
+              <!-- DeepSeek 经典群青蓝圆形发送按钮 -->
               <button
                 @click="sendMessage"
                 :disabled="isLoading || !userInput.trim()"
-                class="p-2 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white shadow-md shadow-blue-500/30 transition flex items-center justify-center">
+                class="w-8 h-8 rounded-full bg-ds-blue hover:bg-ds-blueHover disabled:opacity-30 disabled:cursor-not-allowed text-white shadow-md transition flex items-center justify-center">
                 <svg class="w-4 h-4 transform rotate-90" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
                 </svg>
@@ -606,7 +621,7 @@
           </div>
 
           <!-- 底部声明 -->
-          <p class="text-center text-[11px] text-slate-500 mt-2">
+          <p class="text-center text-[11px] text-slate-400 mt-2.5">
             SQL 审查由 DeepSeek 与本地 2560 维 RAG 知识库双引擎驱动 · 已配置 Double Check 二次断言拦截幻觉
           </p>
         </div>
