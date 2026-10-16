@@ -33,10 +33,10 @@ def test_web_ui_endpoints():
     assert "text/html" in resp_root.headers.get("content-type", "")
     html_text = resp_root.text
     assert "SQL Checker Agent" in html_text, "页面标题缺少系统名"
-    assert "一键合规审查" in html_text, "缺少合规审查按钮"
     assert "典型违规反例" in html_text, "缺少反例填充快捷键"
-    assert "100%合规正例" in html_text, "缺少正例填充快捷键"
-    assert "规范知识库智能问答" in html_text, "缺少知识问答 Tab"
+    assert "合规正例" in html_text, "缺少正例填充快捷键"
+    assert "深度思考" in html_text, "缺少 DeepSeek 风格深度思考模块"
+    assert "不满足项" in html_text, "缺少不满足项标红展示模块"
     print("[PASS] 根路径 GET / 成功返回完整 WebUI 单页面 HTML 应用！")
 
     # 2. 测试别名路由 GET /ui
