@@ -1,0 +1,17 @@
+# SQL Checker Agent 依赖清单
+# Web 框架与服务器
+fastapi>=0.110.0
+uvicorn>=0.28.0
+
+# 数据校验与配置管理
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+python-dotenv>=1.0.1
+
+# HTTP 请求客户端 (用于调用本地 Ollama 及云端大模型 API)
+requests>=2.31.0
+httpx>=0.28.0
+
+# 检索与向量计算
+numpy>=1.26.0
+rank-bm25>=0.2.2
