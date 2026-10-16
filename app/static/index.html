@@ -30,14 +30,14 @@
   </script>
   <!-- Vue 3 CDN -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <!-- Marked.js 用于将大模型返回的内容渲染为 Markdown -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <!-- Highlight.js 代码高亮 (经典代码块深色黑底，正文浅白底，完美契合 DeepSeek 风格) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <!-- Highlight.js 语法高亮样式 (采用 Atom One Dark，深色底鲜艳高亮，字迹极度清晰) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <!-- Marked.js 用于渲染 Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
-    /* 全局滚动条美化 (纯净浅色) */
+    /* 全局滚动条美化 */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
@@ -107,16 +107,24 @@
     .markdown-body tr:nth-child(even) { background-color: #fcfdfe; }
     .markdown-body tr:hover { background-color: #f1f5f9; }
 
-    /* 针对违规项、不合规、反例的自动浅红警示排版 */
-    .markdown-body blockquote {
-      border-left: 4px solid #ef4444;
-      background: #fef2f2;
-      padding: 0.65rem 0.95rem;
-      margin: 0.65rem 0;
-      border-radius: 0.25rem;
-      color: #991b1b;
-      font-weight: 500;
+    /* 表格中包含 ERROR / 违规的行高亮浅红 */
+    .markdown-body tr:has(span:contains("ERROR")), 
+    .markdown-body tr:has(td:contains("🔴 ERROR")) {
+      background-color: #fff1f2 !important;
     }
+
+    /* 普通提示 blockquote: 清爽浅蓝框 (避免正向提示被误标红) */
+    .markdown-body blockquote {
+      border-left: 4px solid #3b82f6;
+      background: #eff6ff;
+      padding: 0.65rem 0.95rem;
+      margin: 0.75rem 0;
+      border-radius: 0.375rem;
+      color: #1e40af;
+      font-size: 0.88rem;
+    }
+
+    /* 行内 code 标签 */
     .markdown-body code:not(pre code) {
       background-color: #f1f5f9;
       color: #0284c7;
@@ -124,14 +132,27 @@
       border-radius: 0.25rem;
       font-size: 0.86em;
       border: 1px solid #e2e8f0;
+      font-weight: 500;
     }
+
+    /* 代码块 pre: 彻底解决黑字看不清问题！强制深灰底 + 纯亮白/彩色语法高亮 */
     .markdown-body pre {
-      background-color: #1e293b !important;
+      background-color: #1e222d !important;
+      color: #f8fafc !important;
       border-radius: 0.6rem;
-      padding: 0.9rem;
+      padding: 1rem !important;
       margin: 0.75rem 0;
       overflow-x: auto;
-      border: 1px solid #334155;
+      border: 1px solid #2d3348;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .markdown-body pre code {
+      background-color: transparent !important;
+      color: #f8fafc !important;
+      font-size: 0.865rem !important;
+      line-height: 1.65 !important;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+      text-shadow: none !important;
     }
 
     /* DeepSeek 经典呼吸光效 */
@@ -177,7 +198,7 @@
       <!-- 侧边栏列表内容 -->
       <div class="flex-1 overflow-y-auto p-3 space-y-4" v-show="isSidebarOpen">
         
-        <!-- 新建会话按钮 (DeepSeek 纯白卡片加微阴影) -->
+        <!-- 新建会话按钮 -->
         <button 
           @click="startNewChat"
           class="w-full flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-white border border-ds-border hover:border-slate-300 hover:bg-slate-50 text-slate-800 font-semibold text-xs shadow-sm transition duration-150">
@@ -308,7 +329,7 @@
       <!-- 对话消息列表视窗 -->
       <div ref="chatContainer" class="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6">
         
-        <!-- 空状态 / 欢迎界面 (DeepSeek 经典风格大标题与卡片) -->
+        <!-- 空状态 / 欢迎界面 -->
         <div v-if="messages.length === 0" class="max-w-2xl mx-auto py-10 flex flex-col items-center text-center space-y-6">
           <div class="w-16 h-16 rounded-2xl bg-ds-blue flex items-center justify-center text-white shadow-md ds-avatar-pulse">
             <svg class="w-10 h-10" viewBox="0 0 24 24" fill="currentColor">
@@ -369,14 +390,14 @@
         <!-- 对话流消息列表 -->
         <div v-for="(msg, index) in messages" :key="index" class="max-w-4xl mx-auto space-y-4">
           
-          <!-- 用户消息 (User Message - 浅蓝背景浅边框) -->
+          <!-- 用户消息 (User Message) -->
           <div v-if="msg.role === 'user'" class="flex justify-end items-start space-x-3 pl-12">
             <div class="bg-slate-100 border border-slate-200 text-slate-900 rounded-2xl rounded-tr-none px-4 py-3 max-w-2xl shadow-sm">
               <div v-if="msg.is_sql" class="mb-1 text-xs text-ds-blue font-bold flex items-center space-x-1">
                 <span>📝</span>
                 <span>提交审查的 DDL 语句：</span>
               </div>
-              <pre v-if="msg.is_sql" class="text-xs bg-slate-900 p-3 rounded-lg overflow-x-auto text-emerald-400 border border-slate-800"><code>{{ msg.content }}</code></pre>
+              <pre v-if="msg.is_sql" class="text-xs !bg-[#1e222d] !text-emerald-300 p-3 rounded-lg overflow-x-auto border border-slate-700 font-mono"><code>{{ msg.content }}</code></pre>
               <div v-else class="text-sm whitespace-pre-wrap leading-relaxed">{{ msg.content }}</div>
             </div>
             <div class="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-xs text-slate-700 font-bold flex-shrink-0 mt-1">
@@ -396,7 +417,7 @@
             <!-- 回答主体容器 -->
             <div class="flex-1 bg-white border border-slate-200 rounded-2xl rounded-tl-none p-5 space-y-4 shadow-sm overflow-hidden">
               
-              <!-- 1. DeepSeek 风格“深度思考”折叠条 (浅灰细边框) -->
+              <!-- 1. DeepSeek 风格“深度思考”折叠条 -->
               <details class="group bg-ds-thinkBg rounded-xl border border-ds-thinkBorder p-3 text-xs">
                 <summary class="cursor-pointer font-medium text-slate-500 hover:text-ds-blue flex items-center justify-between select-none">
                   <span class="flex items-center space-x-2">
@@ -415,7 +436,7 @@
               </details>
 
               <!-- 2. 【核心要求：不满足项醒目标红展示卡片】 -->
-              <div v-if="msg.audit_data && !msg.audit_data.is_compliant" class="rounded-xl border-2 border-rose-400 bg-rose-50/70 p-4 space-y-3 shadow-sm">
+              <div v-if="msg.audit_data && !msg.audit_data.is_compliant" class="rounded-xl border-2 border-rose-500 bg-rose-50/80 p-4 space-y-3 shadow-sm">
                 <!-- 违规总评 Header (标红) -->
                 <div class="flex items-center justify-between pb-2 border-b border-rose-200">
                   <div class="flex items-center space-x-2">
@@ -497,27 +518,10 @@
                 </div>
               </div>
 
-              <!-- 3. 标准 Markdown 回答正文 (使用 Marked.js 动态渲染) -->
+              <!-- 3. 标准 Markdown 回答正文 (使用带有高亮和一键复制的代码块) -->
               <div class="markdown-body" v-html="renderMarkdown(msg.markdown_content || msg.content)"></div>
 
-              <!-- 4. 推荐合规重构 SQL (带一键复制) -->
-              <div v-if="msg.audit_data && msg.audit_data.suggested_sql" class="mt-4 pt-3 border-t border-slate-200">
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
-                    <span>🛠️</span>
-                    <span>推荐合规重构 SQL (自动补全基类7字段/无外键/修正类型)：</span>
-                  </span>
-                  <button 
-                    @click="copyText(msg.audit_data.suggested_sql)"
-                    class="text-xs text-ds-blue hover:text-blue-700 px-2.5 py-1 rounded-md bg-blue-50 border border-blue-200 transition font-medium flex items-center space-x-1">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                    <span>{{ isCopied ? '✓ 已复制！' : '一键复制完整 SQL' }}</span>
-                  </button>
-                </div>
-                <pre class="text-xs bg-slate-900 p-3.5 rounded-lg text-emerald-400 overflow-x-auto border border-slate-800 leading-relaxed font-mono"><code>{{ msg.audit_data.suggested_sql }}</code></pre>
-              </div>
-
-              <!-- 5. 规范依据清单 (Citations 溯源) -->
+              <!-- 4. 规范依据清单 (Citations 溯源) -->
               <div v-if="msg.citations && msg.citations.length > 0" class="mt-3 pt-3 border-t border-slate-200">
                 <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center space-x-1">
                   <span>📚</span>
@@ -631,6 +635,52 @@
 
   </div>
 
+  <!-- 全局代码复制函数 (供代码块顶部按钮调用) -->
+  <script>
+    window.copyCodeFromBlock = function(btn) {
+      const wrapper = btn.closest('.code-block-container');
+      if (!wrapper) return;
+      const codeElement = wrapper.querySelector('code');
+      if (!codeElement) return;
+      const text = codeElement.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<span>✓ 已复制！</span>';
+        btn.classList.add('text-emerald-400');
+        setTimeout(() => {
+          btn.innerHTML = originalHtml;
+          btn.classList.remove('text-emerald-400');
+        }, 2000);
+      }).catch(err => {
+        console.error('复制失败:', err);
+      });
+    };
+
+    // 配置 Marked.js 自定义代码块渲染器 (添加顶部标题栏 + 语言徽章 + 复制按钮)
+    const customRenderer = new marked.Renderer();
+    customRenderer.code = function(code, lang) {
+      const language = (lang && hljs.getLanguage(lang)) ? lang : 'sql';
+      let highlighted = code;
+      try {
+        highlighted = hljs.highlight(code, { language }).value;
+      } catch (e) {
+        highlighted = hljs.highlightAuto(code).value;
+      }
+      return `
+        <div class="code-block-container my-3.5 rounded-xl overflow-hidden border border-slate-700 shadow-md">
+          <div class="bg-[#1f2430] text-slate-300 text-[11px] px-3.5 py-1.5 flex items-center justify-between font-mono border-b border-slate-700/80">
+            <span class="font-bold text-ds-blue uppercase tracking-wider">${language}</span>
+            <button onclick="window.copyCodeFromBlock(this)" class="hover:text-white px-2 py-0.5 rounded bg-slate-700/50 hover:bg-slate-700 border border-slate-600 transition flex items-center space-x-1 cursor-pointer">
+              <span>📋 复制代码</span>
+            </button>
+          </div>
+          <pre class="!m-0 !p-4 !bg-[#151821] !text-emerald-300 overflow-x-auto text-xs leading-relaxed font-mono"><code class="hljs language-${language} !text-emerald-300">${highlighted}</code></pre>
+        </div>
+      `;
+    };
+    marked.use({ renderer: customRenderer });
+  </script>
+
   <!-- Vue 3 核心业务逻辑脚本 -->
   <script>
     const { createApp, ref, onMounted, nextTick } = Vue;
@@ -642,7 +692,6 @@
         const userInput = ref('');
         const isLoading = ref(false);
         const isRebuilding = ref(false);
-        const isCopied = ref(false);
         const chatContainer = ref(null);
         const inputTextarea = ref(null);
 
@@ -835,15 +884,6 @@
           sendMessage();
         };
 
-        // 复制文本
-        const copyText = (text) => {
-          if (!text) return;
-          navigator.clipboard.writeText(text).then(() => {
-            isCopied.value = true;
-            setTimeout(() => { isCopied.value = false; }, 2000);
-          });
-        };
-
         // 清空会话
         const clearMessages = () => {
           messages.value = [];
@@ -886,7 +926,6 @@
           userInput,
           isLoading,
           isRebuilding,
-          isCopied,
           chatContainer,
           inputTextarea,
           health,
@@ -900,7 +939,6 @@
           fillGoodSqlInput,
           quickAskMoney,
           quickAskAuditFields,
-          copyText,
           clearMessages,
           startNewChat,
           rebuildIndices
