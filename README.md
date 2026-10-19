@@ -7,11 +7,13 @@
 ## 🌟 核心技术亮点与课程深度落地
 
 ### 1. 结构化 AST 语义自闭环原子切块 (落地第 15、16 篇)
+
 - **痛点解决**：传统滑动窗口按字数暴力切分极易把“正例”与“反例”切断在两个不同块中，导致 LLM 把“反例 `order_id`”误当成规范学习；也容易将建表模板的基类字段切成碎片。
 - **方案落地**：针对《数据库规范.md》实现专门的 AST 结构化解析器（`ChunkingService`），实现 **正反例强绑定**、**建表模板基类字段黑盒保护**、**建库规范 15 条禁令原子归纳**，切出 6 个高内聚自闭环原子块。
 - **溯源元数据**：每个切块注入层次面包屑路径（如 `数据库规范 > 命名规范 > 规则清单`）、分类标签（`naming`、`template`、`ddl_rule`）与 ACL 访问控制权限。
 
 ### 2. 双路离线索引构建与增量哈希校验 Pipeline (落地第 16、17 篇)
+
 - **零成本冷启动恢复**：
   - **稠密向量路 (Dense)**：调用本地 Ollama `qwen3-embedding:4b` 生成 2560 维高精向量，使用 NumPy 进行矩阵余弦相似度加速，持久化为 `dense_vectors.npy`。
   - **稀疏倒排路 (Sparse BM25)**：定制中英与 SQL 符号分词器，保留 `decimal(20, 6)`、`TINYINT(4)`、`db_`、下划线及 2-gram 中文词，持久化为 `bm25_model.pkl`。
@@ -19,19 +21,25 @@
 - **增量哈希守卫**：启动或更新时自动比对源规范 Markdown 的 SHA-256 哈希值，未修改时 **0 毫秒秒级加载**，发生修改自动重建。
 
 ### 3. SQL 特征感知与双路混合检索 RRF 融合排序 (落地第 18 篇)
+
 - **痛点解决**：原始 DDL 包含大量无意义的通用语法关键字与括号符号，若直接 Embedding 整段 SQL，关键违规特征（如一个隐蔽的 `double` 或 `order_id`）会被严重稀释，导致相关规范排名靠后。
 - **高靶向性意图分解 (`SqlFeatureExtractor`)**：前置解析 SQL 提取表名、保留字、外键、浮点数、本表冗余前缀反例、缺失基类字段，自动生成 5~7 个高靶向性规范查询。
 - **RRF (Reciprocal Rank Fusion) 倒数排名融合算法**：
-  $$RRF\_Score(d) = \sum_{m \in \{dense, sparse\}} \frac{1}{60 + rank_m(d)}$$
+  $$
+  RRF\_Score(d) = \sum_{m \in \{dense, sparse\}} \frac{1}{60 + rank_m(d)}
+  $$
+
   抹平 BM25 无界得分与余弦相似度的尺度差异，跨路综合累加，实现违规条款 100% 召回。
 
 ### 4. Lost-in-the-Middle 上下文头尾重排编排 (落地第 19 篇)
+
 - **痛点解决**：大模型对长上下文的注意力呈“首尾高、中间低”的 U 型曲线。中间腹部的规范极易被忽略导致漏报。
 - **编排算法 (`ContextOrchestrator`)**：
   - 将相关度最高的文档交替安放在两端，次相关沉淀在中间（如 `[1, 3, 5, 4, 2]`），使关键条款始终处于注意力最强的区域；
   - 动态分配 `[1]`, `[2]`, ... 全局引用角标编号，并保留内存映射供溯源。
 
 ### 5. Double Check 二次断言核验与防幻觉过滤器 (落地第 19 篇)
+
 - **痛点解决**：大模型常出现“过度合规幻觉”（凭空捏造不存在的规则，或引用了虚假的编号 `[99]`，或将正常字段误报违规）。
 - **确定性断言引擎 (`DoubleCheckVerifier`)**：
   - **编号越界断言**：校验引用编号是否在检索上下文有效范围；
@@ -39,6 +47,7 @@
   - **动态评分重算**：过滤掉所有幻觉项，精准基于真实违规（ERROR 扣 20 分，WARN 扣 10 分）重算合规得分。
 
 ### 6. 企业级工程规范与 MVC 分层
+
 - **面向对象领域分包**：DTO 与 Entity 按业务场景清晰划分，无 God File；
 - **原生 Depends 依赖注入**：集中在 `app/core/dependencies.py` 管理，单例缓存与双模兼容；
 - **全链路异步非阻塞**：全局管理 `httpx.AsyncClient` 连接池；
@@ -152,6 +161,7 @@ sql-checker-agent/
 ## 🚀 快速启动指南
 
 ### 1. 环境准备
+
 - Python 3.12+ (推荐使用 `uv` 管理虚拟环境)
 - 本地启动 Ollama 并拉取 embedding 模型：
   ```bash
@@ -159,6 +169,7 @@ sql-checker-agent/
   ```
 
 ### 2. 安装依赖
+
 ```bash
 uv venv .venv
 # 激活虚拟环境 (Windows PowerShell)
@@ -168,7 +179,9 @@ uv pip install -r requirements.txt
 ```
 
 ### 3. 配置环境变量 (`.env`)
+
 复制 `.env.example` 为 `.env`：
+
 ```ini
 APP_ENV=development
 API_V1_PREFIX=/api/v1
@@ -179,7 +192,7 @@ OLLAMA_EMBEDDING_MODEL=qwen3-embedding:4b
 
 # 云端中转站大模型配置
 RELAY_API_BASE_URL=http://gsccswitch.sepzg.vip/v1
-RELAY_API_KEY=sk-x9Gp6vrNe469SQH8yLuNiT4QKSQOmYKeCBlj0SnUUtGtJ2Ht
+RELAY_API_KEY=sk-x9Gp..................GtJ2Ht
 RELAY_LLM_MODEL=deepseek-flash
 RELAY_TIMEOUT_SECONDS=60.0
 
@@ -189,10 +202,13 @@ STORAGE_DIR=data/indices
 ```
 
 ### 4. 启动后端服务
+
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+
 服务成功启动后，即可在浏览器直接体验：
+
 - 🌟 **交互式 Web 控制台 (推荐)**：👉 **http://127.0.0.1:8000/** 或 **http://127.0.0.1:8000/ui**
 - 📖 **Swagger 交互式 API 文档**：👉 **http://127.0.0.1:8000/docs**
 
@@ -267,6 +283,7 @@ python doc/negative_cases/validate_cases.py
 ## 📡 RESTful 核心接口清单
 
 ### 1. SQL 规范合规审查接口
+
 - **URL**: `POST /api/v1/sql/audits`
 - **请求体**:
   ```json
@@ -320,6 +337,7 @@ python doc/negative_cases/validate_cases.py
   ```
 
 ### 2. 数据库设计规范智能问答接口
+
 - **URL**: `POST /api/v1/spec/queries`
 - **请求体**:
   ```json
