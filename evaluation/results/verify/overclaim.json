@@ -1,0 +1,2923 @@
+[
+  {
+    "case_id": "N-01",
+    "expected": [
+      "命名规范 · lower_snake_case"
+    ],
+    "reported": [
+      "采用 lower_snake_case 命名法",
+      "采用 lower_snake_case 命名法",
+      "本表字段不加表名前缀"
+    ],
+    "lead_vias": [
+      "子串: lower_snake_case",
+      "ASCII: lower_snake_case"
+    ],
+    "lead_matched_rules": [
+      "采用 lower_snake_case 命名法"
+    ],
+    "my_strong": [
+      [
+        "采用 lower_snake_case 命名法",
+        [
+          "lower_snake_case"
+        ]
+      ],
+      [
+        "采用 lower_snake_case 命名法",
+        [
+          "lower_snake_case"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "采用 lower_snake_case 命名法",
+        "子串: lower_snake_case",
+        [
+          "lower_snake_case"
+        ]
+      ],
+      [
+        "采用 lower_snake_case 命名法",
+        "ASCII: lower_snake_case",
+        [
+          "lower_snake_case"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-03",
+    "expected": [
+      "命名规范 · 关联字段命名"
+    ],
+    "reported": [
+      "关联表命名必须以 r_ 开头"
+    ],
+    "lead_vias": [
+      "2-gram: 关联"
+    ],
+    "lead_matched_rules": [
+      "关联表命名必须以 r_ 开头"
+    ],
+    "my_strong": [
+      [
+        "关联表命名必须以 r_ 开头",
+        [
+          "关联"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "关联表命名必须以 r_ 开头",
+        "2-gram: 关联",
+        [
+          "关联"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-04",
+    "expected": [
+      "命名规范 · 单价后缀 price"
+    ],
+    "reported": [
+      "单价字段命名后缀必须为 price",
+      "单价字段命名后缀必须为 price"
+    ],
+    "lead_vias": [
+      "ASCII: price",
+      "2-gram: 单价",
+      "2-gram: 后缀"
+    ],
+    "lead_matched_rules": [
+      "单价字段命名后缀必须为 price"
+    ],
+    "my_strong": [
+      [
+        "单价字段命名后缀必须为 price",
+        [
+          "price",
+          "单价",
+          "后缀"
+        ]
+      ],
+      [
+        "单价字段命名后缀必须为 price",
+        [
+          "price",
+          "单价",
+          "后缀"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "单价字段命名后缀必须为 price",
+        "ASCII: price",
+        [
+          "price",
+          "单价",
+          "后缀"
+        ]
+      ],
+      [
+        "单价字段命名后缀必须为 price",
+        "2-gram: 单价",
+        [
+          "price",
+          "单价",
+          "后缀"
+        ]
+      ],
+      [
+        "单价字段命名后缀必须为 price",
+        "2-gram: 后缀",
+        [
+          "price",
+          "单价",
+          "后缀"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-05",
+    "expected": [
+      "命名规范 · 金额后缀 money"
+    ],
+    "reported": [
+      "金额字段统一命名后缀 _money",
+      "金额字段统一命名后缀 _money"
+    ],
+    "lead_vias": [
+      "ASCII: money",
+      "2-gram: 后缀",
+      "2-gram: 金额"
+    ],
+    "lead_matched_rules": [
+      "金额字段统一命名后缀 _money"
+    ],
+    "my_strong": [
+      [
+        "金额字段统一命名后缀 _money",
+        [
+          "money",
+          "后缀",
+          "金额"
+        ]
+      ],
+      [
+        "金额字段统一命名后缀 _money",
+        [
+          "money",
+          "后缀",
+          "金额"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "金额字段统一命名后缀 _money",
+        "ASCII: money",
+        [
+          "money",
+          "后缀",
+          "金额"
+        ]
+      ],
+      [
+        "金额字段统一命名后缀 _money",
+        "2-gram: 后缀",
+        [
+          "money",
+          "后缀",
+          "金额"
+        ]
+      ],
+      [
+        "金额字段统一命名后缀 _money",
+        "2-gram: 金额",
+        [
+          "money",
+          "后缀",
+          "金额"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-06",
+    "expected": [
+      "命名规范 · 数量后缀 amount"
+    ],
+    "reported": [
+      "数量类字段命名与类型规范",
+      "数量类字段命名与类型规范"
+    ],
+    "lead_vias": [
+      "2-gram: 数量"
+    ],
+    "lead_matched_rules": [
+      "数量类字段命名与类型规范"
+    ],
+    "my_strong": [
+      [
+        "数量类字段命名与类型规范",
+        [
+          "数量"
+        ]
+      ],
+      [
+        "数量类字段命名与类型规范",
+        [
+          "数量"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "数量类字段命名与类型规范",
+        "2-gram: 数量",
+        [
+          "数量"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-07",
+    "expected": [
+      "命名规范 · 时间后缀 time"
+    ],
+    "reported": [
+      "时间字段命名规范",
+      "时间字段命名规范"
+    ],
+    "lead_vias": [
+      "2-gram: 时间"
+    ],
+    "lead_matched_rules": [
+      "时间字段命名规范"
+    ],
+    "my_strong": [
+      [
+        "时间字段命名规范",
+        [
+          "时间"
+        ]
+      ],
+      [
+        "时间字段命名规范",
+        [
+          "时间"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "时间字段命名规范",
+        "2-gram: 时间",
+        [
+          "时间"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-08",
+    "expected": [
+      "命名规范 · 业务类前缀 biz_"
+    ],
+    "reported": [
+      "业务类字段需用 biz_ 前缀",
+      "业务类字段需用 biz_ 前缀",
+      "非负数字类型必须加 UNSIGNED"
+    ],
+    "lead_vias": [
+      "ASCII: biz_",
+      "2-gram: 业务",
+      "2-gram: 前缀",
+      "2-gram: 务类"
+    ],
+    "lead_matched_rules": [
+      "业务类字段需用 biz_ 前缀"
+    ],
+    "my_strong": [
+      [
+        "业务类字段需用 biz_ 前缀",
+        [
+          "biz_",
+          "业务",
+          "前缀",
+          "务类"
+        ]
+      ],
+      [
+        "业务类字段需用 biz_ 前缀",
+        [
+          "biz_",
+          "业务",
+          "前缀",
+          "务类"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "业务类字段需用 biz_ 前缀",
+        "ASCII: biz_",
+        [
+          "biz_",
+          "业务",
+          "前缀",
+          "务类"
+        ]
+      ],
+      [
+        "业务类字段需用 biz_ 前缀",
+        "2-gram: 业务",
+        [
+          "biz_",
+          "业务",
+          "前缀",
+          "务类"
+        ]
+      ],
+      [
+        "业务类字段需用 biz_ 前缀",
+        "2-gram: 前缀",
+        [
+          "biz_",
+          "业务",
+          "前缀",
+          "务类"
+        ]
+      ],
+      [
+        "业务类字段需用 biz_ 前缀",
+        "2-gram: 务类",
+        [
+          "biz_",
+          "业务",
+          "前缀",
+          "务类"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-09",
+    "expected": [
+      "命名规范 · 入口类前缀 in_"
+    ],
+    "reported": [
+      "入口类字段需使用 in_ 前缀",
+      "入口类字段需使用 in_ 前缀"
+    ],
+    "lead_vias": [
+      "ASCII: in_",
+      "2-gram: 入口",
+      "2-gram: 前缀",
+      "2-gram: 口类"
+    ],
+    "lead_matched_rules": [
+      "入口类字段需使用 in_ 前缀"
+    ],
+    "my_strong": [
+      [
+        "入口类字段需使用 in_ 前缀",
+        [
+          "in_",
+          "入口",
+          "前缀",
+          "口类"
+        ]
+      ],
+      [
+        "入口类字段需使用 in_ 前缀",
+        [
+          "in_",
+          "入口",
+          "前缀",
+          "口类"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "入口类字段需使用 in_ 前缀",
+        "ASCII: in_",
+        [
+          "in_",
+          "入口",
+          "前缀",
+          "口类"
+        ]
+      ],
+      [
+        "入口类字段需使用 in_ 前缀",
+        "2-gram: 入口",
+        [
+          "in_",
+          "入口",
+          "前缀",
+          "口类"
+        ]
+      ],
+      [
+        "入口类字段需使用 in_ 前缀",
+        "2-gram: 前缀",
+        [
+          "in_",
+          "入口",
+          "前缀",
+          "口类"
+        ]
+      ],
+      [
+        "入口类字段需使用 in_ 前缀",
+        "2-gram: 口类",
+        [
+          "in_",
+          "入口",
+          "前缀",
+          "口类"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-10",
+    "expected": [
+      "命名规范 · 出口类前缀 out_"
+    ],
+    "reported": [
+      "出口类字段必须使用 out_ 前缀",
+      "出口类字段必须使用 out_ 前缀"
+    ],
+    "lead_vias": [
+      "ASCII: out_",
+      "2-gram: 出口",
+      "2-gram: 前缀",
+      "2-gram: 口类"
+    ],
+    "lead_matched_rules": [
+      "出口类字段必须使用 out_ 前缀"
+    ],
+    "my_strong": [
+      [
+        "出口类字段必须使用 out_ 前缀",
+        [
+          "out_",
+          "出口",
+          "前缀",
+          "口类"
+        ]
+      ],
+      [
+        "出口类字段必须使用 out_ 前缀",
+        [
+          "out_",
+          "出口",
+          "前缀",
+          "口类"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "出口类字段必须使用 out_ 前缀",
+        "ASCII: out_",
+        [
+          "out_",
+          "出口",
+          "前缀",
+          "口类"
+        ]
+      ],
+      [
+        "出口类字段必须使用 out_ 前缀",
+        "2-gram: 出口",
+        [
+          "out_",
+          "出口",
+          "前缀",
+          "口类"
+        ]
+      ],
+      [
+        "出口类字段必须使用 out_ 前缀",
+        "2-gram: 前缀",
+        [
+          "out_",
+          "出口",
+          "前缀",
+          "口类"
+        ]
+      ],
+      [
+        "出口类字段必须使用 out_ 前缀",
+        "2-gram: 口类",
+        [
+          "out_",
+          "出口",
+          "前缀",
+          "口类"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-11",
+    "expected": [
+      "命名规范 · 编号后缀 code"
+    ],
+    "reported": [
+      "本表字段禁止加本表名前缀",
+      "编号编码字段统一使用 code 后缀"
+    ],
+    "lead_vias": [
+      "ASCII: code",
+      "2-gram: 后缀",
+      "2-gram: 编号"
+    ],
+    "lead_matched_rules": [
+      "编号编码字段统一使用 code 后缀"
+    ],
+    "my_strong": [
+      [
+        "编号编码字段统一使用 code 后缀",
+        [
+          "code",
+          "后缀",
+          "编号"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "编号编码字段统一使用 code 后缀",
+        "ASCII: code",
+        [
+          "code",
+          "后缀",
+          "编号"
+        ]
+      ],
+      [
+        "编号编码字段统一使用 code 后缀",
+        "2-gram: 后缀",
+        [
+          "code",
+          "后缀",
+          "编号"
+        ]
+      ],
+      [
+        "编号编码字段统一使用 code 后缀",
+        "2-gram: 编号",
+        [
+          "code",
+          "后缀",
+          "编号"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-12",
+    "expected": [
+      "命名规范 · 单位字段后缀 amount_unit"
+    ],
+    "reported": [
+      "数量含单位字段命名规范",
+      "名词术语规范"
+    ],
+    "lead_vias": [
+      "2-gram: 单位"
+    ],
+    "lead_matched_rules": [
+      "数量含单位字段命名规范"
+    ],
+    "my_strong": [
+      [
+        "数量含单位字段命名规范",
+        [
+          "单位"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "数量含单位字段命名规范",
+        "2-gram: 单位",
+        [
+          "单位"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-13",
+    "expected": [
+      "命名规范 · 排序字段命名"
+    ],
+    "reported": [
+      "字段命名必须使用 lower_snake_case",
+      "排序字段统一命名 sort"
+    ],
+    "lead_vias": [
+      "2-gram: 排序"
+    ],
+    "lead_matched_rules": [
+      "排序字段统一命名 sort"
+    ],
+    "my_strong": [
+      [
+        "排序字段统一命名 sort",
+        [
+          "排序"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "排序字段统一命名 sort",
+        "2-gram: 排序",
+        [
+          "排序"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-14",
+    "expected": [
+      "命名规范 · 备注字段命名"
+    ],
+    "reported": [
+      "禁止使用保留关键字或类似关键字字段",
+      "备注字段统一命名为 remark",
+      "备注字段统一命名为 remark"
+    ],
+    "lead_vias": [
+      "2-gram: 备注"
+    ],
+    "lead_matched_rules": [
+      "备注字段统一命名为 remark"
+    ],
+    "my_strong": [
+      [
+        "备注字段统一命名为 remark",
+        [
+          "备注"
+        ]
+      ],
+      [
+        "备注字段统一命名为 remark",
+        [
+          "备注"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "备注字段统一命名为 remark",
+        "2-gram: 备注",
+        [
+          "备注"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "N-15",
+    "expected": [
+      "命名规范 · 本表字段不加表名前缀"
+    ],
+    "reported": [
+      "本表字段禁止拼接本表表名",
+      "本表字段禁止拼接本表表名",
+      "本表字段禁止拼接本表表名"
+    ],
+    "lead_vias": [
+      "2-gram: 本表"
+    ],
+    "lead_matched_rules": [
+      "本表字段禁止拼接本表表名"
+    ],
+    "my_strong": [],
+    "suspicious_vias": [
+      [
+        "本表字段禁止拼接本表表名",
+        "2-gram: 本表",
+        "semantic"
+      ]
+    ],
+    "corroborated_vias": []
+  },
+  {
+    "case_id": "N-16",
+    "expected": [
+      "命名规范 · 金额数量精度",
+      "建库规范 · 禁用 double"
+    ],
+    "reported": [
+      "禁止使用 double 类型",
+      "禁止使用 float 浮点类型",
+      "数量金额统一使用 decimal(20, 6)"
+    ],
+    "lead_vias": [
+      "2-gram: 数量",
+      "2-gram: 金额",
+      "ASCII: double"
+    ],
+    "lead_matched_rules": [
+      "数量金额统一使用 decimal(20, 6)",
+      "禁止使用 double 类型"
+    ],
+    "my_strong": [
+      [
+        "数量金额统一使用 decimal(20, 6)",
+        [
+          "数量",
+          "金额"
+        ]
+      ],
+      [
+        "禁止使用 double 类型",
+        [
+          "double"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "数量金额统一使用 decimal(20, 6)",
+        "2-gram: 数量",
+        [
+          "数量",
+          "金额"
+        ]
+      ],
+      [
+        "数量金额统一使用 decimal(20, 6)",
+        "2-gram: 金额",
+        [
+          "数量",
+          "金额"
+        ]
+      ],
+      [
+        "禁止使用 double 类型",
+        "ASCII: double",
+        [
+          "double"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "T-01",
+    "expected": [
+      "名词术语 · 主键命名"
+    ],
+    "reported": [
+      "主键字段命名必须为 id",
+      "业务字段必须使用 biz_ 前缀",
+      "非负数字必须加 UNSIGNED"
+    ],
+    "lead_vias": [
+      "2-gram: 主键"
+    ],
+    "lead_matched_rules": [
+      "主键字段命名必须为 id"
+    ],
+    "my_strong": [
+      [
+        "主键字段命名必须为 id",
+        [
+          "主键"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "主键字段命名必须为 id",
+        "2-gram: 主键",
+        [
+          "主键"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "T-05",
+    "expected": [
+      "名词术语 · 状态命名"
+    ],
+    "reported": [
+      "状态字段应使用 status",
+      "状态字段应使用 status",
+      "状态字段注释需说明枚举值",
+      "状态字段注释需说明枚举值"
+    ],
+    "lead_vias": [
+      "2-gram: 状态",
+      "2-gram: 状态"
+    ],
+    "lead_matched_rules": [
+      "状态字段应使用 status",
+      "状态字段注释需说明枚举值"
+    ],
+    "my_strong": [
+      [
+        "状态字段应使用 status",
+        [
+          "状态"
+        ]
+      ],
+      [
+        "状态字段应使用 status",
+        [
+          "状态"
+        ]
+      ],
+      [
+        "状态字段注释需说明枚举值",
+        [
+          "状态"
+        ]
+      ],
+      [
+        "状态字段注释需说明枚举值",
+        [
+          "状态"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "状态字段应使用 status",
+        "2-gram: 状态",
+        [
+          "状态"
+        ]
+      ],
+      [
+        "状态字段注释需说明枚举值",
+        "2-gram: 状态",
+        [
+          "状态"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-01",
+    "expected": [
+      "建表模板 · 缺少基类字段 version"
+    ],
+    "reported": [
+      "缺少实体基类必须字段 version"
+    ],
+    "lead_vias": [
+      "ASCII: version",
+      "2-gram: 基类",
+      "2-gram: 缺少"
+    ],
+    "lead_matched_rules": [
+      "缺少实体基类必须字段 version"
+    ],
+    "my_strong": [
+      [
+        "缺少实体基类必须字段 version",
+        [
+          "version",
+          "基类",
+          "缺少"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "缺少实体基类必须字段 version",
+        "ASCII: version",
+        [
+          "version",
+          "基类",
+          "缺少"
+        ]
+      ],
+      [
+        "缺少实体基类必须字段 version",
+        "2-gram: 基类",
+        [
+          "version",
+          "基类",
+          "缺少"
+        ]
+      ],
+      [
+        "缺少实体基类必须字段 version",
+        "2-gram: 缺少",
+        [
+          "version",
+          "基类",
+          "缺少"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-02",
+    "expected": [
+      "建表模板 · 缺少基类字段 deleted"
+    ],
+    "reported": [
+      "缺少删除标记基类字段 deleted"
+    ],
+    "lead_vias": [
+      "ASCII: deleted",
+      "2-gram: 基类",
+      "2-gram: 缺少"
+    ],
+    "lead_matched_rules": [
+      "缺少删除标记基类字段 deleted"
+    ],
+    "my_strong": [
+      [
+        "缺少删除标记基类字段 deleted",
+        [
+          "deleted",
+          "基类",
+          "缺少"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "缺少删除标记基类字段 deleted",
+        "ASCII: deleted",
+        [
+          "deleted",
+          "基类",
+          "缺少"
+        ]
+      ],
+      [
+        "缺少删除标记基类字段 deleted",
+        "2-gram: 基类",
+        [
+          "deleted",
+          "基类",
+          "缺少"
+        ]
+      ],
+      [
+        "缺少删除标记基类字段 deleted",
+        "2-gram: 缺少",
+        [
+          "deleted",
+          "基类",
+          "缺少"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-03",
+    "expected": [
+      "建表模板 · 缺少基类字段 disabled"
+    ],
+    "reported": [
+      "缺少实体基类必填字段"
+    ],
+    "lead_vias": [
+      "2-gram: 基类",
+      "2-gram: 缺少"
+    ],
+    "lead_matched_rules": [
+      "缺少实体基类必填字段"
+    ],
+    "my_strong": [
+      [
+        "缺少实体基类必填字段",
+        [
+          "基类",
+          "缺少"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "缺少实体基类必填字段",
+        "2-gram: 基类",
+        [
+          "基类",
+          "缺少"
+        ]
+      ],
+      [
+        "缺少实体基类必填字段",
+        "2-gram: 缺少",
+        [
+          "基类",
+          "缺少"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-04",
+    "expected": [
+      "建表模板 · 缺少基类字段 create_id"
+    ],
+    "reported": [
+      "实体基类必须字段缺失",
+      "数字类型缺少 UNSIGNED"
+    ],
+    "lead_vias": [
+      "2-gram: 基类",
+      "2-gram: 缺少"
+    ],
+    "lead_matched_rules": [
+      "实体基类必须字段缺失",
+      "数字类型缺少 UNSIGNED"
+    ],
+    "my_strong": [
+      [
+        "实体基类必须字段缺失",
+        [
+          "基类"
+        ]
+      ],
+      [
+        "数字类型缺少 UNSIGNED",
+        [
+          "缺少"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "实体基类必须字段缺失",
+        "2-gram: 基类",
+        [
+          "基类"
+        ]
+      ],
+      [
+        "数字类型缺少 UNSIGNED",
+        "2-gram: 缺少",
+        [
+          "缺少"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-05",
+    "expected": [
+      "建表模板 · 缺少基类字段 create_time"
+    ],
+    "reported": [
+      "缺少实体基类必须字段 create_time"
+    ],
+    "lead_vias": [
+      "ASCII: create_time",
+      "2-gram: 基类",
+      "2-gram: 缺少"
+    ],
+    "lead_matched_rules": [
+      "缺少实体基类必须字段 create_time"
+    ],
+    "my_strong": [
+      [
+        "缺少实体基类必须字段 create_time",
+        [
+          "create_time",
+          "基类",
+          "缺少"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "缺少实体基类必须字段 create_time",
+        "ASCII: create_time",
+        [
+          "create_time",
+          "基类",
+          "缺少"
+        ]
+      ],
+      [
+        "缺少实体基类必须字段 create_time",
+        "2-gram: 基类",
+        [
+          "create_time",
+          "基类",
+          "缺少"
+        ]
+      ],
+      [
+        "缺少实体基类必须字段 create_time",
+        "2-gram: 缺少",
+        [
+          "create_time",
+          "基类",
+          "缺少"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-06",
+    "expected": [
+      "建表模板 · 缺少基类字段 modify_id"
+    ],
+    "reported": [
+      "缺少修改人标识字段"
+    ],
+    "lead_vias": [
+      "2-gram: 缺少"
+    ],
+    "lead_matched_rules": [
+      "缺少修改人标识字段"
+    ],
+    "my_strong": [
+      [
+        "缺少修改人标识字段",
+        [
+          "缺少"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "缺少修改人标识字段",
+        "2-gram: 缺少",
+        [
+          "缺少"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-07",
+    "expected": [
+      "建表模板 · 缺少基类字段 modify_time"
+    ],
+    "reported": [
+      "实体基类必须字段缺失"
+    ],
+    "lead_vias": [
+      "2-gram: 基类"
+    ],
+    "lead_matched_rules": [
+      "实体基类必须字段缺失"
+    ],
+    "my_strong": [
+      [
+        "实体基类必须字段缺失",
+        [
+          "基类"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "实体基类必须字段缺失",
+        "2-gram: 基类",
+        [
+          "基类"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-08",
+    "expected": [
+      "建表模板 · 必须包含通用基类审计字段"
+    ],
+    "reported": [
+      "缺少实体基类必须字段",
+      "本表字段禁止拼接本表表名"
+    ],
+    "lead_vias": [
+      "2-gram: 基类"
+    ],
+    "lead_matched_rules": [
+      "缺少实体基类必须字段"
+    ],
+    "my_strong": [
+      [
+        "缺少实体基类必须字段",
+        [
+          "基类"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "缺少实体基类必须字段",
+        "2-gram: 基类",
+        [
+          "基类"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-09",
+    "expected": [
+      "建表模板 · 主键必须为 id"
+    ],
+    "reported": [
+      "本表字段禁止加表名",
+      "主键必须命名为 id"
+    ],
+    "lead_vias": [
+      "ASCII: id",
+      "2-gram: 主键"
+    ],
+    "lead_matched_rules": [
+      "主键必须命名为 id"
+    ],
+    "my_strong": [
+      [
+        "主键必须命名为 id",
+        [
+          "id",
+          "主键"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "主键必须命名为 id",
+        "ASCII: id",
+        [
+          "id",
+          "主键"
+        ]
+      ],
+      [
+        "主键必须命名为 id",
+        "2-gram: 主键",
+        [
+          "id",
+          "主键"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-10",
+    "expected": [
+      "建表模板 · 主键类型必须为 BIGINT UNSIGNED"
+    ],
+    "reported": [
+      "主键必须为 BIGINT UNSIGNED"
+    ],
+    "lead_vias": [
+      "ASCII: bigint",
+      "ASCII: unsigned",
+      "2-gram: 主键"
+    ],
+    "lead_matched_rules": [
+      "主键必须为 BIGINT UNSIGNED"
+    ],
+    "my_strong": [
+      [
+        "主键必须为 BIGINT UNSIGNED",
+        [
+          "bigint",
+          "unsigned",
+          "主键"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "主键必须为 BIGINT UNSIGNED",
+        "ASCII: bigint",
+        [
+          "bigint",
+          "unsigned",
+          "主键"
+        ]
+      ],
+      [
+        "主键必须为 BIGINT UNSIGNED",
+        "ASCII: unsigned",
+        [
+          "bigint",
+          "unsigned",
+          "主键"
+        ]
+      ],
+      [
+        "主键必须为 BIGINT UNSIGNED",
+        "2-gram: 主键",
+        [
+          "bigint",
+          "unsigned",
+          "主键"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-11",
+    "expected": [
+      "建表模板 · 主键必须 NOT NULL"
+    ],
+    "reported": [
+      "主键必须为 BIGINT UNSIGNED NOT NULL"
+    ],
+    "lead_vias": [
+      "ASCII: not",
+      "ASCII: null",
+      "2-gram: 主键"
+    ],
+    "lead_matched_rules": [
+      "主键必须为 BIGINT UNSIGNED NOT NULL"
+    ],
+    "my_strong": [
+      [
+        "主键必须为 BIGINT UNSIGNED NOT NULL",
+        [
+          "not",
+          "null",
+          "主键"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "主键必须为 BIGINT UNSIGNED NOT NULL",
+        "ASCII: not",
+        [
+          "not",
+          "null",
+          "主键"
+        ]
+      ],
+      [
+        "主键必须为 BIGINT UNSIGNED NOT NULL",
+        "ASCII: null",
+        [
+          "not",
+          "null",
+          "主键"
+        ]
+      ],
+      [
+        "主键必须为 BIGINT UNSIGNED NOT NULL",
+        "2-gram: 主键",
+        [
+          "not",
+          "null",
+          "主键"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-12",
+    "expected": [
+      "建表模板 · 主键雪花算法"
+    ],
+    "reported": [
+      "主键须为雪花算法无自增"
+    ],
+    "lead_vias": [
+      "2-gram: 主键",
+      "2-gram: 算法",
+      "2-gram: 花算",
+      "2-gram: 雪花"
+    ],
+    "lead_matched_rules": [
+      "主键须为雪花算法无自增"
+    ],
+    "my_strong": [
+      [
+        "主键须为雪花算法无自增",
+        [
+          "主键",
+          "算法",
+          "花算",
+          "雪花"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "主键须为雪花算法无自增",
+        "2-gram: 主键",
+        [
+          "主键",
+          "算法",
+          "花算",
+          "雪花"
+        ]
+      ],
+      [
+        "主键须为雪花算法无自增",
+        "2-gram: 算法",
+        [
+          "主键",
+          "算法",
+          "花算",
+          "雪花"
+        ]
+      ],
+      [
+        "主键须为雪花算法无自增",
+        "2-gram: 花算",
+        [
+          "主键",
+          "算法",
+          "花算",
+          "雪花"
+        ]
+      ],
+      [
+        "主键须为雪花算法无自增",
+        "2-gram: 雪花",
+        [
+          "主键",
+          "算法",
+          "花算",
+          "雪花"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-13",
+    "expected": [
+      "建表模板 · 基类字段类型不符 create_id/modify_id"
+    ],
+    "reported": [
+      "基类字段类型必须符合建表模板",
+      "基类字段类型必须符合建表模板"
+    ],
+    "lead_vias": [
+      "2-gram: 基类",
+      "2-gram: 类型"
+    ],
+    "lead_matched_rules": [
+      "基类字段类型必须符合建表模板"
+    ],
+    "my_strong": [
+      [
+        "基类字段类型必须符合建表模板",
+        [
+          "基类",
+          "类型"
+        ]
+      ],
+      [
+        "基类字段类型必须符合建表模板",
+        [
+          "基类",
+          "类型"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "基类字段类型必须符合建表模板",
+        "2-gram: 基类",
+        [
+          "基类",
+          "类型"
+        ]
+      ],
+      [
+        "基类字段类型必须符合建表模板",
+        "2-gram: 类型",
+        [
+          "基类",
+          "类型"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-14",
+    "expected": [
+      "建表模板 · 基类字段类型不符 create_time/modify_time"
+    ],
+    "reported": [
+      "create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP",
+      "modify_time 必须为 DATETIME"
+    ],
+    "lead_vias": [
+      "ASCII: create_time",
+      "ASCII: modify_time"
+    ],
+    "lead_matched_rules": [
+      "create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP",
+      "modify_time 必须为 DATETIME"
+    ],
+    "my_strong": [
+      [
+        "create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP",
+        [
+          "create_time"
+        ]
+      ],
+      [
+        "modify_time 必须为 DATETIME",
+        [
+          "modify_time"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP",
+        "ASCII: create_time",
+        [
+          "create_time"
+        ]
+      ],
+      [
+        "modify_time 必须为 DATETIME",
+        "ASCII: modify_time",
+        [
+          "modify_time"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-15",
+    "expected": [
+      "建库规范 · TINYINT 统一 TINYINT(4)"
+    ],
+    "reported": [
+      "TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED"
+    ],
+    "lead_vias": [
+      "ASCII: tinyint"
+    ],
+    "lead_matched_rules": [
+      "TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED"
+    ],
+    "my_strong": [
+      [
+        "TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED",
+        [
+          "tinyint"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED",
+        "ASCII: tinyint",
+        [
+          "tinyint"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-16",
+    "expected": [
+      "建表模板 · 基类字段类型不符 version"
+    ],
+    "reported": [
+      "基础字段 version 类型错误"
+    ],
+    "lead_vias": [
+      "ASCII: version",
+      "2-gram: 类型"
+    ],
+    "lead_matched_rules": [
+      "基础字段 version 类型错误"
+    ],
+    "my_strong": [
+      [
+        "基础字段 version 类型错误",
+        [
+          "version",
+          "类型"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "基础字段 version 类型错误",
+        "ASCII: version",
+        [
+          "version",
+          "类型"
+        ]
+      ],
+      [
+        "基础字段 version 类型错误",
+        "2-gram: 类型",
+        [
+          "version",
+          "类型"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-17",
+    "expected": [
+      "建表模板 · 必须使用 InnoDB 引擎"
+    ],
+    "reported": [
+      "必须使用 InnoDB 引擎"
+    ],
+    "lead_vias": [
+      "子串: 必须使用innodb引擎",
+      "ASCII: innodb",
+      "2-gram: 引擎"
+    ],
+    "lead_matched_rules": [
+      "必须使用 InnoDB 引擎"
+    ],
+    "my_strong": [
+      [
+        "必须使用 InnoDB 引擎",
+        [
+          "innodb",
+          "引擎"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "必须使用 InnoDB 引擎",
+        "子串: 必须使用innodb引擎",
+        [
+          "innodb",
+          "引擎"
+        ]
+      ],
+      [
+        "必须使用 InnoDB 引擎",
+        "ASCII: innodb",
+        [
+          "innodb",
+          "引擎"
+        ]
+      ],
+      [
+        "必须使用 InnoDB 引擎",
+        "2-gram: 引擎",
+        [
+          "innodb",
+          "引擎"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-18",
+    "expected": [
+      "建表模板 · 必须包含表级注释"
+    ],
+    "reported": [
+      "必须包含表级注释"
+    ],
+    "lead_vias": [
+      "子串: 必须包含表级注释",
+      "2-gram: 包含",
+      "2-gram: 含表",
+      "2-gram: 注释",
+      "2-gram: 级注",
+      "2-gram: 表级"
+    ],
+    "lead_matched_rules": [
+      "必须包含表级注释"
+    ],
+    "my_strong": [
+      [
+        "必须包含表级注释",
+        [
+          "表级"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "必须包含表级注释",
+        "子串: 必须包含表级注释",
+        [
+          "表级"
+        ]
+      ],
+      [
+        "必须包含表级注释",
+        "2-gram: 包含",
+        [
+          "表级"
+        ]
+      ],
+      [
+        "必须包含表级注释",
+        "2-gram: 含表",
+        [
+          "表级"
+        ]
+      ],
+      [
+        "必须包含表级注释",
+        "2-gram: 注释",
+        [
+          "表级"
+        ]
+      ],
+      [
+        "必须包含表级注释",
+        "2-gram: 级注",
+        [
+          "表级"
+        ]
+      ],
+      [
+        "必须包含表级注释",
+        "2-gram: 表级",
+        [
+          "表级"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-19",
+    "expected": [
+      "建表模板 · 缺少表级主键约束"
+    ],
+    "reported": [
+      "缺少主键定义",
+      "表名使用库前缀"
+    ],
+    "lead_vias": [
+      "2-gram: 主键",
+      "2-gram: 缺少"
+    ],
+    "lead_matched_rules": [
+      "缺少主键定义"
+    ],
+    "my_strong": [
+      [
+        "缺少主键定义",
+        [
+          "主键",
+          "缺少"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "缺少主键定义",
+        "2-gram: 主键",
+        [
+          "主键",
+          "缺少"
+        ]
+      ],
+      [
+        "缺少主键定义",
+        "2-gram: 缺少",
+        [
+          "主键",
+          "缺少"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "M-20",
+    "expected": [
+      "建表模板 · 字段缺少注释"
+    ],
+    "reported": [
+      "本表字段禁止加表名前缀",
+      "主键必须包含注释",
+      "基类字段必须包含中文注释"
+    ],
+    "lead_vias": [
+      "2-gram: 注释",
+      "2-gram: 注释"
+    ],
+    "lead_matched_rules": [
+      "主键必须包含注释",
+      "基类字段必须包含中文注释"
+    ],
+    "my_strong": [],
+    "suspicious_vias": [
+      [
+        "主键必须包含注释",
+        "2-gram: 注释",
+        "semantic"
+      ],
+      [
+        "基类字段必须包含中文注释",
+        "2-gram: 注释",
+        "semantic"
+      ]
+    ],
+    "corroborated_vias": []
+  },
+  {
+    "case_id": "D-03",
+    "expected": [
+      "建库规范 · 表内禁止外键设计"
+    ],
+    "reported": [
+      "禁止外键设计"
+    ],
+    "lead_vias": [
+      "子串: 表内禁止外键设计",
+      "2-gram: 外键",
+      "2-gram: 设计",
+      "2-gram: 键设"
+    ],
+    "lead_matched_rules": [
+      "禁止外键设计"
+    ],
+    "my_strong": [
+      [
+        "禁止外键设计",
+        [
+          "外键"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "禁止外键设计",
+        "子串: 表内禁止外键设计",
+        [
+          "外键"
+        ]
+      ],
+      [
+        "禁止外键设计",
+        "2-gram: 外键",
+        [
+          "外键"
+        ]
+      ],
+      [
+        "禁止外键设计",
+        "2-gram: 设计",
+        [
+          "外键"
+        ]
+      ],
+      [
+        "禁止外键设计",
+        "2-gram: 键设",
+        [
+          "外键"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "D-04",
+    "expected": [
+      "建库规范 · 表内禁止外键设计"
+    ],
+    "reported": [
+      "表内禁止外键设计"
+    ],
+    "lead_vias": [
+      "子串: 表内禁止外键设计",
+      "2-gram: 外键",
+      "2-gram: 表内",
+      "2-gram: 设计",
+      "2-gram: 键设"
+    ],
+    "lead_matched_rules": [
+      "表内禁止外键设计"
+    ],
+    "my_strong": [
+      [
+        "表内禁止外键设计",
+        [
+          "外键",
+          "表内"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "表内禁止外键设计",
+        "子串: 表内禁止外键设计",
+        [
+          "外键",
+          "表内"
+        ]
+      ],
+      [
+        "表内禁止外键设计",
+        "2-gram: 外键",
+        [
+          "外键",
+          "表内"
+        ]
+      ],
+      [
+        "表内禁止外键设计",
+        "2-gram: 表内",
+        [
+          "外键",
+          "表内"
+        ]
+      ],
+      [
+        "表内禁止外键设计",
+        "2-gram: 设计",
+        [
+          "外键",
+          "表内"
+        ]
+      ],
+      [
+        "表内禁止外键设计",
+        "2-gram: 键设",
+        [
+          "外键",
+          "表内"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "D-09",
+    "expected": [
+      "建库规范 · 表名禁止关键字"
+    ],
+    "reported": [
+      "表名禁止使用保留关键字",
+      "生产表名必须以 db_ 开头"
+    ],
+    "lead_vias": [
+      "2-gram: 关键",
+      "2-gram: 键字"
+    ],
+    "lead_matched_rules": [
+      "表名禁止使用保留关键字"
+    ],
+    "my_strong": [
+      [
+        "表名禁止使用保留关键字",
+        [
+          "关键",
+          "键字"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "表名禁止使用保留关键字",
+        "2-gram: 关键",
+        [
+          "关键",
+          "键字"
+        ]
+      ],
+      [
+        "表名禁止使用保留关键字",
+        "2-gram: 键字",
+        [
+          "关键",
+          "键字"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "D-10",
+    "expected": [
+      "建库规范 · 字段名禁止关键字"
+    ],
+    "reported": [
+      "禁止使用保留关键字",
+      "备注统一命名 remark",
+      "禁止使用保留关键字",
+      "禁止使用保留关键字",
+      "排序统一命名 sort",
+      "数字类型非负必须加 UNSIGNED",
+      "禁止使用保留关键字"
+    ],
+    "lead_vias": [
+      "2-gram: 关键",
+      "2-gram: 键字"
+    ],
+    "lead_matched_rules": [
+      "禁止使用保留关键字"
+    ],
+    "my_strong": [
+      [
+        "禁止使用保留关键字",
+        [
+          "关键",
+          "键字"
+        ]
+      ],
+      [
+        "禁止使用保留关键字",
+        [
+          "关键",
+          "键字"
+        ]
+      ],
+      [
+        "禁止使用保留关键字",
+        [
+          "关键",
+          "键字"
+        ]
+      ],
+      [
+        "禁止使用保留关键字",
+        [
+          "关键",
+          "键字"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "禁止使用保留关键字",
+        "2-gram: 关键",
+        [
+          "关键",
+          "键字"
+        ]
+      ],
+      [
+        "禁止使用保留关键字",
+        "2-gram: 键字",
+        [
+          "关键",
+          "键字"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "D-11",
+    "expected": [
+      "建库规范 · 加字段必须标注 AFTER"
+    ],
+    "reported": [
+      "DDL 增加字段必须标注 AFTER 指定位置"
+    ],
+    "lead_vias": [
+      "子串: 加字段必须标注after",
+      "ASCII: after",
+      "2-gram: 标注"
+    ],
+    "lead_matched_rules": [
+      "DDL 增加字段必须标注 AFTER 指定位置"
+    ],
+    "my_strong": [
+      [
+        "DDL 增加字段必须标注 AFTER 指定位置",
+        [
+          "after",
+          "标注"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "DDL 增加字段必须标注 AFTER 指定位置",
+        "子串: 加字段必须标注after",
+        [
+          "after",
+          "标注"
+        ]
+      ],
+      [
+        "DDL 增加字段必须标注 AFTER 指定位置",
+        "ASCII: after",
+        [
+          "after",
+          "标注"
+        ]
+      ],
+      [
+        "DDL 增加字段必须标注 AFTER 指定位置",
+        "2-gram: 标注",
+        [
+          "after",
+          "标注"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "D-12",
+    "expected": [
+      "建库规范 · 数字类型加 UNSIGNED"
+    ],
+    "reported": [
+      "数字类型需加 UNSIGNED",
+      "数字类型需加 UNSIGNED"
+    ],
+    "lead_vias": [
+      "ASCII: unsigned",
+      "2-gram: 字类",
+      "2-gram: 数字",
+      "2-gram: 类型"
+    ],
+    "lead_matched_rules": [
+      "数字类型需加 UNSIGNED"
+    ],
+    "my_strong": [
+      [
+        "数字类型需加 UNSIGNED",
+        [
+          "unsigned",
+          "字类",
+          "数字",
+          "类型"
+        ]
+      ],
+      [
+        "数字类型需加 UNSIGNED",
+        [
+          "unsigned",
+          "字类",
+          "数字",
+          "类型"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "数字类型需加 UNSIGNED",
+        "ASCII: unsigned",
+        [
+          "unsigned",
+          "字类",
+          "数字",
+          "类型"
+        ]
+      ],
+      [
+        "数字类型需加 UNSIGNED",
+        "2-gram: 字类",
+        [
+          "unsigned",
+          "字类",
+          "数字",
+          "类型"
+        ]
+      ],
+      [
+        "数字类型需加 UNSIGNED",
+        "2-gram: 数字",
+        [
+          "unsigned",
+          "字类",
+          "数字",
+          "类型"
+        ]
+      ],
+      [
+        "数字类型需加 UNSIGNED",
+        "2-gram: 类型",
+        [
+          "unsigned",
+          "字类",
+          "数字",
+          "类型"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "D-13",
+    "expected": [
+      "建库规范 · 避免 NULL"
+    ],
+    "reported": [
+      "避免 NULL 字段"
+    ],
+    "lead_vias": [
+      "子串: 避免null",
+      "ASCII: null",
+      "2-gram: 避免"
+    ],
+    "lead_matched_rules": [
+      "避免 NULL 字段"
+    ],
+    "my_strong": [
+      [
+        "避免 NULL 字段",
+        [
+          "null",
+          "避免"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "避免 NULL 字段",
+        "子串: 避免null",
+        [
+          "null",
+          "避免"
+        ]
+      ],
+      [
+        "避免 NULL 字段",
+        "ASCII: null",
+        [
+          "null",
+          "避免"
+        ]
+      ],
+      [
+        "避免 NULL 字段",
+        "2-gram: 避免",
+        [
+          "null",
+          "避免"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "D-14",
+    "expected": [
+      "建库规范 · 禁用 double"
+    ],
+    "reported": [
+      "金额字段必须使用 decimal(20,6)",
+      "禁止使用 double 类型"
+    ],
+    "lead_vias": [
+      "ASCII: double"
+    ],
+    "lead_matched_rules": [
+      "禁止使用 double 类型"
+    ],
+    "my_strong": [
+      [
+        "禁止使用 double 类型",
+        [
+          "double"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "禁止使用 double 类型",
+        "ASCII: double",
+        [
+          "double"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "D-15",
+    "expected": [
+      "建库规范 · TINYINT 统一 TINYINT(4)"
+    ],
+    "reported": [
+      "TINYINT 统一使用 TINYINT(4)",
+      "TINYINT 统一使用 TINYINT(4)",
+      "TINYINT 统一使用 TINYINT(4)"
+    ],
+    "lead_vias": [
+      "ASCII: tinyint"
+    ],
+    "lead_matched_rules": [
+      "TINYINT 统一使用 TINYINT(4)"
+    ],
+    "my_strong": [
+      [
+        "TINYINT 统一使用 TINYINT(4)",
+        [
+          "tinyint"
+        ]
+      ],
+      [
+        "TINYINT 统一使用 TINYINT(4)",
+        [
+          "tinyint"
+        ]
+      ],
+      [
+        "TINYINT 统一使用 TINYINT(4)",
+        [
+          "tinyint"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "TINYINT 统一使用 TINYINT(4)",
+        "ASCII: tinyint",
+        [
+          "tinyint"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "D-16",
+    "expected": [
+      "建库规范 · 关联表 r_ 前缀"
+    ],
+    "reported": [
+      "关联表必须以 r_ 开头"
+    ],
+    "lead_vias": [
+      "ASCII: r_",
+      "2-gram: 关联",
+      "2-gram: 联表"
+    ],
+    "lead_matched_rules": [
+      "关联表必须以 r_ 开头"
+    ],
+    "my_strong": [
+      [
+        "关联表必须以 r_ 开头",
+        [
+          "r_",
+          "关联",
+          "联表"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "关联表必须以 r_ 开头",
+        "ASCII: r_",
+        [
+          "r_",
+          "关联",
+          "联表"
+        ]
+      ],
+      [
+        "关联表必须以 r_ 开头",
+        "2-gram: 关联",
+        [
+          "r_",
+          "关联",
+          "联表"
+        ]
+      ],
+      [
+        "关联表必须以 r_ 开头",
+        "2-gram: 联表",
+        [
+          "r_",
+          "关联",
+          "联表"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "F-01",
+    "expected": [
+      "建表规范 · 三方对接表缺 system_source"
+    ],
+    "reported": [
+      "本表字段禁止拼接本表表名",
+      "编号编码字段命名后缀为 code",
+      "三方对接表必须包含系统来源与数据来源"
+    ],
+    "lead_vias": [
+      "2-gram: 三方",
+      "2-gram: 对接",
+      "2-gram: 接表",
+      "2-gram: 方对"
+    ],
+    "lead_matched_rules": [
+      "三方对接表必须包含系统来源与数据来源"
+    ],
+    "my_strong": [
+      [
+        "三方对接表必须包含系统来源与数据来源",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "三方对接表必须包含系统来源与数据来源",
+        "2-gram: 三方",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ],
+      [
+        "三方对接表必须包含系统来源与数据来源",
+        "2-gram: 对接",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ],
+      [
+        "三方对接表必须包含系统来源与数据来源",
+        "2-gram: 接表",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ],
+      [
+        "三方对接表必须包含系统来源与数据来源",
+        "2-gram: 方对",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "F-02",
+    "expected": [
+      "建表规范 · 三方对接表缺 data_source"
+    ],
+    "reported": [
+      "本表字段禁止加表名前缀且编号应使用 code",
+      "三方对接表需包含系统来源和数据来源"
+    ],
+    "lead_vias": [
+      "2-gram: 三方",
+      "2-gram: 对接",
+      "2-gram: 接表",
+      "2-gram: 方对"
+    ],
+    "lead_matched_rules": [
+      "三方对接表需包含系统来源和数据来源"
+    ],
+    "my_strong": [
+      [
+        "三方对接表需包含系统来源和数据来源",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "三方对接表需包含系统来源和数据来源",
+        "2-gram: 三方",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ],
+      [
+        "三方对接表需包含系统来源和数据来源",
+        "2-gram: 对接",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ],
+      [
+        "三方对接表需包含系统来源和数据来源",
+        "2-gram: 接表",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ],
+      [
+        "三方对接表需包含系统来源和数据来源",
+        "2-gram: 方对",
+        [
+          "三方",
+          "对接",
+          "接表",
+          "方对"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "F-03",
+    "expected": [
+      "建表规范 · 普通索引 idx_ 前缀"
+    ],
+    "reported": [
+      "普通索引必须以 idx_ 开头",
+      "普通索引必须以 idx_ 开头"
+    ],
+    "lead_vias": [
+      "ASCII: idx_",
+      "2-gram: 普通",
+      "2-gram: 索引",
+      "2-gram: 通索"
+    ],
+    "lead_matched_rules": [
+      "普通索引必须以 idx_ 开头"
+    ],
+    "my_strong": [
+      [
+        "普通索引必须以 idx_ 开头",
+        [
+          "idx_",
+          "普通",
+          "索引",
+          "通索"
+        ]
+      ],
+      [
+        "普通索引必须以 idx_ 开头",
+        [
+          "idx_",
+          "普通",
+          "索引",
+          "通索"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "普通索引必须以 idx_ 开头",
+        "ASCII: idx_",
+        [
+          "idx_",
+          "普通",
+          "索引",
+          "通索"
+        ]
+      ],
+      [
+        "普通索引必须以 idx_ 开头",
+        "2-gram: 普通",
+        [
+          "idx_",
+          "普通",
+          "索引",
+          "通索"
+        ]
+      ],
+      [
+        "普通索引必须以 idx_ 开头",
+        "2-gram: 索引",
+        [
+          "idx_",
+          "普通",
+          "索引",
+          "通索"
+        ]
+      ],
+      [
+        "普通索引必须以 idx_ 开头",
+        "2-gram: 通索",
+        [
+          "idx_",
+          "普通",
+          "索引",
+          "通索"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "F-05",
+    "expected": [
+      "建表规范 · 布尔类型 TINYINT(4)"
+    ],
+    "reported": [
+      "布尔类型必须使用 TINYINT(4)",
+      "单字符标记必须使用 char(1)"
+    ],
+    "lead_vias": [
+      "ASCII: tinyint",
+      "2-gram: 尔类",
+      "2-gram: 布尔",
+      "2-gram: 类型"
+    ],
+    "lead_matched_rules": [
+      "布尔类型必须使用 TINYINT(4)"
+    ],
+    "my_strong": [
+      [
+        "布尔类型必须使用 TINYINT(4)",
+        [
+          "tinyint",
+          "尔类",
+          "布尔",
+          "类型"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "布尔类型必须使用 TINYINT(4)",
+        "ASCII: tinyint",
+        [
+          "tinyint",
+          "尔类",
+          "布尔",
+          "类型"
+        ]
+      ],
+      [
+        "布尔类型必须使用 TINYINT(4)",
+        "2-gram: 尔类",
+        [
+          "tinyint",
+          "尔类",
+          "布尔",
+          "类型"
+        ]
+      ],
+      [
+        "布尔类型必须使用 TINYINT(4)",
+        "2-gram: 布尔",
+        [
+          "tinyint",
+          "尔类",
+          "布尔",
+          "类型"
+        ]
+      ],
+      [
+        "布尔类型必须使用 TINYINT(4)",
+        "2-gram: 类型",
+        [
+          "tinyint",
+          "尔类",
+          "布尔",
+          "类型"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "F-08",
+    "expected": [
+      "建表规范 · 单字符字段默认值"
+    ],
+    "reported": [
+      "单字符字段必须带默认值"
+    ],
+    "lead_vias": [
+      "2-gram: 单字",
+      "2-gram: 字符",
+      "2-gram: 认值",
+      "2-gram: 默认"
+    ],
+    "lead_matched_rules": [
+      "单字符字段必须带默认值"
+    ],
+    "my_strong": [
+      [
+        "单字符字段必须带默认值",
+        [
+          "单字",
+          "字符",
+          "认值",
+          "默认"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "单字符字段必须带默认值",
+        "2-gram: 单字",
+        [
+          "单字",
+          "字符",
+          "认值",
+          "默认"
+        ]
+      ],
+      [
+        "单字符字段必须带默认值",
+        "2-gram: 字符",
+        [
+          "单字",
+          "字符",
+          "认值",
+          "默认"
+        ]
+      ],
+      [
+        "单字符字段必须带默认值",
+        "2-gram: 认值",
+        [
+          "单字",
+          "字符",
+          "认值",
+          "默认"
+        ]
+      ],
+      [
+        "单字符字段必须带默认值",
+        "2-gram: 默认",
+        [
+          "单字",
+          "字符",
+          "认值",
+          "默认"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "F-09",
+    "expected": [
+      "建表规范 · 大于1字符用 varchar"
+    ],
+    "reported": [
+      "本表字段禁止加表名前缀",
+      "字符串应使用 varchar(30)",
+      "大于1个字符应默认空串"
+    ],
+    "lead_vias": [
+      "ASCII: varchar",
+      "2-gram: 大于",
+      "2-gram: 字符",
+      "2-gram: 字符"
+    ],
+    "lead_matched_rules": [
+      "大于1个字符应默认空串",
+      "字符串应使用 varchar(30)"
+    ],
+    "my_strong": [
+      [
+        "字符串应使用 varchar(30)",
+        [
+          "varchar",
+          "字符"
+        ]
+      ],
+      [
+        "大于1个字符应默认空串",
+        [
+          "大于",
+          "字符"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "字符串应使用 varchar(30)",
+        "ASCII: varchar",
+        [
+          "varchar",
+          "字符"
+        ]
+      ],
+      [
+        "大于1个字符应默认空串",
+        "2-gram: 大于",
+        [
+          "大于",
+          "字符"
+        ]
+      ],
+      [
+        "字符串应使用 varchar(30)",
+        "2-gram: 字符",
+        [
+          "varchar",
+          "字符"
+        ]
+      ],
+      [
+        "大于1个字符应默认空串",
+        "2-gram: 字符",
+        [
+          "大于",
+          "字符"
+        ]
+      ]
+    ]
+  },
+  {
+    "case_id": "F-10",
+    "expected": [
+      "建表规范 · 单整数用 TINYINT(4)"
+    ],
+    "reported": [
+      "整数字段类型选择规范",
+      "无负数数字类型必须加 UNSIGNED"
+    ],
+    "lead_vias": [
+      "2-gram: 整数"
+    ],
+    "lead_matched_rules": [
+      "整数字段类型选择规范"
+    ],
+    "my_strong": [
+      [
+        "整数字段类型选择规范",
+        [
+          "整数"
+        ]
+      ]
+    ],
+    "suspicious_vias": [],
+    "corroborated_vias": [
+      [
+        "整数字段类型选择规范",
+        "2-gram: 整数",
+        [
+          "整数"
+        ]
+      ]
+    ]
+  }
+]

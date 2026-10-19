@@ -1,0 +1,185 @@
+############ CONTROL (positive) CASES ############
+==========================================================================================
+P-01  title=命名规范 · 合规正例对照组
+clause=对照条款：本模块全部规范要求均未违反
+expected_rule_names=[]
+is_compliant=False score=60
+-- violations --
+   * 本表字段名禁止携带本表表名前缀 | 字段名前缀 order 为本表表名，本表字段不加表名 | obj=order_money DECIMAL(20, 6) | sev=ERROR
+   * 本表字段名禁止携带本表表名前缀 | 字段名前缀 order 为本表表名，本表字段不加表名 | obj=order_amount_unit VARCHAR(10) | sev=ERROR
+-- summary --
+该表已包含 7 个基类审计字段、主键 id 及 InnoDB/utf8mb4，类型选择基本合规；但 order_money 与 order_amount_unit 两个字段名带有本表表名前缀 order，违反本表字段不加表名的命名规则，需去掉前缀后重新提交。
+-- SQL --
+CREATE TABLE `db_order` (
+  id           BIGINT UNSIGNED NOT NULL                       COMMENT '主键',
+  code         VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '订单编号',
+  name         VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '订单名称',
+  user_id      BIGINT UNSIGNED NOT NULL DEFAULT 0             COMMENT '用户标识',
+  biz_type     TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '业务类型',
+  order_money  DECIMAL(20, 6) NOT NULL DEFAULT 0              COMMENT '订单金额',
+  order_amount_unit VARCHAR(10) NOT NULL DEFAULT ''           COMMENT '订单数量单位',
+  receive_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '收货时间',
+  sort         INT NOT NULL DEFAULT 0                         COMMENT '排序',
+  remark       VARCHAR(255) NOT NULL DEFAULT ''               COMMENT '备注',
+  version      INT NOT NULL DEFAULT 0                         COMMENT '数据版本',
+  deleted      TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '删除标记 0: 未删除 1: 已删除',
+  disabled     TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '停用标记 0: 未停用 1: 已停用',
+  create_id    BIGINT UNSIGNED NOT NULL                       COMMENT '创建人标识',
+  create_time  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '创建时间',
+  modify_id    BIGINT UNSIGNED NOT NULL                       COMMENT '修改人标识',
+  modify_time  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '修改时间',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';
+
+==========================================================================================
+P-02  title=名词术语 · 合规正例对照组
+clause=对照条款：本模块全部规范要求均未违反
+expected_rule_names=[]
+is_compliant=False score=60
+-- violations --
+   * 数字类型必须加 UNSIGNED | sort 为排序字段，不存在负数，未加 UNSIGNED。 | obj=sort INT NOT NULL DEFAULT 0 | sev=ERROR
+   * 数字类型必须加 UNSIGNED | version 为版本号，不存在负数，未加 UNSIGNED。 | obj=version INT NOT NULL DEFAULT 0 | sev=ERROR
+-- summary --
+用户表主要问题为 sort 和 version 字段未加 UNSIGNED，不符合数字类型规范。其余命名、基类字段、引擎和字符集均符合要求。
+-- SQL --
+CREATE TABLE `db_user` (
+  id          BIGINT UNSIGNED NOT NULL                       COMMENT '主键',
+  username    VARCHAR(32) NOT NULL DEFAULT ''                COMMENT '账号',
+  password    VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '密码',
+  name        VARCHAR(32) NOT NULL DEFAULT ''                COMMENT '姓名',
+  nick        VARCHAR(32) NOT NULL DEFAULT ''                COMMENT '昵称',
+  email       VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '邮箱',
+  gender      TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '性别',
+  birthday    DATE NOT NULL                                  COMMENT '生日',
+  role        VARCHAR(32) NOT NULL DEFAULT ''                COMMENT '角色',
+  duty        VARCHAR(32) NOT NULL DEFAULT ''                COMMENT '职位',
+  dept_id     BIGINT UNSIGNED NOT NULL DEFAULT 0             COMMENT '部门',
+  company_id  BIGINT UNSIGNED NOT NULL DEFAULT 0             COMMENT '公司',
+  mobile      VARCHAR(20) NOT NULL DEFAULT ''                COMMENT '手机',
+  phone       VARCHAR(20) NOT NULL DEFAULT ''                COMMENT '座机',
+  address     VARCHAR(255) NOT NULL DEFAULT ''               COMMENT '地址',
+  zip         VARCHAR(10) NOT NULL DEFAULT ''                COMMENT '邮政编码',
+  contact     VARCHAR(32) NOT NULL DEFAULT ''                COMMENT '联系人',
+  url         VARCHAR(512) NOT NULL DEFAULT ''               COMMENT '链接',
+  source      VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '来源',
+  path        VARCHAR(512) NOT NULL DEFAULT ''               COMMENT '路径',
+  tag         VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '标识',
+  remark      VARCHAR(255) NOT NULL DEFAULT ''               COMMENT '备注',
+  sort        INT NOT NULL DEFAULT 0                         COMMENT '排序',
+  audit       TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '审核',
+  expire      DATETIME NOT NULL                              COMMENT '过期时间',
+  version     INT NOT NULL DEFAULT 0                         COMMENT '数据版本',
+  deleted     TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '删除标记 0: 未删除 1: 已删除',
+  disabled    TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '停用标记 0: 未停用 1: 已停用',
+  create_id   BIGINT UNSIGNED NOT NULL                       COMMENT '创建人标识',
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '创建时间',
+  modify_id   BIGINT UNSIGNED NOT NULL                       COMMENT '修改人标识',
+  modify_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '修改时间',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+==========================================================================================
+P-03  title=建表模板 · 合规正例对照组
+clause=对照条款：本模块全部规范要求均未违反
+expected_rule_names=[]
+is_compliant=True score=100
+-- violations --
+-- summary --
+该 DDL 符合建表模板、命名规范、字段设计与基类字段要求，未发现违规项。
+-- SQL --
+CREATE TABLE `db_table` (
+  id          BIGINT UNSIGNED NOT NULL                       COMMENT '主键',
+  -- ... 其它业务字段定义
+  version     INT NOT NULL DEFAULT 0                         COMMENT '数据版本',
+  deleted     TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '删除标记 0: 未删除 1: 已删除',
+  disabled    TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '停用标记 0: 未停用 1: 已停用',
+  create_id   BIGINT UNSIGNED NOT NULL                       COMMENT '创建人标识',
+  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '创建时间',
+  modify_id   BIGINT UNSIGNED NOT NULL                       COMMENT '修改人标识',
+  modify_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '修改时间',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB COMMENT='这张表的功能说明';
+
+==========================================================================================
+P-04  title=建库规范 · 合规正例对照组
+clause=对照条款：本模块全部规范要求均未违反
+expected_rule_names=[]
+is_compliant=False score=80
+-- violations --
+   * 本表字段禁止拼接本表表名 | order 表中本表字段不得加表名前缀，order_money 违反命名规范 | obj=order_money DECIMAL(20, 6) | sev=ERROR
+-- summary --
+整体结构、基类字段、主键类型、金额类型、字符集与注释基本合规，主要问题为订单表内金额字段错误拼接了本表表名 order_money，应直接命名为 money。
+-- SQL --
+CREATE TABLE `db_order` (
+  id           BIGINT UNSIGNED NOT NULL                       COMMENT '主键',
+  code         VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '订单编号',
+  user_id      BIGINT UNSIGNED NOT NULL DEFAULT 0             COMMENT '用户标识',
+  status       TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '状态，0：初始化 1：成功 2：失败',
+  order_money  DECIMAL(20, 6) NOT NULL DEFAULT 0              COMMENT '订单金额',
+  remark       VARCHAR(255) NOT NULL DEFAULT ''               COMMENT '备注',
+  version      INT NOT NULL DEFAULT 0                         COMMENT '数据版本',
+  deleted      TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '删除标记 0: 未删除 1: 已删除',
+  disabled     TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '停用标记 0: 未停用 1: 已停用',
+  create_id    BIGINT UNSIGNED NOT NULL                       COMMENT '创建人标识',
+  create_time  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '创建时间',
+  modify_id    BIGINT UNSIGNED NOT NULL                       COMMENT '修改人标识',
+  modify_time  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '修改时间',
+  PRIMARY KEY (id),
+  KEY `idx_user_id` (`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';
+
+==========================================================================================
+P-05  title=字段与索引 · 合规正例对照组
+clause=对照条款：本模块全部规范要求均未违反
+expected_rule_names=[]
+is_compliant=True score=100
+-- violations --
+-- summary --
+该 DDL 符合命名、字段类型、基类字段、索引命名、字符集及三方对接来源字段等规范要求，未发现违规项。
+-- SQL --
+CREATE TABLE `db_third_order` (
+  id             BIGINT UNSIGNED NOT NULL                       COMMENT '主键',
+  code           VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '订单编号',
+  system_source  VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '系统来源（对方系统）',
+  data_source    VARCHAR(64) NOT NULL DEFAULT ''                COMMENT '数据来源（对方机构）',
+  is_split       CHAR(1) NOT NULL DEFAULT 'N'                   COMMENT '是否需要按段拆单(Y或N)',
+  vehicle_number VARCHAR(30) NOT NULL DEFAULT ''                COMMENT '车牌号',
+  status         TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '状态，0：初始化 1：成功 2：失败',
+  valuation_mode INT NOT NULL DEFAULT 1131000                   COMMENT '计价方式(1131000=按重量)',
+  version        INT NOT NULL DEFAULT 0                         COMMENT '数据版本',
+  deleted        TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '删除标记 0: 未删除 1: 已删除',
+  disabled       TINYINT(4) UNSIGNED NOT NULL DEFAULT 0         COMMENT '停用标记 0: 未停用 1: 已停用',
+  create_id      BIGINT UNSIGNED NOT NULL                       COMMENT '创建人标识',
+  create_time    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '创建时间',
+  modify_id      BIGINT UNSIGNED NOT NULL                       COMMENT '修改人标识',
+  modify_time    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP    COMMENT '修改时间',
+  PRIMARY KEY (id),
+  KEY `idx_code` (`code`) USING BTREE,
+  UNIQUE KEY `uniq_vehicle_number` (`vehicle_number`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='三方订单表';
+
+
+############ F-CANDIDATE SUMMARIES (is_compliant=true or empty violations) ############
+--- D-01 kind=negative compliant=True nviol=0
+    整体符合基类字段与引擎规范，但 code 字段长度不符合字符串默认长度规范，需调整为 varchar(30)。
+--- D-02 kind=negative compliant=True nviol=0
+    表结构整体符合规范，唯一问题是使用 MyISAM 引擎，违反必须使用 InnoDB 的强制要求，需改为 InnoDB。
+--- D-05 kind=negative compliant=True nviol=0
+    db_order 表结构基本合规，但脚本包含触发器，违反建库规范中禁止触发器的要求，需移除触发器并由业务应用逻辑实现。
+--- D-06 kind=negative compliant=True nviol=0
+    输入为存储过程和自定义函数，违反规范禁止使用存储过程与自定义函数的规定，需移除并改为应用层实现。
+--- D-08 kind=negative compliant=True nviol=0
+    表结构主体符合基类字段要求，但字符集使用 latin1，不符合统一 utf8mb4 规范；code 字段手写 CHARACTER SET/COLLATE，需移除。
+--- F-07 kind=negative compliant=True nviol=0
+    DDL 整体基本合规：7 个基类字段齐全，主键、引擎、字符集和注释均符合规范；仅 is_split 字段类型不符合 1 字符字段应使用 char(1) 的要求。
+--- F-12 kind=negative compliant=True nviol=0
+    字段 code 和 remark 手写了字符集和排序规则，违反规范[2]第10条；其余表定义符合规范。
+--- P-03 kind=positive compliant=True nviol=0
+    该 DDL 符合建表模板、命名规范、字段设计与基类字段要求，未发现违规项。
+--- P-05 kind=positive compliant=True nviol=0
+    该 DDL 符合命名、字段类型、基类字段、索引命名、字符集及三方对接来源字段等规范要求，未发现违规项。
+--- T-10 kind=negative compliant=True nviol=0
+    表整体符合建表模板与引擎、字符集、注释要求，7 个基类字段齐备，无外键、无浮点金额字段。唯一问题是关联字段命名 rel_id 未使用标准术语 relation，与同表 relation_code 命名不一致，建议统一为 relation_id。
+
+############ REVERSE: is_compliant=false but summary claims compliance ############
+--- M-17 : DDL 整体符合规范，但缺少 ENGINE=InnoDB 引擎声明，不满足建表模板要求。

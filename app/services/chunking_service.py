@@ -192,30 +192,29 @@ CREATE TABLE db_table (
         )
 
         # ========================================================
-        # Chunk 4: 建库规范 - 15 条核心原则 (禁止外键、存储过程、double 等)
+        # Chunk 4: 建库规范 - 14 条核心原则 (禁止外键、存储过程、double 等)
         # ========================================================
         chunk_4_text = """## 建库规范 (详见 MySQL 规范)
 
 1. 数据必须使用 innodb 引擎
-2. 生产数据库均以 db_ 开头（与测试环境不同），如 db_order、db_cargo，生成脚本时请注意
-3. **表内禁止外键设计** (严禁 FOREIGN KEY，外键关系由业务应用逻辑保证)
-4. 禁止触发器、存储过程、自定义函数
-5. 字符集统一为：utf8mb4
-6. 研发操作生产库必须经过评审后方可操作
-7. 表与字段不允许用数据库保留关键字或者看着像关键字的单词 (如 order, select, delete, desc 等)
-8. DDL 增加字段必须标注 AFTER 指定位置
-9. 数字类型已知不存在负数的情况下必须加 UNSIGNED，可使数值范围扩大一倍
-10. 尽量使用 NOT NULL 或 NOT NULL DEFAULT，避免 NULL 带来的索引与逻辑开销
-11. 大表不允许随意加字段，采用扩展表的方式实现
-12. **double 类型不要用，必须直接用 decimal**
-13. 关联表以 r_ 开头
-14. 对于 TINYINT 类型，统一使用 TINYINT(4)，规避驱动对 TINYINT(1) 误转为布尔造成的业务语义分歧
-15. 关于建表结尾的字符集要求，由于历史缘故可以不填，但如果填了必须是符合规范的字符集 (utf8mb4)
+2. **表内禁止外键设计** (严禁 FOREIGN KEY，外键关系由业务应用逻辑保证)
+3. 禁止触发器、存储过程、自定义函数
+4. 字符集统一为：utf8mb4
+5. 研发操作生产库必须经过评审后方可操作
+6. 表与字段不允许用数据库保留关键字或者看着像关键字的单词 (如 order, select, delete, desc 等)
+7. DDL 增加字段必须标注 AFTER 指定位置
+8. 数字类型已知不存在负数的情况下可以加 UNSIGNED (推荐性建议，非强制要求)
+9. 尽量使用 NOT NULL 或 NOT NULL DEFAULT，避免 NULL 带来的索引与逻辑开销
+10. 大表不允许随意加字段，采用扩展表的方式实现
+11. **double 类型不要用，必须直接用 decimal**
+12. 关联表以 r_ 开头
+13. 对于 TINYINT 类型，统一使用 TINYINT(4)，规避驱动对 TINYINT(1) 误转为布尔造成的业务语义分歧
+14. 关于建表结尾的字符集要求，由于历史缘故可以不填，但如果填了必须是符合规范的字符集 (utf8mb4)
 """
         chunks.append(
             Chunk(
                 chunk_id="chunk_database_rules",
-                embedding_text="【规范层级】数据库规范 > 建表规范 > 建库规范核心十五条准则\n" + chunk_4_text,
+                embedding_text="【规范层级】数据库规范 > 建表规范 > 建库规范核心十四条准则\n" + chunk_4_text,
                 display_text=chunk_4_text,
                 metadata=ChunkMetadata(
                     heading_path="数据库规范 > 建表规范 > 建库规范",
@@ -224,7 +223,7 @@ CREATE TABLE db_table (
                     rule_type="database_rule"
                 ),
                 keywords=[
-                    "innodb", "db_", "外键", "FOREIGN KEY", "禁止外键", "触发器",
+                    "innodb", "外键", "FOREIGN KEY", "禁止外键", "触发器",
                     "存储过程", "utf8mb4", "关键字", "AFTER", "UNSIGNED", "NOT NULL",
                     "NOT NULL DEFAULT", "double", "decimal", "r_", "TINYINT(4)", "TINYINT(1)"
                 ]
@@ -243,7 +242,7 @@ CREATE TABLE db_table (
 5. 布尔类型：
    `is_deleted` 或名词属性 TINYINT(4) NOT NULL DEFAULT 0 COMMENT '是否删除，0: 否 1: 是'
    统一 4 位长度 TINYINT(4)，避免驱动自作主张。列名尽量用名词，以便 Java 框架映射为 isXxx()
-6. 1 个字符：`is_split` char(1) NOT NULL DEFAULT 'N' COMMENT '是否需要按段拆单(Y或N)'
+6. 1 个字符：`is_split` TINYINT(4) NOT NULL DEFAULT 'N' COMMENT '是否需要按段拆单(Y或N)' (统一 4 位 TINYINT(4))
 7. 大于 1 个字符：`vehicle_number` varchar(30) NOT NULL DEFAULT '' COMMENT '车牌号'
 8. 1 个整数：`status` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '状态，0：初始化 1：成功 2：失败'
 9. 大于 1 个整数：`valuation_mode` int NOT NULL DEFAULT '1131000' COMMENT '计价方式'
@@ -263,7 +262,7 @@ CREATE TABLE db_table (
                 ),
                 keywords=[
                     "system_source", "data_source", "雪花算法", "idx_", "uniq_", "BTREE",
-                    "KEY", "UNIQUE KEY", "TINYINT(4)", "char(1)", "varchar", "int",
+                    "KEY", "UNIQUE KEY", "TINYINT(4)", "1个字符", "varchar", "int",
                     "COMMENT", "utf8mb4_general_ci", "索引命名", "唯一索引", "布尔类型"
                 ]
             )

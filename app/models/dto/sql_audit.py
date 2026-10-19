@@ -3,7 +3,7 @@ SQL 规范合规审查领域 DTO (SQL Audit DTO)
 """
 
 from typing import List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class SqlAuditRequest(BaseModel):
@@ -36,6 +36,14 @@ class ViolationDetail(BaseModel):
     suggested_fix: str = Field(default="", description="建议的修改修复方案")
     citation_index: int = Field(..., description="对应的依据编号 [1], [2]...")
 
+    @field_validator("severity", mode="before")
+    @classmethod
+    def normalize_severity(cls, v: str) -> str:
+        val = str(v).strip().upper()
+        if val in ("WARN", "WARNING"):
+            return "WARN"
+        return "ERROR"
+
 
 class CitationDetail(BaseModel):
     """规范依据引用明细"""
@@ -55,4 +63,7 @@ class SqlAuditResponseData(BaseModel):
     violations: List[ViolationDetail] = Field(default_factory=list, description="检测到的违规条目列表")
     suggested_sql: str = Field(..., description="重构后符合团队规范的标准 SQL")
     citations: List[CitationDetail] = Field(default_factory=list, description="本次审查所依据的规范条目引用")
-    markdown_report: str = Field(..., description="按标准格式渲染的完整 Markdown 审查报告")
+    markdown_report: str = Field(
+        ...,
+        description="精简 Markdown 整改回复: 不满足项 (含编号引用依据) + 整改方案 + 修改后的 SQL"
+    )

@@ -83,7 +83,7 @@ sql-checker-agent/
 │   │   ├── retrieval_service.py     # 双路混合检索与 RRF 融合排序引擎
 │   │   ├── context_orchestrator.py  # Lost-in-the-Middle 头尾重排与引用编号编排
 │   │   ├── double_check_verifier.py # 确定性断言核验与防幻觉过滤器
-│   │   ├── audit_report_renderer.py # 标准 Markdown 报告渲染器 (View 视图组件)
+│   │   ├── audit_report_renderer.py # 精简整改回复渲染器 (View 视图组件)
 │   │   ├── sql_audit_service.py     # SQL 规范审查核心全链路编排服务
 │   │   └── spec_query_service.py    # 规范知识问答编排业务服务
 │   │
@@ -106,12 +106,25 @@ sql-checker-agent/
 │   ├── chunks_store.json        # 切块完整实体与元数据 JSON
 │   └── index_meta.json          # 索引元信息与源文件 SHA-256 哈希
 │
+├── doc/                         # 规范文档与反向案例语料
+│   ├── 数据库规范.md             # 规范原文占位文件 (实际路径由 .env 的 SPEC_DOC_PATH 指定)
+│   └── negative_cases/          # 反向案例库 (74 条，按规范模块分文件)
+│       ├── README.md            # 案例索引、覆盖率矩阵与口径说明
+│       ├── 01_naming.md         # 命名规范反例 N-01 ~ N-16
+│       ├── 02_terminology.md    # 名词术语反例 T-01 ~ T-12
+│       ├── 03_table_template.md # 建表模板反例 M-01 ~ M-18
+│       ├── 04_database_rules.md # 建库规范反例 D-01 ~ D-16
+│       ├── 05_field_and_index.md # 字段与索引反例 F-01 ~ F-12
+│       └── validate_cases.py    # 案例库结构 + 静态检出率校验脚本
+│
 └── tests/                       # 自动化测试套件 (覆盖率 100%)
     ├── test_phase1_skeleton.py      # 骨架层、异步仓储与连接池测试
     ├── test_phase1_controllers.py   # RESTful 控制器与全局异常拦截测试
     ├── test_phase2_indexing.py      # AST 切块、向量检索、BM25 检索测试
     ├── test_phase3_retrieval.py     # SQL 特征提取、RRF 数学算法融合测试
-    ├── test_phase4_audit_e2e.py     # 端到端审查、Double Check、Markdown 渲染全量测试
+    ├── test_phase4_audit_e2e.py     # 端到端审查、Double Check、精简回复渲染全量测试
+    ├── test_audit_report_renderer.py # 精简 Markdown 整改回复离线单元测试
+    ├── test_sql_audit_service_offline.py # 审查服务离线链路测试 (桩化 LLM，含解析失败兜底)
     └── test_web_ui.py               # Web 前端控制台界面交付与路由端点测试
 ```
 
@@ -125,8 +138,8 @@ sql-checker-agent/
 - **核心功能板块**：
   1. **📋 SQL 合规审查与一键重构**：
      - 提供“🚨 典型违规反例”与“🌟 100%合规正例”一键快速填入按钮；
-     - 实时执行 RAG 审查并可视化渲染“合规健康得分卡片”、“违规明细对照表”与“推荐合规重构 SQL”；
-     - 支持“一键复制代码”与“查看展开标准 Markdown 报告全文”。
+     - 回复内容仅保留“不满足项与整改方案（逐条带 `[n]` 编号引用依据）”与“修改后的 SQL”，避免冗长排版；
+     - 顶部红标横幅给出合规判定与合规得分，支持“一键复制代码”。
   2. **💡 数据库规范知识库智能问答**：
      - 支持常见高频规范快捷提问气泡（如金额类型、基类审计字段、主键类型等）；
      - 显示带有 `[1]`, `[2]` 规范角标引用的专业解答与原文溯源附录。
@@ -203,9 +216,51 @@ python tests/test_phase3_retrieval.py
 # 4. 运行 Phase 4: 端到端智能审查与规范问答全链路测试
 python tests/test_phase4_audit_e2e.py
 
-# 5. 运行 Web UI 前端交互与路由端点测试
+# 5. 运行精简 Markdown 整改回复渲染单元测试 (无需大模型，可离线执行)
+python tests/test_audit_report_renderer.py
+
+# 6. 运行 SQL 审查服务离线链路测试 (桩化 LLM，含解析失败严禁伪判合规的兜底校验)
+python tests/test_sql_audit_service_offline.py
+
+# 7. 运行 Web UI 前端交互与路由端点测试
 python tests/test_web_ui.py
 ```
+
+---
+
+## 🧷 数据库规范反向案例库
+
+`doc/negative_cases/` 按规范模块沉淀了 **76 条故意违反规范的反例 DDL**（`N-` 命名 / `T-` 术语 / `M-` 建表模板 / `D-` 建库 / `F-` 字段与索引），
+每条案例都标注了违反条款、期望命中的 `rule_name`、严重级别与依据切块，可直接作为审查接口的评测语料与回归输入。
+
+```bash
+# 校验案例库结构完整性，并统计 SqlFeatureExtractor 的静态检出覆盖率
+python doc/negative_cases/validate_cases.py
+```
+
+当前基线：76 条反例、0 条结构问题；其中 23 条的规则域可被内置 `SqlFeatureExtractor` 的静态特征命中，
+其余 53 条属于命名 / 术语 / 索引 / 注释类语义判断，需依赖 RAG 检索 + 大模型判定。
+案例口径分歧（如 `db_` 前缀归属、布尔字段命名）记录在 [doc/negative_cases/README.md](./doc/negative_cases/README.md)。
+
+### 📊 反例批量执行与检出率评测 (`evaluation/`)
+
+76 条反例 + 5 条合规对照组已通过 **6 个子代理并行分片**跑完整 RAG 审查全链路，
+原始结果与评测结论全部落盘保留在 [`evaluation/`](./evaluation/README.md)：
+
+```bash
+.venv\Scripts\python.exe evaluation/build_case_index.py         # 生成唯一可信的案例索引
+.venv\Scripts\python.exe evaluation/run_shard.py --shard 1/6    # 分片执行（可 6 路并行）
+.venv\Scripts\python.exe evaluation/merge_results.py            # 合并结果 + 生成评测报告
+```
+
+本次执行结论（详见 [执行报告](./evaluation/results/执行报告.md)）：
+
+- 81/81 案例成功执行，0 缺失、0 失败；单案例均值 33.1s，6 路并行墙钟约 9 分钟（串行等效 44.7 分钟）；
+- 反例最终判定命中 **68/76 (89.5%)**，人工复核后目标规则识别率 **74/76 (97.4%)**，「依据切块」引用召回 **76/76**；
+- **发现关键缺陷**：`DoubleCheckVerifier` 防幻觉层把 13 条**规范原文中的真规则**误判为幻觉剔除，
+  其中 7 条因此 0 违规 / 100 分**伪判「完全合规」**（已现场复现）；
+- 合规对照组 3 条报警中，1 条为真误报（把建库规范第 9 条「**可以**加 UNSIGNED」的推荐性条款升级为强制），
+  另外 2 条源于规范原文自相矛盾（第 5/12 条示例 `order_money` 与第 16 条「本表字段不加表名」冲突）。
 
 ---
 
@@ -259,7 +314,7 @@ python tests/test_web_ui.py
         }
       ],
       "suggested_sql": "CREATE TABLE `order_info` (\n  `id` BIGINT UNSIGNED NOT NULL COMMENT '主键',\n  `code` varchar(64) NOT NULL DEFAULT '' COMMENT '订单编号',\n  `total_money` decimal(20, 6) NOT NULL DEFAULT '0.000000' COMMENT '总金额',\n  `user_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户ID',\n  `version` int NOT NULL DEFAULT 0 COMMENT '版本号',\n  `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT '逻辑删除',\n  `disabled` tinyint(4) NOT NULL DEFAULT 0 COMMENT '是否禁用',\n  `create_id` bigint NOT NULL DEFAULT 0 COMMENT '创建人ID',\n  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',\n  `modify_id` bigint NOT NULL DEFAULT 0 COMMENT '更新人ID',\n  `modify_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';",
-      "markdown_report": "# 📋 数据库设计规范合规审查报告\n\n## 1. 审查总览看板\n| 审查指标 | 评估结果 |\n| :--- | :--- |\n| **合规状态** | ❌ **存在不符合规范项 (需整改)** |\n| **合规健康得分** | **0 / 100** |\n...\n"
+      "markdown_report": "### ⚠️ 不满足项与整改方案（共 3 项）\n\n**1. 禁止使用浮点数 double** · 🔴 ERROR · 依据：[1] 《数据库规范》- 数据库规范 > 数据类型规范\n- 不满足片段：`total_amount double`\n- 问题说明：金额字段必须使用 decimal(20, 6) 存储，严禁 double 导致精度丢失\n- 整改方案：将 double 修改为 decimal(20, 6)，命名后缀规范为 total_money\n\n### ✅ 修改后的 SQL\n```sql\nCREATE TABLE `order_info` (...);\n```\n"
     }
   }
   ```

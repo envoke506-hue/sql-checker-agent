@@ -1,0 +1,18 @@
+cases with >=1 lead evidence that is generic AND not independently corroborated: 2
+==========================================================================================
+N-15 expected=["命名规范 · 本表字段不加表名前缀"]
+  reported rule_names: ["本表字段禁止拼接本表表名", "本表字段禁止拼接本表表名", "本表字段禁止拼接本表表名"]
+  all lead vias: ["2-gram: 本表"]
+  suspicious: [["本表字段禁止拼接本表表名", "2-gram: 本表", "semantic"]]
+  my strong: []
+==========================================================================================
+M-20 expected=["建表模板 · 字段缺少注释"]
+  reported rule_names: ["本表字段禁止加表名前缀", "主键必须包含注释", "基类字段必须包含中文注释"]
+  all lead vias: ["2-gram: 注释", "2-gram: 注释"]
+  suspicious: [["主键必须包含注释", "2-gram: 注释", "semantic"], ["基类字段必须包含中文注释", "2-gram: 注释", "semantic"]]
+  my strong: []
+
+
+=== cases whose ONLY lead evidence is generic (no corroboration at all) ===
+N-15 expected=["命名规范 · 本表字段不加表名前缀"] || lead vias=["2-gram: 本表"] || reported=["本表字段禁止拼接本表表名", "本表字段禁止拼接本表表名", "本表字段禁止拼接本表表名"]
+M-20 expected=["建表模板 · 字段缺少注释"] || lead vias=["2-gram: 注释", "2-gram: 注释"] || reported=["本表字段禁止加表名前缀", "主键必须包含注释", "基类字段必须包含中文注释"]

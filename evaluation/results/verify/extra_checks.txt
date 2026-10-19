@@ -1,0 +1,36 @@
+shard-field mismatches: 81 [('N-01', '1/6', 'shard_1_6.jsonl'), ('N-07', '1/6', 'shard_1_6.jsonl'), ('N-13', '1/6', 'shard_1_6.jsonl'), ('T-02', '1/6', 'shard_1_6.jsonl'), ('T-08', '1/6', 'shard_1_6.jsonl')]
+
+per-shard time windows and elapsed:
+  shard_1_6.jsonl n=14 start=2026-10-16T15:12:42+08:00 end=2026-10-16T15:20:10+08:00 span=448.0s elapsed_sum=448.4s elapsed_min=8.0 elapsed_max=77.1 missing_ts=0
+  shard_2_6.jsonl n=14 start=2026-10-16T15:12:20+08:00 end=2026-10-16T15:19:26+08:00 span=426.0s elapsed_sum=426.4s elapsed_min=11.1 elapsed_max=70.9 missing_ts=0
+  shard_3_6.jsonl n=14 start=2026-10-16T15:12:28+08:00 end=2026-10-16T15:20:08+08:00 span=460.0s elapsed_sum=459.9s elapsed_min=11.1 elapsed_max=65.9 missing_ts=0
+  shard_4_6.jsonl n=13 start=2026-10-16T15:12:31+08:00 end=2026-10-16T15:21:17+08:00 span=526.0s elapsed_sum=525.2s elapsed_min=12.6 elapsed_max=72.0 missing_ts=0
+  shard_5_6.jsonl n=13 start=2026-10-16T15:12:25+08:00 end=2026-10-16T15:18:47+08:00 span=382.0s elapsed_sum=382.4s elapsed_min=6.5 elapsed_max=59.9 missing_ts=0
+  shard_6_6.jsonl n=13 start=2026-10-16T15:12:12+08:00 end=2026-10-16T15:19:30+08:00 span=438.0s elapsed_sum=438.3s elapsed_min=11.6 elapsed_max=72.1 missing_ts=0
+
+any two shard windows overlap: True
+global window: 2026-10-16T15:12:12+08:00 -> 2026-10-16T15:21:17+08:00 (9.1 min); sum(elapsed)=44.7 min
+
+elapsed_seconds vs (finished-started) discrepancies >2s: 0 []
+
+total violation entries: 147, distinct rule_names: 97, distinct rule_ids: 100
+top repeated rule_names:
+     8 x 字段命名必须使用标准名词术语
+     8 x 字段命名未使用标准术语
+     6 x 本表字段禁止拼接本表表名
+     4 x 禁止使用保留关键字
+     4 x 命名未使用标准名词术语
+     3 x 本表字段禁止加表名前缀
+     3 x 非负数字类型必须加 UNSIGNED
+     3 x TINYINT 统一使用 TINYINT(4)
+
+cases with >=1 duplicated rule_name inside violations: 22
+excess entries caused by duplicates: 41
+scores distribution: {0: 3, 20: 1, 40: 8, 50: 2, 60: 27, 70: 3, 80: 25, 90: 2, 100: 10}
+
+cases with zero citations: []
+cases with zero citations among negatives: []
+cases with empty suggested_sql: 0
+cases with empty markdown_report: 0
+severity values: {'ERROR': 134, 'WARN': 8, 'WARNING': 5}
+expected_severity per kind: {"negative/ERROR": 54, "negative/WARN": 22, "positive/NONE": 5}

@@ -48,9 +48,8 @@ class Settings(BaseSettings):
     # LLM 调用超时时间 (秒)
     relay_timeout_seconds: int = 120
 
-    # ---------------- 数据库规范与数据存储配置 ----------------
-    # 规范 Markdown 文档的绝对路径
-    spec_doc_path: str = r"D:\WorkData\work_space\项目规范\数据库规范\数据库规范.md"
+    # 规范 Markdown 文档的绝对路径 (默认指向当前项目的 doc/数据库规范.md)
+    spec_doc_path: str = str(Path(__file__).resolve().parent.parent.parent / "doc" / "数据库规范.md")
     # 索引与持久化缓存存储目录
     storage_dir: str = str(Path(__file__).resolve().parent.parent.parent / "data" / "indices")
 

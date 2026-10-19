@@ -83,7 +83,9 @@ class SpecQueryService:
         llm_answer = await self.relay_repo.generate(
             messages=messages,
             temperature=0.2,
-            max_tokens=1500
+            # deepseek 系列会把思考过程计入 completion_tokens，预算过小会导致正式回答还没
+            # 输出就被截断，故与 SQL 审查保持同样的输出上限
+            max_tokens=8192
         )
 
         # 步骤 4: 渲染完整 Markdown 内容

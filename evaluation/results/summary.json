@@ -1,0 +1,366 @@
+{
+  "generated_at": "2026-10-16T15:52:49+08:00",
+  "index_total": 81,
+  "index_negative": 76,
+  "index_positive": 5,
+  "shard_files": [
+    "shard_1_6.jsonl",
+    "shard_2_6.jsonl",
+    "shard_3_6.jsonl",
+    "shard_4_6.jsonl",
+    "shard_5_6.jsonl",
+    "shard_6_6.jsonl"
+  ],
+  "collected": 81,
+  "merged": 81,
+  "missing_cases": [],
+  "inconsistent_input_sql": [],
+  "duplicate_records": [],
+  "error_cases": [],
+  "negative": {
+    "total": 76,
+    "executed_ok": 76,
+    "violation_reported": 68,
+    "violation_reported_rate_pct": 89.5,
+    "strict_hit": 7,
+    "strict_hit_rate_pct": 9.2,
+    "lenient_hit": 54,
+    "lenient_hit_rate_pct": 71.1,
+    "expected_chunk_cited": 76,
+    "expected_chunk_cited_rate_pct": 100.0,
+    "miss_cases": [
+      "D-01",
+      "D-02",
+      "D-05",
+      "D-06",
+      "D-07",
+      "D-08",
+      "F-04",
+      "F-06",
+      "F-07",
+      "F-11",
+      "F-12",
+      "N-02",
+      "T-02",
+      "T-03",
+      "T-04",
+      "T-06",
+      "T-07",
+      "T-08",
+      "T-09",
+      "T-10",
+      "T-11",
+      "T-12"
+    ],
+    "strict_miss_cases": [
+      "D-01",
+      "D-02",
+      "D-05",
+      "D-06",
+      "D-07",
+      "D-08",
+      "D-09",
+      "D-10",
+      "D-12",
+      "D-14",
+      "D-15",
+      "D-16",
+      "F-01",
+      "F-02",
+      "F-03",
+      "F-04",
+      "F-05",
+      "F-06",
+      "F-07",
+      "F-08",
+      "F-09",
+      "F-10",
+      "F-11",
+      "F-12",
+      "M-01",
+      "M-02",
+      "M-03",
+      "M-04",
+      "M-05",
+      "M-06",
+      "M-07",
+      "M-08",
+      "M-09",
+      "M-10",
+      "M-11",
+      "M-12",
+      "M-13",
+      "M-14",
+      "M-15",
+      "M-16",
+      "M-19",
+      "M-20",
+      "N-02",
+      "N-03",
+      "N-04",
+      "N-05",
+      "N-06",
+      "N-07",
+      "N-08",
+      "N-09",
+      "N-10",
+      "N-11",
+      "N-12",
+      "N-13",
+      "N-14",
+      "N-15",
+      "N-16",
+      "T-01",
+      "T-02",
+      "T-03",
+      "T-04",
+      "T-05",
+      "T-06",
+      "T-07",
+      "T-08",
+      "T-09",
+      "T-10",
+      "T-11",
+      "T-12"
+    ]
+  },
+  "adjudicated": {
+    "verdict_hit": 68,
+    "verdict_hit_rate_pct": 89.5,
+    "reported_hit": 60,
+    "reported_hit_rate_pct": 78.9,
+    "reported_with_partial": 61,
+    "reported_with_partial_rate_pct": 80.3,
+    "identified_hit": 74,
+    "identified_hit_rate_pct": 97.4,
+    "unidentified": [
+      "D-01",
+      "N-03"
+    ],
+    "unidentified_rate_pct": 2.6,
+    "machine_semantic_corrected": 53,
+    "matcher_false_positives": {
+      "N-03": "期望「关联字段命名」(命名规范3)，实测为「关联表命名必须以 r_ 开头」(建库规范13)，属邻接规则误命中"
+    },
+    "partial_hit_cases": [
+      "F-06"
+    ],
+    "doublecheck_suppressed_total": 13,
+    "doublecheck_suppressed_cases": [
+      "D-02",
+      "D-05",
+      "D-06",
+      "D-08",
+      "F-07",
+      "F-12",
+      "T-10",
+      "D-07",
+      "F-04",
+      "F-11",
+      "T-02",
+      "T-04",
+      "T-06"
+    ],
+    "suppressed_but_other_rule": [
+      "D-07",
+      "F-04",
+      "F-11",
+      "T-02",
+      "T-04",
+      "T-06"
+    ],
+    "false_negative_cases": [
+      "D-02",
+      "D-05",
+      "D-06",
+      "D-08",
+      "F-07",
+      "F-12",
+      "T-10"
+    ],
+    "false_negative_rate_pct": 9.2,
+    "wording_only_cases": [
+      "N-02",
+      "T-03",
+      "T-07",
+      "T-08",
+      "T-09",
+      "T-11",
+      "T-12"
+    ],
+    "other_rule_same_target_cases": [
+      "F-06"
+    ],
+    "spec_scope_ambiguity_cases": [
+      "D-01"
+    ]
+  },
+  "data_quality": {
+    "severity_counts": {
+      "ERROR": 129,
+      "WARN": 8,
+      "WARNING": 5
+    },
+    "severity_enum_variants": [
+      "WARN",
+      "WARNING"
+    ],
+    "duplicate_rule_name_cases": [
+      "D-10",
+      "D-12",
+      "D-15",
+      "F-03",
+      "M-13",
+      "N-01",
+      "N-02",
+      "N-04",
+      "N-05",
+      "N-06",
+      "N-07",
+      "N-08",
+      "N-09",
+      "N-10",
+      "N-14",
+      "N-15",
+      "T-05",
+      "T-07",
+      "T-11",
+      "T-12"
+    ],
+    "duplicate_rule_name_entries": 39,
+    "total_violation_entries": 142,
+    "duplicate_entry_share_pct": 27.5,
+    "polarity_conflict": {
+      "forbids_db_prefix_cases": [
+        "M-19"
+      ],
+      "requires_db_prefix_cases": [
+        "D-09"
+      ]
+    }
+  },
+  "positive_control": {
+    "total": 5,
+    "executed_ok": 5,
+    "false_alarm_cases": [
+      "P-01",
+      "P-02",
+      "P-04"
+    ],
+    "false_alarm_rate_pct": 60.0,
+    "true_false_alarm_cases": [
+      "P-02"
+    ],
+    "spec_conflict_cases": [
+      "P-01",
+      "P-04"
+    ],
+    "detail": [
+      {
+        "case_id": "P-01",
+        "module_name": "命名规范",
+        "is_compliant": false,
+        "score": 60,
+        "violation_count": 2,
+        "disposition": "spec_conflict",
+        "note": "order_money / order_amount_unit 正是规范第 5、12 条的原文示例，却又违反第 16 条「本表字段不加表名」，属规范自相矛盾，非系统缺陷"
+      },
+      {
+        "case_id": "P-02",
+        "module_name": "名词术语",
+        "is_compliant": false,
+        "score": 60,
+        "violation_count": 2,
+        "disposition": "true_false_alarm",
+        "note": "拒收理由为 sort/version 未加 UNSIGNED；但规范第 9 条原文是「**可以**加 UNSIGNED」（推荐性），且 `version INT NOT NULL DEFAULT 0` 正是建表模板的原文写法"
+      },
+      {
+        "case_id": "P-03",
+        "module_name": "建表模板",
+        "is_compliant": true,
+        "score": 100,
+        "violation_count": 0,
+        "disposition": "clean",
+        "note": "判定合规，无误报"
+      },
+      {
+        "case_id": "P-04",
+        "module_name": "建库规范",
+        "is_compliant": false,
+        "score": 80,
+        "violation_count": 1,
+        "disposition": "spec_conflict",
+        "note": "同 P-01：order_money 触发「本表字段禁止拼接本表表名」"
+      },
+      {
+        "case_id": "P-05",
+        "module_name": "字段与索引",
+        "is_compliant": true,
+        "score": 100,
+        "violation_count": 0,
+        "disposition": "clean",
+        "note": "判定合规，无误报"
+      }
+    ]
+  },
+  "by_module": {
+    "建库规范": {
+      "total": 17,
+      "negative": 16,
+      "detected": 11,
+      "strict_hit": 4,
+      "lenient_hit": 10,
+      "identified": 15,
+      "miss": 6
+    },
+    "字段与索引": {
+      "total": 13,
+      "negative": 12,
+      "detected": 10,
+      "strict_hit": 0,
+      "lenient_hit": 7,
+      "identified": 12,
+      "miss": 5
+    },
+    "建表模板": {
+      "total": 21,
+      "negative": 20,
+      "detected": 20,
+      "strict_hit": 2,
+      "lenient_hit": 20,
+      "identified": 20,
+      "miss": 0
+    },
+    "命名规范": {
+      "total": 17,
+      "negative": 16,
+      "detected": 16,
+      "strict_hit": 1,
+      "lenient_hit": 15,
+      "identified": 15,
+      "miss": 1
+    },
+    "名词术语": {
+      "total": 13,
+      "negative": 12,
+      "detected": 11,
+      "strict_hit": 0,
+      "lenient_hit": 2,
+      "identified": 12,
+      "miss": 10
+    }
+  },
+  "timing": {
+    "cases_measured": 81,
+    "total_seconds": 2680.6,
+    "avg_seconds": 33.1,
+    "median_seconds": 30.7,
+    "max_seconds": 77.14
+  },
+  "score": {
+    "avg": 66.4,
+    "min": 0,
+    "max": 100,
+    "zero_score_cases": 3
+  }
+}

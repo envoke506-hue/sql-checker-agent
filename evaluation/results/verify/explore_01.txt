@@ -1,0 +1,335 @@
+index type=list len=81
+index[0] keys: ['case_id', 'kind', 'module', 'module_name', 'source_file', 'title', 'clause', 'expected_rule_names', 'expected_severity', 'expected_chunks', 'sql']
+kinds: {'negative': 76, 'positive': 5}
+modules: {'naming': 17, 'terminology': 13, 'table_template': 21, 'database_rules': 17, 'field_and_index': 13}
+index duplicate case_ids: []
+
+--- expected_rule_names per case ---
+N-01 | kind=negative | n_exp=1 | ["命名规范 · lower_snake_case"]
+N-02 | kind=negative | n_exp=1 | ["命名规范 · 语义尽量简短"]
+N-03 | kind=negative | n_exp=1 | ["命名规范 · 关联字段命名"]
+N-04 | kind=negative | n_exp=1 | ["命名规范 · 单价后缀 price"]
+N-05 | kind=negative | n_exp=1 | ["命名规范 · 金额后缀 money"]
+N-06 | kind=negative | n_exp=1 | ["命名规范 · 数量后缀 amount"]
+N-07 | kind=negative | n_exp=1 | ["命名规范 · 时间后缀 time"]
+N-08 | kind=negative | n_exp=1 | ["命名规范 · 业务类前缀 biz_"]
+N-09 | kind=negative | n_exp=1 | ["命名规范 · 入口类前缀 in_"]
+N-10 | kind=negative | n_exp=1 | ["命名规范 · 出口类前缀 out_"]
+N-11 | kind=negative | n_exp=1 | ["命名规范 · 编号后缀 code"]
+N-12 | kind=negative | n_exp=1 | ["命名规范 · 单位字段后缀 amount_unit"]
+N-13 | kind=negative | n_exp=1 | ["命名规范 · 排序字段命名"]
+N-14 | kind=negative | n_exp=1 | ["命名规范 · 备注字段命名"]
+N-15 | kind=negative | n_exp=1 | ["命名规范 · 本表字段不加表名前缀"]
+N-16 | kind=negative | n_exp=2 | ["命名规范 · 金额数量精度", "建库规范 · 禁用 double"]
+P-01 | kind=positive | n_exp=0 | []
+T-01 | kind=negative | n_exp=1 | ["名词术语 · 主键命名"]
+T-02 | kind=negative | n_exp=1 | ["名词术语 · 名称命名"]
+T-03 | kind=negative | n_exp=1 | ["名词术语 · 类型命名"]
+T-04 | kind=negative | n_exp=1 | ["名词术语 · 上级命名"]
+T-05 | kind=negative | n_exp=1 | ["名词术语 · 状态命名"]
+T-06 | kind=negative | n_exp=1 | ["名词术语 · 审核/标识命名"]
+T-07 | kind=negative | n_exp=1 | ["名词术语 · 链接/来源命名"]
+T-08 | kind=negative | n_exp=1 | ["名词术语 · 版本命名"]
+T-09 | kind=negative | n_exp=1 | ["名词术语 · 删除/禁用命名"]
+T-10 | kind=negative | n_exp=1 | ["名词术语 · 关联/路径命名"]
+T-11 | kind=negative | n_exp=1 | ["名词术语 · 用户字段命名"]
+T-12 | kind=negative | n_exp=1 | ["名词术语 · 业务/地址字段命名"]
+P-02 | kind=positive | n_exp=0 | []
+M-01 | kind=negative | n_exp=1 | ["建表模板 · 缺少基类字段 version"]
+M-02 | kind=negative | n_exp=1 | ["建表模板 · 缺少基类字段 deleted"]
+M-03 | kind=negative | n_exp=1 | ["建表模板 · 缺少基类字段 disabled"]
+M-04 | kind=negative | n_exp=1 | ["建表模板 · 缺少基类字段 create_id"]
+M-05 | kind=negative | n_exp=1 | ["建表模板 · 缺少基类字段 create_time"]
+M-06 | kind=negative | n_exp=1 | ["建表模板 · 缺少基类字段 modify_id"]
+M-07 | kind=negative | n_exp=1 | ["建表模板 · 缺少基类字段 modify_time"]
+M-08 | kind=negative | n_exp=1 | ["建表模板 · 必须包含通用基类审计字段"]
+M-09 | kind=negative | n_exp=1 | ["建表模板 · 主键必须为 id"]
+M-10 | kind=negative | n_exp=1 | ["建表模板 · 主键类型必须为 BIGINT UNSIGNED"]
+M-11 | kind=negative | n_exp=1 | ["建表模板 · 主键必须 NOT NULL"]
+M-12 | kind=negative | n_exp=1 | ["建表模板 · 主键雪花算法"]
+M-13 | kind=negative | n_exp=1 | ["建表模板 · 基类字段类型不符 create_id/modify_id"]
+M-14 | kind=negative | n_exp=1 | ["建表模板 · 基类字段类型不符 create_time/modify_time"]
+M-15 | kind=negative | n_exp=1 | ["建库规范 · TINYINT 统一 TINYINT(4)"]
+M-16 | kind=negative | n_exp=1 | ["建表模板 · 基类字段类型不符 version"]
+M-17 | kind=negative | n_exp=1 | ["建表模板 · 必须使用 InnoDB 引擎"]
+M-18 | kind=negative | n_exp=1 | ["建表模板 · 必须包含表级注释"]
+M-19 | kind=negative | n_exp=1 | ["建表模板 · 缺少表级主键约束"]
+M-20 | kind=negative | n_exp=1 | ["建表模板 · 字段缺少注释"]
+P-03 | kind=positive | n_exp=0 | []
+D-01 | kind=negative | n_exp=1 | ["建库规范 · 生产库表名 db_ 前缀"]
+D-02 | kind=negative | n_exp=1 | ["建库规范 · 必须使用 InnoDB"]
+D-03 | kind=negative | n_exp=1 | ["建库规范 · 表内禁止外键设计"]
+D-04 | kind=negative | n_exp=1 | ["建库规范 · 表内禁止外键设计"]
+D-05 | kind=negative | n_exp=1 | ["建库规范 · 禁止触发器"]
+D-06 | kind=negative | n_exp=1 | ["建库规范 · 禁止存储过程/自定义函数"]
+D-07 | kind=negative | n_exp=1 | ["建库规范 · 字符集必须 utf8mb4"]
+D-08 | kind=negative | n_exp=2 | ["建库规范 · 字符集必须 utf8mb4", "建表规范 · 字段不手写字符集"]
+D-09 | kind=negative | n_exp=1 | ["建库规范 · 表名禁止关键字"]
+D-10 | kind=negative | n_exp=1 | ["建库规范 · 字段名禁止关键字"]
+D-11 | kind=negative | n_exp=1 | ["建库规范 · 加字段必须标注 AFTER"]
+D-12 | kind=negative | n_exp=1 | ["建库规范 · 数字类型加 UNSIGNED"]
+D-13 | kind=negative | n_exp=1 | ["建库规范 · 避免 NULL"]
+D-14 | kind=negative | n_exp=1 | ["建库规范 · 禁用 double"]
+D-15 | kind=negative | n_exp=1 | ["建库规范 · TINYINT 统一 TINYINT(4)"]
+D-16 | kind=negative | n_exp=1 | ["建库规范 · 关联表 r_ 前缀"]
+P-04 | kind=positive | n_exp=0 | []
+F-01 | kind=negative | n_exp=1 | ["建表规范 · 三方对接表缺 system_source"]
+F-02 | kind=negative | n_exp=1 | ["建表规范 · 三方对接表缺 data_source"]
+F-03 | kind=negative | n_exp=1 | ["建表规范 · 普通索引 idx_ 前缀"]
+F-04 | kind=negative | n_exp=1 | ["建表规范 · 唯一索引 uniq_ 前缀"]
+F-05 | kind=negative | n_exp=1 | ["建表规范 · 布尔类型 TINYINT(4)"]
+F-06 | kind=negative | n_exp=1 | ["建表规范 · 布尔字段名用名词"]
+F-07 | kind=negative | n_exp=1 | ["建表规范 · 单字符字段用 char(1)"]
+F-08 | kind=negative | n_exp=1 | ["建表规范 · 单字符字段默认值"]
+F-09 | kind=negative | n_exp=1 | ["建表规范 · 大于1字符用 varchar"]
+F-10 | kind=negative | n_exp=1 | ["建表规范 · 单整数用 TINYINT(4)"]
+F-11 | kind=negative | n_exp=1 | ["建表规范 · 大于1整数用 int"]
+F-12 | kind=negative | n_exp=1 | ["建表规范 · 字段不手写字符集"]
+P-05 | kind=positive | n_exp=0 | []
+
+shard shard_1_6.jsonl lines=14
+
+shard shard_2_6.jsonl lines=14
+
+shard shard_3_6.jsonl lines=14
+
+shard shard_4_6.jsonl lines=13
+
+shard shard_5_6.jsonl lines=13
+
+shard shard_6_6.jsonl lines=13
+
+total raw records=81
+record keys sample: ['case_id', 'kind', 'module', 'module_name', 'source_file', 'title', 'clause', 'expected_rule_names', 'expected_severity', 'expected_chunks', 'sql', 'status', 'error', 'is_compliant', 'score', 'summary', 'violations', 'violation_count', 'citations', 'suggested_sql', 'markdown_report', 'started_at', 'finished_at', 'elapsed_seconds', 'shard']
+status counts: {'ok': 81}
+raw duplicate case_ids: []
+
+--- per record verdict summary ---
+shard_1_6.jsonl|N-01|line=1|kind=negative|compliant=False|score=40|n_viol=3|elapsed=77.14
+      - id=naming_lower_snake_case | name=采用 lower_snake_case 命名法 | sev=ERROR | obj=db_OrderInfo
+      - id=naming_lower_snake_case | name=采用 lower_snake_case 命名法 | sev=ERROR | obj=userName
+      - id=naming_no_table_prefix | name=本表字段不加表名前缀 | sev=ERROR | obj=OrderStatus
+shard_1_6.jsonl|N-07|line=2|kind=negative|compliant=False|score=60|n_viol=2|elapsed=35.2
+      - id=rule_time_suffix | name=时间字段命名规范 | sev=ERROR | obj=receive_date DATE
+      - id=rule_time_suffix | name=时间字段命名规范 | sev=ERROR | obj=send_ts DATETIME
+shard_1_6.jsonl|N-13|line=3|kind=negative|compliant=False|score=60|n_viol=2|elapsed=14.14
+      - id=rule_lower_snake_case | name=字段命名必须使用 lower_snake_case | sev=ERROR | obj=sortIndex INT NOT NULL DEFAULT 0
+      - id=rule_sort_naming | name=排序字段统一命名 sort | sev=ERROR | obj=seq, sort_no, sortIndex
+shard_1_6.jsonl|T-02|line=4|kind=negative|compliant=False|score=80|n_viol=1|elapsed=29.38
+      - id=rule_no_table_prefix | name=本表字段禁止加表名前缀 | sev=ERROR | obj=goods_title VARCHAR(64)
+shard_1_6.jsonl|T-08|line=5|kind=negative|compliant=False|score=70|n_viol=2|elapsed=17.64
+      - id=rule_base_field_version | name=基类字段必须命名为 version | sev=ERROR | obj=ver INT NOT NULL DEFAULT 0
+      - id=rule_standard_glossary | name=字段命名须使用标准术语单词 | sev=WARN | obj=revision INT NOT NULL DEFAULT 0
+shard_1_6.jsonl|M-01|line=6|kind=negative|compliant=False|score=80|n_viol=1|elapsed=7.95
+      - id=rule_missing_base_field_version | name=缺少实体基类必须字段 version | sev=ERROR | obj=db_order 表结构
+shard_1_6.jsonl|M-07|line=7|kind=negative|compliant=False|score=80|n_viol=1|elapsed=21.93
+      - id=missing_base_field_modify_time | name=实体基类必须字段缺失 | sev=ERROR | obj=modify_time
+shard_1_6.jsonl|M-13|line=8|kind=negative|compliant=False|score=60|n_viol=2|elapsed=47.6
+      - id=rule_audit_field_type | name=基类字段类型必须符合建表模板 | sev=ERROR | obj=create_id VARCHAR(32)
+      - id=rule_audit_field_type | name=基类字段类型必须符合建表模板 | sev=ERROR | obj=modify_id VARCHAR(32)
+shard_1_6.jsonl|M-19|line=9|kind=negative|compliant=False|score=60|n_viol=2|elapsed=42.61
+      - id=rule_primary_key_missing | name=缺少主键定义 | sev=ERROR | obj=表定义
+      - id=rule_table_name_db_prefix | name=表名使用库前缀 | sev=ERROR | obj=表名 db_order
+shard_1_6.jsonl|D-04|line=10|kind=negative|compliant=False|score=80|n_viol=1|elapsed=27.83
+      - id=rule_no_foreign_key | name=表内禁止外键设计 | sev=ERROR | obj=CONSTRAINT `fk_detail_order` FOREIGN KEY (`order_id`) REFERENCES `db_order` (`id`)
+shard_1_6.jsonl|D-10|line=11|kind=negative|compliant=False|score=0|n_viol=7|elapsed=58.06
+      - id=rule_no_keyword_desc | name=禁止使用保留关键字 | sev=ERROR | obj=desc 字段
+      - id=rule_naming_remark | name=备注统一命名 remark | sev=ERROR | obj=desc 字段
+      - id=rule_no_keyword_group | name=禁止使用保留关键字 | sev=ERROR | obj=group 字段
+      - id=rule_no_keyword_index | name=禁止使用保留关键字 | sev=ERROR | obj=index 字段
+      - id=rule_naming_sort | name=排序统一命名 sort | sev=ERROR | obj=index 字段
+      - id=rule_unsigned_sort | name=数字类型非负必须加 UNSIGNED | sev=ERROR | obj=index 字段
+      - id=rule_no_keyword_value | name=禁止使用保留关键字 | sev=ERROR | obj=value 字段
+shard_1_6.jsonl|D-16|line=12|kind=negative|compliant=False|score=80|n_viol=1|elapsed=14.03
+      - id=rule_relation_table_prefix | name=关联表必须以 r_ 开头 | sev=ERROR | obj=db_user_role
+shard_1_6.jsonl|F-05|line=13|kind=negative|compliant=False|score=60|n_viol=2|elapsed=18.33
+      - id=rule_boolean_type | name=布尔类型必须使用 TINYINT(4) | sev=ERROR | obj=is_paid BOOLEAN NOT NULL DEFAULT FALSE
+      - id=rule_char1_type | name=单字符标记必须使用 char(1) | sev=ERROR | obj=is_split BIT(1) NOT NULL DEFAULT 0
+shard_1_6.jsonl|F-11|line=14|kind=negative|compliant=False|score=80|n_viol=1|elapsed=36.56
+      - id=rule_amount_decimal | name=数量类字段必须使用 decimal | sev=ERROR | obj=total_amount VARCHAR(20)
+shard_2_6.jsonl|N-02|line=1|kind=negative|compliant=False|score=40|n_viol=3|elapsed=35.26
+      - id=rule_table_standard_term | name=表名使用规范术语 | sev=ERROR | obj=db_organization_info
+      - id=rule_field_standard_term_admin | name=字段使用规范术语 | sev=ERROR | obj=administrator
+      - id=rule_field_standard_term_organ | name=字段使用规范术语 | sev=ERROR | obj=organization
+shard_2_6.jsonl|N-08|line=2|kind=negative|compliant=False|score=40|n_viol=3|elapsed=70.86
+      - id=rule_naming_biz_prefix | name=业务类字段需用 biz_ 前缀 | sev=ERROR | obj=business_type
+      - id=rule_naming_biz_prefix | name=业务类字段需用 biz_ 前缀 | sev=ERROR | obj=trade_id
+      - id=rule_unsigned_number | name=非负数字类型必须加 UNSIGNED | sev=ERROR | obj=version INT
+shard_2_6.jsonl|N-14|line=3|kind=negative|compliant=False|score=60|n_viol=3|elapsed=42.01
+      - id=rule_no_reserved_like_keyword | name=禁止使用保留关键字或类似关键字字段 | sev=ERROR | obj=comment VARCHAR(255)
+      - id=rule_naming_remark | name=备注字段统一命名为 remark | sev=WARNING | obj=note VARCHAR(255)
+      - id=rule_naming_remark | name=备注字段统一命名为 remark | sev=WARNING | obj=memo VARCHAR(255)
+shard_2_6.jsonl|T-03|line=4|kind=negative|compliant=False|score=70|n_viol=2|elapsed=27.3
+      - id=rule_no_keyword | name=禁止使用保留关键字或疑似关键字命名 | sev=ERROR | obj=class TINYINT(4) UNSIGNED
+      - id=rule_naming_glossary | name=命名须使用术语字典标准词 | sev=WARN | obj=category / kind
+shard_2_6.jsonl|T-09|line=5|kind=negative|compliant=False|score=60|n_viol=2|elapsed=32.05
+      - id=rule_missing_base_field_deleted | name=缺少基础字段 deleted | sev=ERROR | obj=del_flag, is_delete
+      - id=rule_missing_base_field_disabled | name=缺少基础字段 disabled | sev=ERROR | obj=enable_flag
+shard_2_6.jsonl|M-02|line=6|kind=negative|compliant=False|score=80|n_viol=1|elapsed=11.17
+      - id=rule_missing_deleted | name=缺少删除标记基类字段 deleted | sev=ERROR | obj=db_order
+shard_2_6.jsonl|M-08|line=7|kind=negative|compliant=False|score=60|n_viol=2|elapsed=15.14
+      - id=rule_missing_base_fields | name=缺少实体基类必须字段 | sev=ERROR | obj=db_order 表结构
+      - id=rule_no_table_prefix_in_field | name=本表字段禁止拼接本表表名 | sev=ERROR | obj=order_money
+shard_2_6.jsonl|M-14|line=8|kind=negative|compliant=False|score=60|n_viol=2|elapsed=22.84
+      - id=rule_create_time_datetime | name=create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP | sev=ERROR | obj=create_time DATE
+      - id=rule_modify_time_datetime | name=modify_time 必须为 DATETIME | sev=ERROR | obj=modify_time TIMESTAMP
+shard_2_6.jsonl|M-20|line=9|kind=negative|compliant=False|score=40|n_viol=3|elapsed=56.63
+      - id=naming_no_table_prefix | name=本表字段禁止加表名前缀 | sev=ERROR | obj=order_money
+      - id=pk_missing_comment | name=主键必须包含注释 | sev=ERROR | obj=id
+      - id=base_field_missing_comment | name=基类字段必须包含中文注释 | sev=ERROR | obj=version,deleted,disabled,create_id,create_time,modify_id,modify_time
+shard_2_6.jsonl|D-05|line=10|kind=negative|compliant=True|score=100|n_viol=0|elapsed=16.28
+shard_2_6.jsonl|D-11|line=11|kind=negative|compliant=False|score=80|n_viol=1|elapsed=32.96
+      - id=rule_alter_after | name=DDL 增加字段必须标注 AFTER 指定位置 | sev=ERROR | obj=ALTER TABLE db_order ADD COLUMN channel_code 未指定 AFTER
+shard_2_6.jsonl|P-04|line=12|kind=positive|compliant=False|score=80|n_viol=1|elapsed=11.05
+      - id=rule_no_table_prefix | name=本表字段禁止拼接本表表名 | sev=ERROR | obj=order_money DECIMAL(20, 6)
+shard_2_6.jsonl|F-06|line=13|kind=negative|compliant=False|score=60|n_viol=2|elapsed=29.5
+      - id=rule_base_field_deleted | name=基础字段删除标记命名违规 | sev=ERROR | obj=is_delete TINYINT(4)
+      - id=rule_base_field_disabled | name=基础字段停用标记命名违规 | sev=ERROR | obj=not_enabled TINYINT(4)
+shard_2_6.jsonl|F-12|line=14|kind=negative|compliant=True|score=100|n_viol=0|elapsed=23.33
+shard_3_6.jsonl|N-03|line=1|kind=negative|compliant=False|score=80|n_viol=1|elapsed=15.7
+      - id=rule_relation_table_prefix | name=关联表命名必须以 r_ 开头 | sev=ERROR | obj=db_order_relation
+shard_3_6.jsonl|N-09|line=2|kind=negative|compliant=False|score=60|n_viol=2|elapsed=61.3
+      - id=rule_naming_prefix_in | name=入口类字段需使用 in_ 前缀 | sev=ERROR | obj=enter_store BIGINT UNSIGNED
+      - id=rule_naming_prefix_in | name=入口类字段需使用 in_ 前缀 | sev=ERROR | obj=inbound_bill BIGINT UNSIGNED
+shard_3_6.jsonl|N-15|line=3|kind=negative|compliant=False|score=60|n_viol=3|elapsed=20.9
+      - id=rule_no_self_table_prefix | name=本表字段禁止拼接本表表名 | sev=ERROR | obj=order_id BIGINT UNSIGNED NOT NULL DEFAULT 0
+      - id=rule_no_self_table_prefix | name=本表字段禁止拼接本表表名 | sev=WARN | obj=order_code VARCHAR(64)
+      - id=rule_no_self_table_prefix | name=本表字段禁止拼接本表表名 | sev=WARN | obj=order_name VARCHAR(64)
+shard_3_6.jsonl|T-04|line=4|kind=negative|compliant=False|score=80|n_viol=1|elapsed=35.21
+      - id=rule_naming_lower_snake_case | name=命名需采用 lower_snake_case | sev=ERROR | obj=parentCode VARCHAR(32)
+shard_3_6.jsonl|T-10|line=5|kind=negative|compliant=True|score=100|n_viol=0|elapsed=11.06
+shard_3_6.jsonl|M-03|line=6|kind=negative|compliant=False|score=80|n_viol=1|elapsed=41.67
+      - id=rule_missing_base_field | name=缺少实体基类必填字段 | sev=ERROR | obj=disabled
+shard_3_6.jsonl|M-09|line=7|kind=negative|compliant=False|score=60|n_viol=2|elapsed=23.87
+      - id=rule_no_table_prefix | name=本表字段禁止加表名 | sev=ERROR | obj=order_id
+      - id=rule_primary_key_id | name=主键必须命名为 id | sev=ERROR | obj=PRIMARY KEY (order_id)
+shard_3_6.jsonl|M-15|line=8|kind=negative|compliant=False|score=80|n_viol=1|elapsed=47.42
+      - id=rule_tinyint_unsigned | name=TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED | sev=ERROR | obj=deleted TINYINT(1), disabled TINYINT(1)
+shard_3_6.jsonl|P-03|line=9|kind=positive|compliant=True|score=100|n_viol=0|elapsed=44.31
+shard_3_6.jsonl|D-06|line=10|kind=negative|compliant=True|score=100|n_viol=0|elapsed=28.48
+shard_3_6.jsonl|D-12|line=11|kind=negative|compliant=False|score=60|n_viol=2|elapsed=21.72
+      - id=rule_unsigned_required | name=数字类型需加 UNSIGNED | sev=ERROR | obj=goods_id BIGINT NOT NULL DEFAULT 0
+      - id=rule_unsigned_required | name=数字类型需加 UNSIGNED | sev=ERROR | obj=module TINYINT(4) NOT NULL DEFAULT 0
+shard_3_6.jsonl|F-01|line=12|kind=negative|compliant=False|score=50|n_viol=3|elapsed=14.22
+      - id=rule_no_table_prefix | name=本表字段禁止拼接本表表名 | sev=ERROR | obj=third_order_no
+      - id=rule_code_suffix | name=编号编码字段命名后缀为 code | sev=WARN | obj=third_order_no
+      - id=rule_third_party_source | name=三方对接表必须包含系统来源与数据来源 | sev=ERROR | obj=system_source
+shard_3_6.jsonl|F-07|line=13|kind=negative|compliant=True|score=100|n_viol=0|elapsed=28.05
+shard_3_6.jsonl|P-05|line=14|kind=positive|compliant=True|score=100|n_viol=0|elapsed=65.94
+shard_4_6.jsonl|N-04|line=1|kind=negative|compliant=False|score=60|n_viol=2|elapsed=12.55
+      - id=rule_naming_price | name=单价字段命名后缀必须为 price | sev=ERROR | obj=unit_amount DECIMAL(20, 6) COMMENT '单价'
+      - id=rule_naming_price | name=单价字段命名后缀必须为 price | sev=ERROR | obj=sale_sum DECIMAL(20, 6) COMMENT '销售单价'
+shard_4_6.jsonl|N-10|line=2|kind=negative|compliant=False|score=60|n_viol=2|elapsed=71.96
+      - id=rule_out_prefix | name=出口类字段必须使用 out_ 前缀 | sev=ERROR | obj=export_store
+      - id=rule_out_prefix | name=出口类字段必须使用 out_ 前缀 | sev=ERROR | obj=outbound_bill
+shard_4_6.jsonl|N-16|line=3|kind=negative|compliant=False|score=40|n_viol=3|elapsed=13.41
+      - id=rule_no_double | name=禁止使用 double 类型 | sev=ERROR | obj=order_money DOUBLE
+      - id=rule_no_float | name=禁止使用 float 浮点类型 | sev=ERROR | obj=unit_price FLOAT
+      - id=rule_decimal_precision | name=数量金额统一使用 decimal(20, 6) | sev=ERROR | obj=goods_amount DECIMAL(10, 2)
+shard_4_6.jsonl|T-05|line=4|kind=negative|compliant=False|score=40|n_viol=4|elapsed=57.54
+      - id=rule_naming_status_term | name=状态字段应使用 status | sev=ERROR | obj=state TINYINT(4) UNSIGNED
+      - id=rule_naming_status_term | name=状态字段应使用 status | sev=ERROR | obj=stat TINYINT(4) UNSIGNED
+      - id=rule_status_comment_enum | name=状态字段注释需说明枚举值 | sev=WARNING | obj=state TINYINT(4) COMMENT '状态'
+      - id=rule_status_comment_enum | name=状态字段注释需说明枚举值 | sev=WARNING | obj=stat TINYINT(4) COMMENT '单据状态'
+shard_4_6.jsonl|T-11|line=5|kind=negative|compliant=False|score=0|n_viol=8|elapsed=37.58
+      - id=rule_standard_terminology | name=字段命名必须使用标准名词术语 | sev=ERROR | obj=account
+      - id=rule_standard_terminology | name=字段命名必须使用标准名词术语 | sev=ERROR | obj=pwd
+      - id=rule_standard_terminology | name=字段命名必须使用标准名词术语 | sev=ERROR | obj=nick_name
+      - id=rule_standard_terminology | name=字段命名必须使用标准名词术语 | sev=ERROR | obj=mail
+      - id=rule_standard_terminology | name=字段命名必须使用标准名词术语 | sev=ERROR | obj=sex
+      - id=rule_standard_terminology | name=字段命名必须使用标准名词术语 | sev=ERROR | obj=birth_date
+      - id=rule_standard_terminology | name=字段命名必须使用标准名词术语 | sev=ERROR | obj=role_no
+      - id=rule_standard_terminology | name=字段命名必须使用标准名词术语 | sev=ERROR | obj=position
+shard_4_6.jsonl|M-04|line=6|kind=negative|compliant=False|score=60|n_viol=2|elapsed=35.45
+      - id=rule_missing_base_field | name=实体基类必须字段缺失 | sev=ERROR | obj=create_id
+      - id=rule_unsigned_number | name=数字类型缺少 UNSIGNED | sev=ERROR | obj=version INT NOT NULL DEFAULT 0
+shard_4_6.jsonl|M-10|line=7|kind=negative|compliant=False|score=80|n_viol=1|elapsed=30.8
+      - id=rule_pk_type | name=主键必须为 BIGINT UNSIGNED | sev=ERROR | obj=id INT NOT NULL
+shard_4_6.jsonl|M-16|line=8|kind=negative|compliant=False|score=80|n_viol=1|elapsed=39.72
+      - id=rule_version_type | name=基础字段 version 类型错误 | sev=ERROR | obj=version VARCHAR(20)
+shard_4_6.jsonl|D-01|line=9|kind=negative|compliant=True|score=100|n_viol=0|elapsed=56.43
+shard_4_6.jsonl|D-07|line=10|kind=negative|compliant=False|score=80|n_viol=1|elapsed=37.69
+      - id=rule_unsigned_for_nonnegative | name=非负数字类型必须加 UNSIGNED | sev=ERROR | obj=version INT NOT NULL DEFAULT 0
+shard_4_6.jsonl|D-13|line=11|kind=negative|compliant=False|score=90|n_viol=1|elapsed=46.29
+      - id=rule_avoid_null | name=避免 NULL 字段 | sev=WARN | obj=code, remark, expire_time
+shard_4_6.jsonl|F-02|line=12|kind=negative|compliant=False|score=60|n_viol=2|elapsed=69.33
+      - id=rule_field_no_table_prefix | name=本表字段禁止加表名前缀且编号应使用 code | sev=ERROR | obj=third_order_no
+      - id=rule_third_party_source | name=三方对接表需包含系统来源和数据来源 | sev=ERROR | obj=db_third_order
+shard_4_6.jsonl|F-08|line=13|kind=negative|compliant=False|score=80|n_viol=1|elapsed=16.46
+      - id=rule_char1_default | name=单字符字段必须带默认值 | sev=ERROR | obj=is_split CHAR(1) NOT NULL
+shard_5_6.jsonl|N-05|line=1|kind=negative|compliant=False|score=60|n_viol=2|elapsed=18.53
+      - id=rule_money_suffix | name=金额字段统一命名后缀 _money | sev=ERROR | obj=pay_sum DECIMAL(20, 6)
+      - id=rule_money_suffix | name=金额字段统一命名后缀 _money | sev=ERROR | obj=order_total DECIMAL(20, 6)
+shard_5_6.jsonl|N-11|line=2|kind=negative|compliant=False|score=60|n_viol=2|elapsed=21.5
+      - id=rule_no_table_prefix | name=本表字段禁止加本表名前缀 | sev=ERROR | obj=vehicle_no
+      - id=rule_code_suffix | name=编号编码字段统一使用 code 后缀 | sev=ERROR | obj=user_number
+shard_5_6.jsonl|P-01|line=3|kind=positive|compliant=False|score=60|n_viol=2|elapsed=59.91
+      - id=rule_no_table_prefix | name=本表字段名禁止携带本表表名前缀 | sev=ERROR | obj=order_money DECIMAL(20, 6)
+      - id=rule_no_table_prefix | name=本表字段名禁止携带本表表名前缀 | sev=ERROR | obj=order_amount_unit VARCHAR(10)
+shard_5_6.jsonl|T-06|line=4|kind=negative|compliant=False|score=80|n_viol=1|elapsed=34.6
+      - id=rule_naming_suffix_code | name=编号编码命名后缀必须为 _code | sev=ERROR | obj=mark_no VARCHAR(32)
+shard_5_6.jsonl|T-12|line=5|kind=negative|compliant=False|score=0|n_viol=8|elapsed=42.29
+      - id=rule_naming_department | name=字段命名未使用标准术语 | sev=ERROR | obj=department
+      - id=rule_naming_organization | name=字段命名未使用标准术语 | sev=ERROR | obj=organization
+      - id=rule_naming_corp | name=字段命名未使用标准术语 | sev=ERROR | obj=corp
+      - id=rule_naming_product | name=字段命名未使用标准术语 | sev=ERROR | obj=product_id
+      - id=rule_naming_addr | name=字段命名未使用标准术语 | sev=ERROR | obj=addr
+      - id=rule_naming_postcode | name=字段命名未使用标准术语 | sev=ERROR | obj=postcode
+      - id=rule_naming_tel | name=字段命名未使用标准术语 | sev=ERROR | obj=tel
+      - id=rule_naming_contactor | name=字段命名未使用标准术语 | sev=ERROR | obj=contactor
+shard_5_6.jsonl|M-05|line=6|kind=negative|compliant=False|score=80|n_viol=1|elapsed=6.55
+      - id=rule_template_base_fields | name=缺少实体基类必须字段 create_time | sev=ERROR | obj=表 db_order 字段列表
+shard_5_6.jsonl|M-11|line=7|kind=negative|compliant=False|score=80|n_viol=1|elapsed=14.45
+      - id=rule_pk_not_null | name=主键必须为 BIGINT UNSIGNED NOT NULL | sev=ERROR | obj=id BIGINT UNSIGNED
+shard_5_6.jsonl|M-17|line=8|kind=negative|compliant=False|score=80|n_viol=1|elapsed=40.43
+      - id=rule_engine_innodb | name=必须使用 InnoDB 引擎 | sev=ERROR | obj=表定义结尾
+shard_5_6.jsonl|D-02|line=9|kind=negative|compliant=True|score=100|n_viol=0|elapsed=26.11
+shard_5_6.jsonl|D-08|line=10|kind=negative|compliant=True|score=100|n_viol=0|elapsed=8.39
+shard_5_6.jsonl|D-14|line=11|kind=negative|compliant=False|score=60|n_viol=2|elapsed=38.71
+      - id=rule_money_decimal | name=金额字段必须使用 decimal(20,6) | sev=ERROR | obj=pay_money DOUBLE NOT NULL DEFAULT 0
+      - id=rule_no_double | name=禁止使用 double 类型 | sev=ERROR | obj=fee_rate DOUBLE NOT NULL DEFAULT 0
+shard_5_6.jsonl|F-03|line=12|kind=negative|compliant=False|score=60|n_viol=2|elapsed=13.1
+      - id=rule_index_prefix | name=普通索引必须以 idx_ 开头 | sev=ERROR | obj=KEY `index_user_id` (`user_id`)
+      - id=rule_index_prefix | name=普通索引必须以 idx_ 开头 | sev=ERROR | obj=KEY `order_code_idx` (`code`)
+shard_5_6.jsonl|F-09|line=13|kind=negative|compliant=False|score=50|n_viol=3|elapsed=57.86
+      - id=rule_no_table_prefix | name=本表字段禁止加表名前缀 | sev=ERROR | obj=vehicle_number
+      - id=rule_string_type | name=字符串应使用 varchar(30) | sev=ERROR | obj=vehicle_number TEXT NOT NULL
+      - id=rule_string_default | name=大于1个字符应默认空串 | sev=WARN | obj=driver_name VARCHAR(30) NOT NULL
+shard_6_6.jsonl|N-06|line=1|kind=negative|compliant=False|score=60|n_viol=2|elapsed=14.79
+      - id=rule_amount_naming | name=数量类字段命名与类型规范 | sev=ERROR | obj=goods_count INT
+      - id=rule_amount_naming | name=数量类字段命名与类型规范 | sev=ERROR | obj=stock_qty INT
+shard_6_6.jsonl|N-12|line=2|kind=negative|compliant=False|score=70|n_viol=2|elapsed=72.08
+      - id=rule_naming_amount_unit | name=数量含单位字段命名规范 | sev=ERROR | obj=goods_unit VARCHAR(10)
+      - id=rule_terminology_info | name=名词术语规范 | sev=WARN | obj=表名 db_order_detail
+shard_6_6.jsonl|T-01|line=3|kind=negative|compliant=False|score=40|n_viol=3|elapsed=48.16
+      - id=rule_primary_key_name | name=主键字段命名必须为 id | sev=ERROR | obj=pk_id BIGINT UNSIGNED ... PRIMARY KEY
+      - id=rule_business_prefix | name=业务字段必须使用 biz_ 前缀 | sev=ERROR | obj=sid BIGINT UNSIGNED
+      - id=rule_unsigned | name=非负数字必须加 UNSIGNED | sev=ERROR | obj=version INT
+shard_6_6.jsonl|T-07|line=4|kind=negative|compliant=False|score=20|n_viol=4|elapsed=35.94
+      - id=rule_terminology | name=命名未使用标准名词术语 | sev=ERROR | obj=link
+      - id=rule_terminology | name=命名未使用标准名词术语 | sev=ERROR | obj=href
+      - id=rule_terminology | name=命名未使用标准名词术语 | sev=ERROR | obj=origin
+      - id=rule_terminology | name=命名未使用标准名词术语 | sev=ERROR | obj=src
+shard_6_6.jsonl|P-02|line=5|kind=positive|compliant=False|score=60|n_viol=2|elapsed=49.84
+      - id=rule_unsigned | name=数字类型必须加 UNSIGNED | sev=ERROR | obj=sort INT NOT NULL DEFAULT 0
+      - id=rule_unsigned | name=数字类型必须加 UNSIGNED | sev=ERROR | obj=version INT NOT NULL DEFAULT 0
+shard_6_6.jsonl|M-06|line=6|kind=negative|compliant=False|score=80|n_viol=1|elapsed=25.71
+      - id=rule_missing_modify_id | name=缺少修改人标识字段 | sev=ERROR | obj=表 db_order
+shard_6_6.jsonl|M-12|line=7|kind=negative|compliant=False|score=90|n_viol=1|elapsed=18.94
+      - id=rule_pk_snowflake | name=主键须为雪花算法无自增 | sev=WARNING | obj=id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT
+shard_6_6.jsonl|M-18|line=8|kind=negative|compliant=False|score=80|n_viol=1|elapsed=32.27
+      - id=rule_table_comment_required | name=必须包含表级注释 | sev=ERROR | obj=CREATE TABLE db_order
+shard_6_6.jsonl|D-03|line=9|kind=negative|compliant=False|score=80|n_viol=1|elapsed=27.44
+      - id=rule_no_foreign_key | name=禁止外键设计 | sev=ERROR | obj=CONSTRAINT `fk_order_user` FOREIGN KEY (`user_id`) REFERENCES `db_user` (`id`)
+shard_6_6.jsonl|D-09|line=10|kind=negative|compliant=False|score=60|n_viol=2|elapsed=22.01
+      - id=rule_no_reserved_keyword | name=表名禁止使用保留关键字 | sev=ERROR | obj=表名 order
+      - id=rule_db_prefix | name=生产表名必须以 db_ 开头 | sev=ERROR | obj=表名 order
+shard_6_6.jsonl|D-15|line=11|kind=negative|compliant=False|score=40|n_viol=3|elapsed=30.73
+      - id=rule_tinyint_length | name=TINYINT 统一使用 TINYINT(4) | sev=ERROR | obj=status TINYINT(1)
+      - id=rule_tinyint_length | name=TINYINT 统一使用 TINYINT(4) | sev=ERROR | obj=deleted TINYINT(1)
+      - id=rule_tinyint_length | name=TINYINT 统一使用 TINYINT(4) | sev=ERROR | obj=disabled TINYINT(1)
+shard_6_6.jsonl|F-04|line=12|kind=negative|compliant=False|score=80|n_viol=1|elapsed=48.82
+      - id=rule_unsigned_numeric | name=非负数字类型必须加 UNSIGNED | sev=ERROR | obj=version INT
+shard_6_6.jsonl|F-10|line=13|kind=negative|compliant=False|score=60|n_viol=2|elapsed=11.59
+      - id=rule_int_type | name=整数字段类型选择规范 | sev=ERROR | obj=status INT NOT NULL DEFAULT 0
+      - id=rule_unsigned | name=无负数数字类型必须加 UNSIGNED | sev=ERROR | obj=biz_type BIGINT NOT NULL DEFAULT 0

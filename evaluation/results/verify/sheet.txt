@@ -1,0 +1,457 @@
+COMPACT SHEET: lead lenient hits (54) -- expected concept vs every reported rule_name
+mark:  [S] lead strict, [L] lead lenient-only, [.] no lead hit
+
+D-01  [.] exp=建库规范 · 生产库表名 db_ 前缀
+       title=表名未以 `db_` 开头
+       clause=建库规范 2 —— 生产数据库均以 `db_` 开头（如 `db_order`、`db_cargo`）；命名规范 15 —— 库前缀在无特殊情况统一使用 `db_`
+       (no violations) summary=整体符合基类字段与引擎规范，但 code 字段长度不符合字符串默认长度规范，需调整为 varchar(30)。
+
+D-02  [.] exp=建库规范 · 必须使用 InnoDB
+       title=存储引擎使用 `MyISAM`
+       clause=建库规范 1 —— 数据必须使用 `innodb` 引擎；建表模板 —— 必须使用 `ENGINE=InnoDB`
+       (no violations) summary=表结构整体符合规范，唯一问题是使用 MyISAM 引擎，违反必须使用 InnoDB 的强制要求，需改为 InnoDB。
+
+D-03  [S] exp=建库规范 · 表内禁止外键设计
+       title=表内定义外键约束
+       clause=建库规范 3 —— 表内禁止外键设计（外键关系由业务应用逻辑保证）
+       v1: 禁止外键设计 || desc=表内禁止外键设计，外键关系应由业务应用逻辑保证 || obj=CONSTRAINT `fk_order_user` FOREIGN KEY (`user_id`) REFERENCES `db_user` (`id`) || sev=ERROR
+
+D-04  [S] exp=建库规范 · 表内禁止外键设计
+       title=外键附带级联删除
+       clause=建库规范 3 —— 表内禁止外键设计
+       v1: 表内禁止外键设计 || desc=表内禁止外键设计，外键关系应由业务逻辑保证 || obj=CONSTRAINT `fk_detail_order` FOREIGN KEY (`order_id`) REFERENCES `db_order` (`id`) || sev=ERROR
+
+D-05  [.] exp=建库规范 · 禁止触发器
+       title=定义触发器
+       clause=建库规范 4 —— 禁止触发器、存储过程、自定义函数
+       (no violations) summary=db_order 表结构基本合规，但脚本包含触发器，违反建库规范中禁止触发器的要求，需移除触发器并由业务应用逻辑实现。
+
+D-06  [.] exp=建库规范 · 禁止存储过程/自定义函数
+       title=定义存储过程与自定义函数
+       clause=建库规范 4 —— 禁止触发器、存储过程、自定义函数
+       (no violations) summary=输入为存储过程和自定义函数，违反规范禁止使用存储过程与自定义函数的规定，需移除并改为应用层实现。
+
+D-07  [.] exp=建库规范 · 字符集必须 utf8mb4
+       title=字符集使用 `utf8` 而非 `utf8mb4`
+       clause=建库规范 5 —— 字符集为 `utf8mb4`；第 15 条 —— 建表结尾填了就必须是规范字符集
+       v1: 非负数字类型必须加 UNSIGNED || desc=version 为非负数字但未加 UNSIGNED，不符合数字类型规范 || obj=version INT NOT NULL DEFAULT 0 || sev=ERROR
+
+D-08  [.] exp=建库规范 · 字符集必须 utf8mb4 | 建表规范 · 字段不手写字符集
+       title=字符集使用 `latin1` 并在字段上重复声明字符集
+       clause=建库规范 5 —— 字符集为 `utf8mb4`；建表规范 —— 字段定义不要手写 `CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci`
+       (no violations) summary=表结构主体符合基类字段要求，但字符集使用 latin1，不符合统一 utf8mb4 规范；code 字段手写 CHARACTER SET/COLLATE，需移除。
+
+D-09  [L] exp=建库规范 · 表名禁止关键字
+       title=表名使用数据库关键字 `order`
+       clause=建库规范 7 —— 表与字段不允许用关键字或者看着像关键字的单词（原文举例 `order`、`select`、`delete`、`desc`）
+       v1: 表名禁止使用保留关键字 || desc=表名 order 是数据库保留关键字，禁止使用 || obj=表名 order || sev=ERROR
+       v2: 生产表名必须以 db_ 开头 || desc=表名缺少 db_ 前缀，生产库要求 db_ 开头 || obj=表名 order || sev=ERROR
+
+D-10  [L] exp=建库规范 · 字段名禁止关键字
+       title=字段名使用关键字或疑似关键字
+       clause=建库规范 7 —— 表与字段不允许用关键字或者看着像关键字的单词
+       v1: 禁止使用保留关键字 || desc=字段 desc 是 MySQL 保留关键字，规范禁止使用 || obj=desc 字段 || sev=ERROR
+       v2: 备注统一命名 remark || desc=备注字段应统一命名为 remark || obj=desc 字段 || sev=ERROR
+       v3: 禁止使用保留关键字 || desc=字段 group 是 MySQL 保留关键字，规范禁止使用 || obj=group 字段 || sev=ERROR
+       v4: 禁止使用保留关键字 || desc=字段 index 是 MySQL 保留关键字，规范禁止使用 || obj=index 字段 || sev=ERROR
+       v5: 排序统一命名 sort || desc=排序字段应统一命名为 sort || obj=index 字段 || sev=ERROR
+       v6: 数字类型非负必须加 UNSIGNED || desc=排序字段非负但未加 UNSIGNED || obj=index 字段 || sev=ERROR
+       v7: 禁止使用保留关键字 || desc=字段 value 是 MySQL 保留关键字，规范禁止使用 || obj=value 字段 || sev=ERROR
+
+D-11  [S] exp=建库规范 · 加字段必须标注 AFTER
+       title=DDL 增加字段未标注 `AFTER`
+       clause=建库规范 8 —— DDL 增加字段必须标注 `AFTER` 指定位置
+       v1: DDL 增加字段必须标注 AFTER 指定位置 || desc=新增字段未指定 AFTER 位置，违反增加字段必须标注 AFTER 规范 || obj=ALTER TABLE db_order ADD COLUMN channel_code 未指定 AFTER || sev=ERROR
+
+D-12  [L] exp=建库规范 · 数字类型加 UNSIGNED
+       title=数字类型未加 `UNSIGNED`
+       clause=建库规范 9 —— 数字类型已知不存在负数的情况下可以加 `UNSIGNED`，可使数值范围扩大一倍
+       v1: 数字类型需加 UNSIGNED || desc=商品标识无负数场景未加 UNSIGNED || obj=goods_id BIGINT NOT NULL DEFAULT 0 || sev=ERROR
+       v2: 数字类型需加 UNSIGNED || desc=模块字段无负数场景未加 UNSIGNED || obj=module TINYINT(4) NOT NULL DEFAULT 0 || sev=ERROR
+
+D-13  [S] exp=建库规范 · 避免 NULL
+       title=允许 `NULL` 且未设置默认值
+       clause=建库规范 10 —— 尽自己的能力使用 `NOT NULL` 或 `NOT NULL DEFAULT`，避免 `NULL` 带来的索引与逻辑开销
+       v1: 避免 NULL 字段 || desc=字段允许 NULL，违反避免 NULL 的规范，带来索引与逻辑开销 || obj=code, remark, expire_time || sev=WARN
+
+D-14  [L] exp=建库规范 · 禁用 double
+       title=使用 `double` 存储金额
+       clause=建库规范 12 —— `double` 类型不要用，直接用 `decimal`；命名规范 17 —— 金额统一 `decimal(20, 6)`
+       v1: 金额字段必须使用 decimal(20,6) || desc=pay_money 为金额字段却使用 double，未按要求用 decimal(20,6) || obj=pay_money DOUBLE NOT NULL DEFAULT 0 || sev=ERROR
+       v2: 禁止使用 double 类型 || desc=fee_rate 使用 double 类型，违反禁止使用 double 的规范 || obj=fee_rate DOUBLE NOT NULL DEFAULT 0 || sev=ERROR
+
+D-15  [L] exp=建库规范 · TINYINT 统一 TINYINT(4)
+       title=`TINYINT` 使用 `TINYINT(1)`
+       clause=建库规范 14 —— 对于 `TINYINT` 类型，统一使用 `TINYINT(4)`，规避驱动对 `TINYINT(1)` 的特殊处理造成不同业务的语义分歧
+       v1: TINYINT 统一使用 TINYINT(4) || desc=status 使用 TINYINT(1)，驱动可能误转为布尔，且未加 UNSIGNED || obj=status TINYINT(1) || sev=ERROR
+       v2: TINYINT 统一使用 TINYINT(4) || desc=deleted 使用 TINYINT(1) 且缺 UNSIGNED，不符合基类模板要求 || obj=deleted TINYINT(1) || sev=ERROR
+       v3: TINYINT 统一使用 TINYINT(4) || desc=disabled 使用 TINYINT(1) 且缺 UNSIGNED，不符合基类模板要求 || obj=disabled TINYINT(1) || sev=ERROR
+
+D-16  [L] exp=建库规范 · 关联表 r_ 前缀
+       title=关联表未以 `r_` 开头
+       clause=建库规范 13 —— 关联表以 `r_` 开头
+       v1: 关联表必须以 r_ 开头 || desc=用户角色关联表属关联表，表名未以 r_ 开头 || obj=db_user_role || sev=ERROR
+
+F-01  [L] exp=建表规范 · 三方对接表缺 system_source
+       title=三方对接表缺少 `system_source`
+       clause=建表规范 1 —— 与三方对接的表需要加上系统来源 `system_source` 和数据来源 `data_source`
+       v1: 本表字段禁止拼接本表表名 || desc=字段名拼接本表表名 third_order，违反本表字段不加表名原则 || obj=third_order_no || sev=ERROR
+       v2: 编号编码字段命名后缀为 code || desc=编号类字段命名后缀应为 code，no 不符合命名规范 || obj=third_order_no || sev=WARN
+       v3: 三方对接表必须包含系统来源与数据来源 || desc=与三方对接表缺少 system_source 系统来源字段 || obj=system_source || sev=ERROR
+
+F-02  [L] exp=建表规范 · 三方对接表缺 data_source
+       title=三方对接表缺少 `data_source`
+       clause=建表规范 1 —— 与三方对接的表需要加上系统来源 `system_source` 和数据来源 `data_source`
+       v1: 本表字段禁止加表名前缀且编号应使用 code || desc=本表字段加了表名前缀，且编号后缀应为 code || obj=third_order_no || sev=ERROR
+       v2: 三方对接表需包含系统来源和数据来源 || desc=与三方对接的表缺少 data_source 字段 || obj=db_third_order || sev=ERROR
+
+F-03  [L] exp=建表规范 · 普通索引 idx_ 前缀
+       title=普通索引未以 `idx_` 开头
+       clause=建表规范 3 —— 普通索引必须以 `idx_` 开头
+       v1: 普通索引必须以 idx_ 开头 || desc=普通索引名 index_user_id 未以 idx_ 开头，不符合索引命名规范 || obj=KEY `index_user_id` (`user_id`) || sev=ERROR
+       v2: 普通索引必须以 idx_ 开头 || desc=普通索引名 order_code_idx 未以 idx_ 开头，且违背本表字段不加表名 || obj=KEY `order_code_idx` (`code`) || sev=ERROR
+
+F-04  [.] exp=建表规范 · 唯一索引 uniq_ 前缀
+       title=唯一索引未以 `uniq_` 开头
+       clause=建表规范 4 —— 唯一索引必须以 `uniq_` 开头
+       v1: 非负数字类型必须加 UNSIGNED || desc=version 为非负数字但未加 UNSIGNED || obj=version INT || sev=ERROR
+
+F-05  [L] exp=建表规范 · 布尔类型 TINYINT(4)
+       title=布尔字段使用 `BOOLEAN` / `BIT` 类型
+       clause=建表规范 5 —— 布尔类型统一 `TINYINT(4) NOT NULL DEFAULT 0`；建库规范 14 —— `TINYINT` 统一 `TINYINT(4)`
+       v1: 布尔类型必须使用 TINYINT(4) || desc=布尔字段用 BOOLEAN 会被驱动映射为 TINYINT(1)，应统一 TINYINT(4) || obj=is_paid BOOLEAN NOT NULL DEFAULT FALSE || sev=ERROR
+       v2: 单字符标记必须使用 char(1) || desc=1 个字符的标记字段不得使用 BIT(1)，应使用 char(1) || obj=is_split BIT(1) NOT NULL DEFAULT 0 || sev=ERROR
+
+F-06  [.] exp=建表规范 · 布尔字段名用名词
+       title=布尔字段名使用动词/否定式，而非名词
+       clause=建表规范 5 —— 布尔类型列名尽量用名词，这样 Java 框架会映射为 `isDelete()`，符合预期
+       v1: 基础字段删除标记命名违规 || desc=缺少规范基础字段 deleted，is_delete 命名不规范 || obj=is_delete TINYINT(4) || sev=ERROR
+       v2: 基础字段停用标记命名违规 || desc=缺少规范基础字段 disabled，not_enabled 反向命名不规范 || obj=not_enabled TINYINT(4) || sev=ERROR
+
+F-07  [.] exp=建表规范 · 单字符字段用 char(1)
+       title=1 个字符的字段使用 `VARCHAR(1)`
+       clause=建表规范 6 —— 1 个字符使用 `char(1)`，如 `is_split char(1) NOT NULL DEFAULT 'N'`
+       (no violations) summary=DDL 整体基本合规：7 个基类字段齐全，主键、引擎、字符集和注释均符合规范；仅 is_split 字段类型不符合 1 字符字段应使用 char(1) 的要求。
+
+F-08  [L] exp=建表规范 · 单字符字段默认值
+       title=1 个字符的字段缺少默认值
+       clause=建表规范 6 —— `is_split char(1) NOT NULL DEFAULT 'N'`
+       v1: 单字符字段必须带默认值 || desc=is_split 为 1 个字符类型字段，缺少默认值约束 || obj=is_split CHAR(1) NOT NULL || sev=ERROR
+
+F-09  [L] exp=建表规范 · 大于1字符用 varchar
+       title=大于 1 个字符的字段使用 `TEXT` 且无默认值
+       clause=建表规范 7 —— 大于 1 个字符使用 `varchar(30) NOT NULL DEFAULT ''`
+       v1: 本表字段禁止加表名前缀 || desc=vehicle_number 含表名 vehicle_，本表字段不应加表名前缀 || obj=vehicle_number || sev=ERROR
+       v2: 字符串应使用 varchar(30) || desc=车牌号 TEXT 无默认值，应改用 varchar(30) || obj=vehicle_number TEXT NOT NULL || sev=ERROR
+       v3: 大于1个字符应默认空串 || desc=driver_name 缺少 DEFAULT ''，不符合字符串字段规范 || obj=driver_name VARCHAR(30) NOT NULL || sev=WARN
+
+F-10  [L] exp=建表规范 · 单整数用 TINYINT(4)
+       title=1 个整数的字段使用 `INT` 而非 `TINYINT(4)`
+       clause=建表规范 8 —— 1 个整数使用 `status TINYINT(4) NOT NULL DEFAULT 0`
+       v1: 整数字段类型选择规范 || desc=1 个整数的状态字段应使用 TINYINT(4)，不得用 INT || obj=status INT NOT NULL DEFAULT 0 || sev=ERROR
+       v2: 无负数数字类型必须加 UNSIGNED || desc=biz_type 不存在负数，未加 UNSIGNED 浪费一半取值范围 || obj=biz_type BIGINT NOT NULL DEFAULT 0 || sev=ERROR
+
+F-11  [.] exp=建表规范 · 大于1整数用 int
+       title=大于 1 个整数的字段用字符串存储
+       clause=建表规范 9 —— 大于 1 个整数使用 `valuation_mode int NOT NULL DEFAULT '1131000'`
+       v1: 数量类字段必须使用 decimal || desc=total_amount 未使用 decimal 存储数量类字段 || obj=total_amount VARCHAR(20) || sev=ERROR
+
+F-12  [.] exp=建表规范 · 字段不手写字符集
+       title=字段定义手写 `CHARACTER SET` / `COLLATE`
+       clause=建表规范 10 —— 字段定义不要手写 `CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci`
+       (no violations) summary=字段 code 和 remark 手写了字符集和排序规则，违反规范[2]第10条；其余表定义符合规范。
+
+M-01  [L] exp=建表模板 · 缺少基类字段 version
+       title=缺少 `version` 字段
+       clause=建表模板 —— 必须包含 `version` 基础字段
+       v1: 缺少实体基类必须字段 version || desc=缺少基类必备字段 version，未满足 7 大通用基类字段要求 || obj=db_order 表结构 || sev=ERROR
+
+M-02  [L] exp=建表模板 · 缺少基类字段 deleted
+       title=缺少 `deleted` 字段
+       clause=建表模板 —— 必须包含 `deleted` 基础字段
+       v1: 缺少删除标记基类字段 deleted || desc=缺少基类必填字段 deleted，未满足 7 个基础字段要求 || obj=db_order || sev=ERROR
+
+M-03  [L] exp=建表模板 · 缺少基类字段 disabled
+       title=缺少 `disabled` 字段
+       clause=建表模板 —— 必须包含 `disabled` 基础字段
+       v1: 缺少实体基类必填字段 || desc=缺少基础字段 disabled，未满足实体基类字段要求 || obj=disabled || sev=ERROR
+
+M-04  [L] exp=建表模板 · 缺少基类字段 create_id
+       title=缺少 `create_id` 字段
+       clause=建表模板 —— 必须包含 `create_id` 基础字段
+       v1: 实体基类必须字段缺失 || desc=缺少基类字段 create_id，违反建表模板要求 || obj=create_id || sev=ERROR
+       v2: 数字类型缺少 UNSIGNED || desc=version 非负但未加 UNSIGNED || obj=version INT NOT NULL DEFAULT 0 || sev=ERROR
+
+M-05  [L] exp=建表模板 · 缺少基类字段 create_time
+       title=缺少 `create_time` 字段
+       clause=建表模板 —— 必须包含 `create_time` 基础字段
+       v1: 缺少实体基类必须字段 create_time || desc=缺少基类字段 create_time，未满足 7 个基础字段强制要求 || obj=表 db_order 字段列表 || sev=ERROR
+
+M-06  [L] exp=建表模板 · 缺少基类字段 modify_id
+       title=缺少 `modify_id` 字段
+       clause=建表模板 —— 必须包含 `modify_id` 基础字段
+       v1: 缺少修改人标识字段 || desc=缺少 modify_id 字段，违反实体基类必须字段要求 || obj=表 db_order || sev=ERROR
+
+M-07  [L] exp=建表模板 · 缺少基类字段 modify_time
+       title=缺少 `modify_time` 字段
+       clause=建表模板 —— 必须包含 `modify_time` 基础字段
+       v1: 实体基类必须字段缺失 || desc=缺少基础基类字段 modify_time，不满足建表模板要求 || obj=modify_time || sev=ERROR
+
+M-08  [L] exp=建表模板 · 必须包含通用基类审计字段
+       title=一次缺失 4 个基类字段
+       clause=建表模板 —— 必须包含全部 7 个基础字段
+       v1: 缺少实体基类必须字段 || desc=缺少 version、deleted、disabled、create_id、modify_id 五个基类字段 || obj=db_order 表结构 || sev=ERROR
+       v2: 本表字段禁止拼接本表表名 || desc=order_money 字段名重复拼接本表表名，应直接使用 money || obj=order_money || sev=ERROR
+
+M-09  [L] exp=建表模板 · 主键必须为 id
+       title=主键字段名不是 `id`
+       clause=建表模板 —— 主键必须为 `id BIGINT UNSIGNED NOT NULL`
+       v1: 本表字段禁止加表名 || desc=主键字段 order_id 加了本表表名前缀，违反本表字段不加表名规则 || obj=order_id || sev=ERROR
+       v2: 主键必须命名为 id || desc=主键字段未使用规范名 id，违反实体基类模板要求 || obj=PRIMARY KEY (order_id) || sev=ERROR
+
+M-10  [L] exp=建表模板 · 主键类型必须为 BIGINT UNSIGNED
+       title=主键类型不符合模板（`INT` / 缺少 `UNSIGNED`）
+       clause=建表模板 —— 主键必须为 `id BIGINT UNSIGNED NOT NULL`
+       v1: 主键必须为 BIGINT UNSIGNED || desc=主键 id 类型为 INT 且无 UNSIGNED，违反主键类型规范 || obj=id INT NOT NULL || sev=ERROR
+
+M-11  [L] exp=建表模板 · 主键必须 NOT NULL
+       title=主键缺少 `NOT NULL`
+       clause=建表模板 —— 主键必须为 `id BIGINT UNSIGNED NOT NULL`
+       v1: 主键必须为 BIGINT UNSIGNED NOT NULL || desc=主键 id 缺少 NOT NULL，允许 NULL 违反主键定义与建表模板 || obj=id BIGINT UNSIGNED || sev=ERROR
+
+M-12  [L] exp=建表模板 · 主键雪花算法
+       title=主键使用数据库自增
+       clause=建表规范 —— 主键（雪花）：`id BIGINT UNSIGNED NOT NULL COMMENT '主键'`；框架主键实现要求 `IdType.ASSIGN_ID` 由 `IdWorker` 生成
+       v1: 主键须为雪花算法无自增 || desc=主键使用 AUTO_INCREMENT，与雪花算法主键设计要求不符 || obj=id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT || sev=WARNING
+
+M-13  [L] exp=建表模板 · 基类字段类型不符 create_id/modify_id
+       title=`create_id` / `modify_id` 类型写成了 `VARCHAR`
+       clause=建表模板 —— `create_id` / `modify_id` 必须为 `BIGINT UNSIGNED NOT NULL`
+       v1: 基类字段类型必须符合建表模板 || desc=create_id 应为 BIGINT UNSIGNED，VARCHAR 不符合基类模板 || obj=create_id VARCHAR(32) || sev=ERROR
+       v2: 基类字段类型必须符合建表模板 || desc=modify_id 应为 BIGINT UNSIGNED，VARCHAR 不符合基类模板 || obj=modify_id VARCHAR(32) || sev=ERROR
+
+M-14  [L] exp=建表模板 · 基类字段类型不符 create_time/modify_time
+       title=`create_time` / `modify_time` 使用 `DATE` 或 `TIMESTAMP`
+       clause=建表模板 —— 两者必须为 `DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP`
+       v1: create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP || desc=create_time 类型应为 DATETIME，DATE 不满足基类模板 || obj=create_time DATE || sev=ERROR
+       v2: modify_time 必须为 DATETIME || desc=modify_time 类型应为 DATETIME，TIMESTAMP 不符合模板 || obj=modify_time TIMESTAMP || sev=ERROR
+
+M-15  [L] exp=建库规范 · TINYINT 统一 TINYINT(4)
+       title=`deleted` / `disabled` 使用 `TINYINT(1)`
+       clause=建表模板 —— `deleted` / `disabled` 为 `TINYINT(4) UNSIGNED NOT NULL DEFAULT 0`；建库规范 14 —— TINYINT 统一 `TINYINT(4)`
+       v1: TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED || desc=deleted/disabled 使用 TINYINT(1) 且无 UNSIGNED，不符合布尔字段规范 || obj=deleted TINYINT(1), disabled TINYINT(1) || sev=ERROR
+
+M-16  [L] exp=建表模板 · 基类字段类型不符 version
+       title=`version` 类型写成字符串
+       clause=建表模板 —— `version INT NOT NULL DEFAULT 0`
+       v1: 基础字段 version 类型错误 || desc=version 字段类型应为 INT NOT NULL DEFAULT 0，而非 VARCHAR || obj=version VARCHAR(20) || sev=ERROR
+
+M-17  [S] exp=建表模板 · 必须使用 InnoDB 引擎
+       title=未声明 `ENGINE=InnoDB`
+       clause=建表模板 —— 必须使用 `ENGINE=InnoDB`
+       v1: 必须使用 InnoDB 引擎 || desc=缺少 ENGINE=InnoDB 声明，不符合建表模板要求 || obj=表定义结尾 || sev=ERROR
+
+M-18  [S] exp=建表模板 · 必须包含表级注释
+       title=缺少表级注释
+       clause=建表模板 —— 必须包含表级注释 `COMMENT='...'`；建表规范 —— 建表结尾 `) COMMENT='司机报名申请表';`
+       v1: 必须包含表级注释 || desc=缺少表级 COMMENT，违反建表模板要求 || obj=CREATE TABLE db_order || sev=ERROR
+
+M-19  [L] exp=建表模板 · 缺少表级主键约束
+       title=缺少表级 `PRIMARY KEY (id)` 声明
+       clause=建表模板 —— 主键定义必须包含表级约束 `PRIMARY KEY(id)`
+       v1: 缺少主键定义 || desc=未定义 PRIMARY KEY(id)，违反建表模板主键要求 || obj=表定义 || sev=ERROR
+       v2: 表名使用库前缀 || desc=表名 db_order 使用了库前缀 db_，违反库前缀使用规范 || obj=表名 db_order || sev=ERROR
+
+M-20  [L] exp=建表模板 · 字段缺少注释
+       title=字段定义缺少 `COMMENT` 注释
+       clause=建表模板 —— 模板中每个字段都携带 `COMMENT '...'`
+       v1: 本表字段禁止加表名前缀 || desc=字段名包含本表名 order，作为本表字段应直接使用 money || obj=order_money || sev=ERROR
+       v2: 主键必须包含注释 || desc=主键 id 缺少 COMMENT 主键，不符合建表模板 || obj=id || sev=ERROR
+       v3: 基类字段必须包含中文注释 || desc=7 个通用基类字段缺少中文 COMMENT，未按模板定义 || obj=version,deleted,disabled,create_id,create_time,modify_id,modify_time || sev=ERROR
+
+N-01  [S] exp=命名规范 · lower_snake_case
+       title=表名与字段名使用驼峰命名
+       clause=命名规范 1 —— 采用 `lower_snake_case` 命名法
+       v1: 采用 lower_snake_case 命名法 || desc=表名使用驼峰，未遵循 lower_snake_case 命名法 || obj=db_OrderInfo || sev=ERROR
+       v2: 采用 lower_snake_case 命名法 || desc=字段名使用驼峰，未遵循 lower_snake_case 命名法 || obj=userName || sev=ERROR
+       v3: 本表字段不加表名前缀 || desc=字段名驼峰且带本表名前缀 Order，违反命名规范 || obj=OrderStatus || sev=ERROR
+
+N-02  [.] exp=命名规范 · 语义尽量简短
+       title=使用冗长词而非规范推荐缩写
+       clause=命名规范 2 —— 在语义明确的情况下尽量简短（原文反例：`organization`、`administrator`）
+       v1: 表名使用规范术语 || desc=表名含非规范术语 organization，应为 organ || obj=db_organization_info || sev=ERROR
+       v2: 字段使用规范术语 || desc=字段 administrator 非规范术语，应为 admin || obj=administrator || sev=ERROR
+       v3: 字段使用规范术语 || desc=字段 organization 非规范术语，应为 organ || obj=organization || sev=ERROR
+
+N-03  [L] exp=命名规范 · 关联字段命名
+       title=关联字段未采用「表名_字段」命名
+       clause=命名规范 3 —— 外键关系采用 `表名_字段` 的命名方式
+       v1: 关联表命名必须以 r_ 开头 || desc=该表为订单关联表，表名未以 r_ 开头，不符合关联表命名规范 || obj=db_order_relation || sev=ERROR
+
+N-04  [L] exp=命名规范 · 单价后缀 price
+       title=单价字段未使用 `price` 后缀
+       clause=命名规范 4 —— 单价的统一命名后缀为 `[xxxx_]price`
+       v1: 单价字段命名后缀必须为 price || desc=单价字段误用数量后缀 amount，应为 price 后缀 || obj=unit_amount DECIMAL(20, 6) COMMENT '单价' || sev=ERROR
+       v2: 单价字段命名后缀必须为 price || desc=销售单价字段使用 sum 后缀，命名不符合单价规范 || obj=sale_sum DECIMAL(20, 6) COMMENT '销售单价' || sev=ERROR
+
+N-05  [L] exp=命名规范 · 金额后缀 money
+       title=金额字段未使用 `money` 后缀
+       clause=命名规范 5 —— 金额的统一命名后缀为 `[xxxx_]money`
+       v1: 金额字段统一命名后缀 _money || desc=金额字段命名未使用 _money 后缀，不符合命名规范 || obj=pay_sum DECIMAL(20, 6) || sev=ERROR
+       v2: 金额字段统一命名后缀 _money || desc=金额字段命名未使用 _money 后缀，不符合命名规范 || obj=order_total DECIMAL(20, 6) || sev=ERROR
+
+N-06  [L] exp=命名规范 · 数量后缀 amount
+       title=数量字段未使用 `amount` 后缀
+       clause=命名规范 6 —— 数量的统一命名后缀为 `[xxxx_]amount`
+       v1: 数量类字段命名与类型规范 || desc=数量类字段未用 _amount 后缀，且 INT 类型不符合数量类用 decimal || obj=goods_count INT || sev=ERROR
+       v2: 数量类字段命名与类型规范 || desc=数量类字段未用 _amount 后缀，且 INT 类型不符合数量类用 decimal || obj=stock_qty INT || sev=ERROR
+
+N-07  [L] exp=命名规范 · 时间后缀 time
+       title=时间字段未使用 `time` 后缀
+       clause=命名规范 7 —— 时间的统一命名后缀为 `[xxxx_]time`
+       v1: 时间字段命名规范 || desc=时间字段命名未使用 _time 后缀 || obj=receive_date DATE || sev=ERROR
+       v2: 时间字段命名规范 || desc=时间字段命名未使用 _time 后缀且使用缩写 ts || obj=send_ts DATETIME || sev=ERROR
+
+N-08  [L] exp=命名规范 · 业务类前缀 biz_
+       title=业务类字段未使用 `biz_` 前缀
+       clause=命名规范 8 —— 业务类统一命名前缀为 `biz_[xxxx]`
+       v1: 业务类字段需用 biz_ 前缀 || desc=业务类型字段未使用 biz_ 前缀命名 || obj=business_type || sev=ERROR
+       v2: 业务类字段需用 biz_ 前缀 || desc=业务标识字段未使用 biz_ 前缀命名 || obj=trade_id || sev=ERROR
+       v3: 非负数字类型必须加 UNSIGNED || desc=version 为非负数字但未加 UNSIGNED || obj=version INT || sev=ERROR
+
+N-09  [L] exp=命名规范 · 入口类前缀 in_
+       title=入口类字段未使用 `in_` 前缀
+       clause=命名规范 9 —— 入口类统一命名前缀为 `in_[xxxx]`
+       v1: 入口类字段需使用 in_ 前缀 || desc=入口类字段未使用 in_ 前缀命名，不符合命名规范 || obj=enter_store BIGINT UNSIGNED || sev=ERROR
+       v2: 入口类字段需使用 in_ 前缀 || desc=入口类字段未使用 in_ 前缀命名，不符合命名规范 || obj=inbound_bill BIGINT UNSIGNED || sev=ERROR
+
+N-10  [L] exp=命名规范 · 出口类前缀 out_
+       title=出口类字段未使用 `out_` 前缀
+       clause=命名规范 10 —— 出口类统一命名前缀为 `out_[xxxx]`
+       v1: 出口类字段必须使用 out_ 前缀 || desc=出口类字段未使用 out_ 前缀 || obj=export_store || sev=ERROR
+       v2: 出口类字段必须使用 out_ 前缀 || desc=出口类字段未使用 out_ 前缀 || obj=outbound_bill || sev=ERROR
+
+N-11  [L] exp=命名规范 · 编号后缀 code
+       title=编号/编码字段未使用 `code` 后缀
+       clause=命名规范 11 —— 编号、编码相关的统一命名后缀为 `[xxxx_]code`
+       v1: 本表字段禁止加本表名前缀 || desc=本表已为 db_vehicle，字段再加 vehicle_ 前缀违反本表字段不加表名规则 || obj=vehicle_no || sev=ERROR
+       v2: 编号编码字段统一使用 code 后缀 || desc=编号类字段命名后缀不规范，未使用规范要求的 code 后缀 || obj=user_number || sev=ERROR
+
+N-12  [L] exp=命名规范 · 单位字段后缀 amount_unit
+       title=数量含单位字段未使用 `amount_unit` 后缀
+       clause=命名规范 12 —— 数量含单位的字符字段后缀为 `[xxxx_]amount_unit`（仅展示不参与计算）
+       v1: 数量含单位字段命名规范 || desc=商品数量单位字段未使用 amount_unit 后缀 || obj=goods_unit VARCHAR(10) || sev=ERROR
+       v2: 名词术语规范 || desc=表名使用 detail，未使用推荐术语 info || obj=表名 db_order_detail || sev=WARN
+
+N-13  [L] exp=命名规范 · 排序字段命名
+       title=排序字段未统一使用 `sort`
+       clause=命名规范 13 —— 排序的统一命名 `sort`
+       v1: 字段命名必须使用 lower_snake_case || desc=sortIndex 为驼峰命名，违反 lower_snake_case 命名规范 || obj=sortIndex INT NOT NULL DEFAULT 0 || sev=ERROR
+       v2: 排序字段统一命名 sort || desc=三个排序字段语义重复且未使用规范命名 sort || obj=seq, sort_no, sortIndex || sev=ERROR
+
+N-14  [L] exp=命名规范 · 备注字段命名
+       title=备注字段未统一使用 `remark`
+       clause=命名规范 14 —— 备注的统一全名 `remark`
+       v1: 禁止使用保留关键字或类似关键字字段 || desc=comment 是近似关键字，且备注未统一为 remark || obj=comment VARCHAR(255) || sev=ERROR
+       v2: 备注字段统一命名为 remark || desc=note 非规范备注名，未使用统一名 remark || obj=note VARCHAR(255) || sev=WARNING
+       v3: 备注字段统一命名为 remark || desc=memo 非规范备注名，未使用统一名 remark || obj=memo VARCHAR(255) || sev=WARNING
+
+N-15  [L] exp=命名规范 · 本表字段不加表名前缀
+       title=本表字段加了表名前缀
+       clause=命名规范 16 —— 若是本表自己的字段，字段前不需要加表名（原文反例：`db_order.order.order_id` 应直接写 `id`）
+       v1: 本表字段禁止拼接本表表名 || desc=本表字段冗余拼接表名，且与主键 id 语义重复 || obj=order_id BIGINT UNSIGNED NOT NULL DEFAULT 0 || sev=ERROR
+       v2: 本表字段禁止拼接本表表名 || desc=本表字段冗余拼接表名前缀，不符合命名规范 || obj=order_code VARCHAR(64) || sev=WARN
+       v3: 本表字段禁止拼接本表表名 || desc=本表字段冗余拼接表名前缀，不符合命名规范 || obj=order_name VARCHAR(64) || sev=WARN
+
+N-16  [L] exp=命名规范 · 金额数量精度 | 建库规范 · 禁用 double
+       title=数量金额使用 double / 低精度 decimal
+       clause=命名规范 17 —— 数量、金额类统一使用 `decimal`，无特殊需求统一 `decimal(20, 6)`；建库规范 12 —— `double` 类型不要用
+       v1: 禁止使用 double 类型 || desc=金额字段使用 double，存在精度丢失风险，违反禁用浮点要求 || obj=order_money DOUBLE || sev=ERROR
+       v2: 禁止使用 float 浮点类型 || desc=单价字段使用 float，浮点运算精度丢失，须用 decimal || obj=unit_price FLOAT || sev=ERROR
+       v3: 数量金额统一使用 decimal(20, 6) || desc=数量类字段精度不足，未使用规范要求的 decimal(20, 6) || obj=goods_amount DECIMAL(10, 2) || sev=ERROR
+
+T-01  [L] exp=名词术语 · 主键命名
+       title=主键未使用推荐词 `id`
+       clause=名词术语 > 常用单词 —— 主键：`id`；建表规范 —— 主键（雪花）：`id BIGINT UNSIGNED NOT NULL`
+       v1: 主键字段命名必须为 id || desc=主键字段名为 pk_id，不符合规范主键必须为 id 的要求 || obj=pk_id BIGINT UNSIGNED ... PRIMARY KEY || sev=ERROR
+       v2: 业务字段必须使用 biz_ 前缀 || desc=业务主键字段 sid 未使用 biz_ 前缀，命名不规范 || obj=sid BIGINT UNSIGNED || sev=ERROR
+       v3: 非负数字必须加 UNSIGNED || desc=version 为非负整数但未加 UNSIGNED，不符合数字类型规范 || obj=version INT || sev=ERROR
+
+T-02  [.] exp=名词术语 · 名称命名
+       title=名称未使用推荐词 `name`
+       clause=名词术语 > 常用单词 —— 名称：`name`
+       v1: 本表字段禁止加表名前缀 || desc=本表字段 goods_title 加了表名前缀 goods_，违反本表字段不加表名 || obj=goods_title VARCHAR(64) || sev=ERROR
+
+T-03  [.] exp=名词术语 · 类型命名
+       title=类型未使用推荐词 `type`
+       clause=名词术语 > 常用单词 —— 类型：`type`
+       v1: 禁止使用保留关键字或疑似关键字命名 || desc=class 疑似数据库保留关键字，存在语法与解析风险 || obj=class TINYINT(4) UNSIGNED || sev=ERROR
+       v2: 命名须使用术语字典标准词 || desc=category、kind 非术语字典标准词，语义模糊易歧义 || obj=category / kind || sev=WARN
+
+T-04  [.] exp=名词术语 · 上级命名
+       title=上级未使用推荐词 `parent`
+       clause=名词术语 > 常用单词 —— 上级：`parent`
+       v1: 命名需采用 lower_snake_case || desc=parentCode 为驼峰命名，违反 lower_snake_case || obj=parentCode VARCHAR(32) || sev=ERROR
+
+T-05  [L] exp=名词术语 · 状态命名
+       title=状态未使用推荐词 `status`
+       clause=名词术语 > 常用单词 —— 状态：`status`；1 个整数：`status TINYINT(4) NOT NULL DEFAULT 0`
+       v1: 状态字段应使用 status || desc=state 非常用规范术语，状态字段应命名为 status || obj=state TINYINT(4) UNSIGNED || sev=ERROR
+       v2: 状态字段应使用 status || desc=stat 缩写语义不明确，状态字段应命名为 status 或 biz_status || obj=stat TINYINT(4) UNSIGNED || sev=ERROR
+       v3: 状态字段注释需说明枚举值 || desc=状态字段注释未说明 0/1 等枚举含义 || obj=state TINYINT(4) COMMENT '状态' || sev=WARNING
+       v4: 状态字段注释需说明枚举值 || desc=状态字段注释未说明枚举含义 || obj=stat TINYINT(4) COMMENT '单据状态' || sev=WARNING
+
+T-06  [.] exp=名词术语 · 审核/标识命名
+       title=审核与标识未使用推荐词 `audit` / `tag`
+       clause=名词术语 > 常用单词 —— 审核：`audit`，标识：`tag`
+       v1: 编号编码命名后缀必须为 _code || desc=字段 mark_no 未使用编码后缀 _code，违反命名规范 || obj=mark_no VARCHAR(32) || sev=ERROR
+
+T-07  [.] exp=名词术语 · 链接/来源命名
+       title=链接与来源未使用推荐词 `url` / `source`
+       clause=名词术语 > 常用单词 —— 链接：`url`，来源：`source`
+       v1: 命名未使用标准名词术语 || desc=字段名 link 不符合名词术语，标准为 url || obj=link || sev=ERROR
+       v2: 命名未使用标准名词术语 || desc=字段名 href 不符合名词术语，建议用 download_url || obj=href || sev=ERROR
+       v3: 命名未使用标准名词术语 || desc=字段名 origin 不符合名词术语，标准为 source || obj=origin || sev=ERROR
+       v4: 命名未使用标准名词术语 || desc=字段名 src 不符合名词术语，标准为 source || obj=src || sev=ERROR
+
+T-08  [.] exp=名词术语 · 版本命名
+       title=版本未使用推荐词 `version`
+       clause=名词术语 > 数据相关 —— 版本：`version`；建表模板 —— `version INT NOT NULL DEFAULT 0`
+       v1: 基类字段必须命名为 version || desc=版本字段被命名为缩写 ver，不符合基类字段 version 的强制要求 || obj=ver INT NOT NULL DEFAULT 0 || sev=ERROR
+       v2: 字段命名须使用标准术语单词 || desc=revision 非标准术语单词，且与 version 语义重复 || obj=revision INT NOT NULL DEFAULT 0 || sev=WARN
+
+T-09  [.] exp=名词术语 · 删除/禁用命名
+       title=删除与禁用标记未使用推荐词 `deleted` / `disabled`
+       clause=名词术语 > 数据相关 —— 删除：`deleted`，禁用：`disabled`；建表模板 —— 两者为必备基类字段
+       v1: 缺少基础字段 deleted || desc=缺少基础字段 deleted，违规用 del_flag 和 is_delete 替代且冗余 || obj=del_flag, is_delete || sev=ERROR
+       v2: 缺少基础字段 disabled || desc=缺少基础字段 disabled，违规用 enable_flag 替代且语义相反 || obj=enable_flag || sev=ERROR
+
+T-10  [.] exp=名词术语 · 关联/路径命名
+       title=关联与路径未使用推荐词 `relation` / `path`
+       clause=名词术语 > 数据相关 —— 关联：`relation`，路径：`path`
+       (no violations) summary=表整体符合建表模板与引擎、字符集、注释要求，7 个基类字段齐备，无外键、无浮点金额字段。唯一问题是关联字段命名 rel_id 未使用标准术语 relation，与同表 relation_code 命名不一致，建议统一为 relation_id。
+
+T-11  [.] exp=名词术语 · 用户字段命名
+       title=用户相关字段未使用推荐词
+       clause=名词术语 > 用户相关 —— 账号 `username`、密码 `password`、姓名 `name`、昵称 `nick`、邮箱 `email`、性别 `gender`、生日 `birthday`、角色 `role`、职位 `duty`
+       v1: 字段命名必须使用标准名词术语 || desc=字段命名不符合标准术语，账号应为 username || obj=account || sev=ERROR
+       v2: 字段命名必须使用标准名词术语 || desc=字段命名不符合标准术语，密码应为 password || obj=pwd || sev=ERROR
+       v3: 字段命名必须使用标准名词术语 || desc=字段命名不符合标准术语，昵称应为 nick || obj=nick_name || sev=ERROR
+       v4: 字段命名必须使用标准名词术语 || desc=字段命名不符合标准术语，邮箱应为 email || obj=mail || sev=ERROR
+       v5: 字段命名必须使用标准名词术语 || desc=字段命名不符合标准术语，性别应为 gender || obj=sex || sev=ERROR
+       v6: 字段命名必须使用标准名词术语 || desc=字段命名不符合标准术语，生日应为 birthday || obj=birth_date || sev=ERROR
+       v7: 字段命名必须使用标准名词术语 || desc=字段命名不符合标准术语，角色应为 role || obj=role_no || sev=ERROR
+       v8: 字段命名必须使用标准名词术语 || desc=字段命名不符合标准术语，职位应为 duty || obj=position || sev=ERROR
+
+T-12  [.] exp=名词术语 · 业务/地址字段命名
+       title=业务与地址相关字段未使用推荐词
+       clause=名词术语 > 业务相关（部门 `dept`、机构 `organ`、公司 `company`、品项/物料/商品/货物 `goods`）；地址相关（地址 `address`、邮政编码 `zip`、座机 `phone`、联系人 `contact`）
+       v1: 字段命名未使用标准术语 || desc=部门字段应使用标准词 dept，当前 department 不规范 || obj=department || sev=ERROR
+       v2: 字段命名未使用标准术语 || desc=机构字段应使用标准词 organ，当前 organization 不规范 || obj=organization || sev=ERROR
+       v3: 字段命名未使用标准术语 || desc=公司字段应使用标准词 company，当前 corp 不规范 || obj=corp || sev=ERROR
+       v4: 字段命名未使用标准术语 || desc=商品字段应使用标准词 goods，当前 product_id 不规范 || obj=product_id || sev=ERROR
+       v5: 字段命名未使用标准术语 || desc=地址字段应使用标准词 address，当前 addr 不规范 || obj=addr || sev=ERROR
+       v6: 字段命名未使用标准术语 || desc=邮政编码应使用标准词 zip，当前 postcode 不规范 || obj=postcode || sev=ERROR
+       v7: 字段命名未使用标准术语 || desc=座机字段应使用标准词 phone，当前 tel 不规范 || obj=tel || sev=ERROR
+       v8: 字段命名未使用标准术语 || desc=联系人应使用标准词 contact，当前 contactor 不规范 || obj=contactor || sev=ERROR
+

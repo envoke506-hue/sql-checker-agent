@@ -205,19 +205,20 @@ async def test_4_sql_audit_e2e():
     print(f"\n[重构合规 SQL 预览]:\n{audit_result.suggested_sql[:300]}...")
     assert "foreign key" not in audit_result.suggested_sql.lower(), "重构 SQL 严禁保留外键"
 
-    # 验证完整的 Markdown 报告格式
+    # 验证精简 Markdown 整改回复格式: 不满足项 (含编号引用依据) + 整改方案 + 修改后的 SQL
     report = audit_result.markdown_report
-    assert "# 📋 数据库设计规范合规审查报告" in report
-    assert "## 1. 审查总览看板" in report
-    assert "## 3. 违规明细对照与整改建议" in report
-    assert "## 4. 推荐合规重构 SQL" in report
-    assert "## 5. 本次审查引用的规范依据清单" in report
+    assert "### ⚠️ 不满足项与整改方案" in report
+    assert "依据：" in report and f"[{audit_result.violations[0].citation_index}]" in report
+    assert "- 整改方案：" in report
+    assert "### ✅ 修改后的 SQL" in report
+    assert "审查总览看板" not in report, "精简回复不应再包含总览看板"
+    assert "待审查原始 SQL" not in report, "精简回复不应再回显原始 SQL"
 
-    print("\n[生成的完整 Markdown 审查报告前 600 字符]:")
+    print("\n[生成的精简 Markdown 整改回复前 600 字符]:")
     print("-------------------------------------------------------")
     print(report[:600])
     print("-------------------------------------------------------")
-    print("[PASS] 端到端违规反例审查报告生成成功，排版与内容完全符合规范！")
+    print("[PASS] 端到端违规反例审查回复生成成功，仅包含不满足项 + 整改方案 + 修改后的 SQL！")
 
 
 async def test_4b_compliant_sql_positive():

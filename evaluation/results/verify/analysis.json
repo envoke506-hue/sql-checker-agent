@@ -1,0 +1,3792 @@
+{
+  "A": {
+    "shard_line_counts": {
+      "shard_1_6.jsonl": 14,
+      "shard_2_6.jsonl": 14,
+      "shard_3_6.jsonl": 14,
+      "shard_4_6.jsonl": 13,
+      "shard_5_6.jsonl": 13,
+      "shard_6_6.jsonl": 13
+    },
+    "total_raw_records": 81,
+    "parse_errors": [],
+    "duplicate_case_ids_in_results": [],
+    "unique_case_ids_in_results": 81,
+    "missing_from_results": [],
+    "extra_in_results_not_in_index": [],
+    "status_counts": {
+      "ok": 81
+    },
+    "non_ok_records": [],
+    "records_with_error_field": [],
+    "sql_exact_mismatch": [],
+    "kind_mismatch": [],
+    "expected_rule_names_mismatch": []
+  },
+  "B": {
+    "n_negative_expected": 76,
+    "n_positive_expected": 5,
+    "negative_judged_compliant_FALSE_NEGATIVE": [
+      "T-10",
+      "D-01",
+      "D-02",
+      "D-05",
+      "D-06",
+      "D-08",
+      "F-07",
+      "F-12"
+    ],
+    "negative_judged_noncompliant": 68,
+    "negative_verdict_not_boolean": [],
+    "negative_detection_rate_pct": 89.5,
+    "positive_judged_noncompliant_FALSE_ALARM": [
+      "P-01",
+      "P-02",
+      "P-04"
+    ],
+    "positive_judged_compliant": [
+      "P-03",
+      "P-05"
+    ],
+    "negative_with_empty_violations": [
+      "T-10",
+      "D-01",
+      "D-02",
+      "D-05",
+      "D-06",
+      "D-08",
+      "F-07",
+      "F-12"
+    ],
+    "positive_with_nonempty_violations": [
+      "P-01",
+      "P-02",
+      "P-04"
+    ],
+    "verdict_violation_inconsistency": []
+  },
+  "C": {
+    "n_rules_total_in_corpus": 147,
+    "generic_ascii_tokens_gt15pct": {},
+    "generic_cjk_grams_gt15pct_count": 8,
+    "generic_cjk_grams_gt15pct": {
+      "字段": 0.578,
+      "使用": 0.388,
+      "必须": 0.361,
+      "命名": 0.333,
+      "段命": 0.184,
+      "禁止": 0.177,
+      "术语": 0.177,
+      "本表": 0.163
+    },
+    "per_case": {
+      "N-01": {
+        "expected": [
+          "命名规范 · lower_snake_case"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "采用 lower_snake_case 命名法",
+          "采用 lower_snake_case 命名法",
+          "本表字段不加表名前缀"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · lower_snake_case",
+            "idx": 1,
+            "rule_name": "采用 lower_snake_case 命名法",
+            "via": [
+              "lower_snake_case"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "命名规范 · lower_snake_case",
+            "idx": 2,
+            "rule_name": "采用 lower_snake_case 命名法",
+            "via": [
+              "lower_snake_case"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": true,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "strict",
+            "expected": "命名规范 · lower_snake_case",
+            "rule_name": "采用 lower_snake_case 命名法",
+            "via": "子串: lower_snake_case"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · lower_snake_case",
+            "rule_name": "采用 lower_snake_case 命名法",
+            "via": "ASCII: lower_snake_case"
+          }
+        ]
+      },
+      "N-02": {
+        "expected": [
+          "命名规范 · 语义尽量简短"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "表名使用规范术语",
+          "字段使用规范术语",
+          "字段使用规范术语"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "N-03": {
+        "expected": [
+          "命名规范 · 关联字段命名"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "关联表命名必须以 r_ 开头"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 关联字段命名",
+            "idx": 1,
+            "rule_name": "关联表命名必须以 r_ 开头",
+            "via": [
+              "关联"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 关联字段命名",
+            "rule_name": "关联表命名必须以 r_ 开头",
+            "via": "2-gram: 关联"
+          }
+        ]
+      },
+      "N-04": {
+        "expected": [
+          "命名规范 · 单价后缀 price"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "单价字段命名后缀必须为 price",
+          "单价字段命名后缀必须为 price"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 单价后缀 price",
+            "idx": 1,
+            "rule_name": "单价字段命名后缀必须为 price",
+            "via": [
+              "price",
+              "单价",
+              "后缀"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "命名规范 · 单价后缀 price",
+            "idx": 2,
+            "rule_name": "单价字段命名后缀必须为 price",
+            "via": [
+              "price",
+              "单价",
+              "后缀"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 单价后缀 price",
+            "rule_name": "单价字段命名后缀必须为 price",
+            "via": "ASCII: price"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 单价后缀 price",
+            "rule_name": "单价字段命名后缀必须为 price",
+            "via": "2-gram: 单价"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 单价后缀 price",
+            "rule_name": "单价字段命名后缀必须为 price",
+            "via": "2-gram: 后缀"
+          }
+        ]
+      },
+      "N-05": {
+        "expected": [
+          "命名规范 · 金额后缀 money"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "金额字段统一命名后缀 _money",
+          "金额字段统一命名后缀 _money"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 金额后缀 money",
+            "idx": 1,
+            "rule_name": "金额字段统一命名后缀 _money",
+            "via": [
+              "money",
+              "后缀",
+              "金额"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "命名规范 · 金额后缀 money",
+            "idx": 2,
+            "rule_name": "金额字段统一命名后缀 _money",
+            "via": [
+              "money",
+              "后缀",
+              "金额"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 金额后缀 money",
+            "rule_name": "金额字段统一命名后缀 _money",
+            "via": "ASCII: money"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 金额后缀 money",
+            "rule_name": "金额字段统一命名后缀 _money",
+            "via": "2-gram: 后缀"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 金额后缀 money",
+            "rule_name": "金额字段统一命名后缀 _money",
+            "via": "2-gram: 金额"
+          }
+        ]
+      },
+      "N-06": {
+        "expected": [
+          "命名规范 · 数量后缀 amount"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "数量类字段命名与类型规范",
+          "数量类字段命名与类型规范"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 数量后缀 amount",
+            "idx": 1,
+            "rule_name": "数量类字段命名与类型规范",
+            "via": [
+              "数量"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "命名规范 · 数量后缀 amount",
+            "idx": 2,
+            "rule_name": "数量类字段命名与类型规范",
+            "via": [
+              "数量"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 数量后缀 amount",
+            "rule_name": "数量类字段命名与类型规范",
+            "via": "2-gram: 数量"
+          }
+        ]
+      },
+      "N-07": {
+        "expected": [
+          "命名规范 · 时间后缀 time"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "时间字段命名规范",
+          "时间字段命名规范"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 时间后缀 time",
+            "idx": 1,
+            "rule_name": "时间字段命名规范",
+            "via": [
+              "时间"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "命名规范 · 时间后缀 time",
+            "idx": 2,
+            "rule_name": "时间字段命名规范",
+            "via": [
+              "时间"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 时间后缀 time",
+            "rule_name": "时间字段命名规范",
+            "via": "2-gram: 时间"
+          }
+        ]
+      },
+      "N-08": {
+        "expected": [
+          "命名规范 · 业务类前缀 biz_"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "业务类字段需用 biz_ 前缀",
+          "业务类字段需用 biz_ 前缀",
+          "非负数字类型必须加 UNSIGNED"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 业务类前缀 biz_",
+            "idx": 1,
+            "rule_name": "业务类字段需用 biz_ 前缀",
+            "via": [
+              "biz_",
+              "业务",
+              "前缀",
+              "务类"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "命名规范 · 业务类前缀 biz_",
+            "idx": 2,
+            "rule_name": "业务类字段需用 biz_ 前缀",
+            "via": [
+              "biz_",
+              "业务",
+              "前缀",
+              "务类"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 业务类前缀 biz_",
+            "rule_name": "业务类字段需用 biz_ 前缀",
+            "via": "ASCII: biz_"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 业务类前缀 biz_",
+            "rule_name": "业务类字段需用 biz_ 前缀",
+            "via": "2-gram: 业务"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 业务类前缀 biz_",
+            "rule_name": "业务类字段需用 biz_ 前缀",
+            "via": "2-gram: 前缀"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 业务类前缀 biz_",
+            "rule_name": "业务类字段需用 biz_ 前缀",
+            "via": "2-gram: 务类"
+          }
+        ]
+      },
+      "N-09": {
+        "expected": [
+          "命名规范 · 入口类前缀 in_"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "入口类字段需使用 in_ 前缀",
+          "入口类字段需使用 in_ 前缀"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 入口类前缀 in_",
+            "idx": 1,
+            "rule_name": "入口类字段需使用 in_ 前缀",
+            "via": [
+              "in_",
+              "入口",
+              "前缀",
+              "口类"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "命名规范 · 入口类前缀 in_",
+            "idx": 2,
+            "rule_name": "入口类字段需使用 in_ 前缀",
+            "via": [
+              "in_",
+              "入口",
+              "前缀",
+              "口类"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 入口类前缀 in_",
+            "rule_name": "入口类字段需使用 in_ 前缀",
+            "via": "ASCII: in_"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 入口类前缀 in_",
+            "rule_name": "入口类字段需使用 in_ 前缀",
+            "via": "2-gram: 入口"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 入口类前缀 in_",
+            "rule_name": "入口类字段需使用 in_ 前缀",
+            "via": "2-gram: 前缀"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 入口类前缀 in_",
+            "rule_name": "入口类字段需使用 in_ 前缀",
+            "via": "2-gram: 口类"
+          }
+        ]
+      },
+      "N-10": {
+        "expected": [
+          "命名规范 · 出口类前缀 out_"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "出口类字段必须使用 out_ 前缀",
+          "出口类字段必须使用 out_ 前缀"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 出口类前缀 out_",
+            "idx": 1,
+            "rule_name": "出口类字段必须使用 out_ 前缀",
+            "via": [
+              "out_",
+              "出口",
+              "前缀",
+              "口类"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "命名规范 · 出口类前缀 out_",
+            "idx": 2,
+            "rule_name": "出口类字段必须使用 out_ 前缀",
+            "via": [
+              "out_",
+              "出口",
+              "前缀",
+              "口类"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 出口类前缀 out_",
+            "rule_name": "出口类字段必须使用 out_ 前缀",
+            "via": "ASCII: out_"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 出口类前缀 out_",
+            "rule_name": "出口类字段必须使用 out_ 前缀",
+            "via": "2-gram: 出口"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 出口类前缀 out_",
+            "rule_name": "出口类字段必须使用 out_ 前缀",
+            "via": "2-gram: 前缀"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 出口类前缀 out_",
+            "rule_name": "出口类字段必须使用 out_ 前缀",
+            "via": "2-gram: 口类"
+          }
+        ]
+      },
+      "N-11": {
+        "expected": [
+          "命名规范 · 编号后缀 code"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "本表字段禁止加本表名前缀",
+          "编号编码字段统一使用 code 后缀"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 编号后缀 code",
+            "idx": 2,
+            "rule_name": "编号编码字段统一使用 code 后缀",
+            "via": [
+              "code",
+              "后缀",
+              "编号"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 编号后缀 code",
+            "rule_name": "编号编码字段统一使用 code 后缀",
+            "via": "ASCII: code"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 编号后缀 code",
+            "rule_name": "编号编码字段统一使用 code 后缀",
+            "via": "2-gram: 后缀"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 编号后缀 code",
+            "rule_name": "编号编码字段统一使用 code 后缀",
+            "via": "2-gram: 编号"
+          }
+        ]
+      },
+      "N-12": {
+        "expected": [
+          "命名规范 · 单位字段后缀 amount_unit"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "数量含单位字段命名规范",
+          "名词术语规范"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 单位字段后缀 amount_unit",
+            "idx": 1,
+            "rule_name": "数量含单位字段命名规范",
+            "via": [
+              "单位"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 单位字段后缀 amount_unit",
+            "rule_name": "数量含单位字段命名规范",
+            "via": "2-gram: 单位"
+          }
+        ]
+      },
+      "N-13": {
+        "expected": [
+          "命名规范 · 排序字段命名"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "字段命名必须使用 lower_snake_case",
+          "排序字段统一命名 sort"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 排序字段命名",
+            "idx": 2,
+            "rule_name": "排序字段统一命名 sort",
+            "via": [
+              "排序"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 排序字段命名",
+            "rule_name": "排序字段统一命名 sort",
+            "via": "2-gram: 排序"
+          }
+        ]
+      },
+      "N-14": {
+        "expected": [
+          "命名规范 · 备注字段命名"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "禁止使用保留关键字或类似关键字字段",
+          "备注字段统一命名为 remark",
+          "备注字段统一命名为 remark"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 备注字段命名",
+            "idx": 2,
+            "rule_name": "备注字段统一命名为 remark",
+            "via": [
+              "备注"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "命名规范 · 备注字段命名",
+            "idx": 3,
+            "rule_name": "备注字段统一命名为 remark",
+            "via": [
+              "备注"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 备注字段命名",
+            "rule_name": "备注字段统一命名为 remark",
+            "via": "2-gram: 备注"
+          }
+        ]
+      },
+      "N-15": {
+        "expected": [
+          "命名规范 · 本表字段不加表名前缀"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "本表字段禁止拼接本表表名",
+          "本表字段禁止拼接本表表名",
+          "本表字段禁止拼接本表表名"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [
+          {
+            "expected": "命名规范 · 本表字段不加表名前缀",
+            "idx": 1,
+            "rule_name": "本表字段禁止拼接本表表名",
+            "via": [
+              "本表"
+            ],
+            "kind": "weak/generic"
+          },
+          {
+            "expected": "命名规范 · 本表字段不加表名前缀",
+            "idx": 2,
+            "rule_name": "本表字段禁止拼接本表表名",
+            "via": [
+              "本表"
+            ],
+            "kind": "weak/generic"
+          },
+          {
+            "expected": "命名规范 · 本表字段不加表名前缀",
+            "idx": 3,
+            "rule_name": "本表字段禁止拼接本表表名",
+            "via": [
+              "本表"
+            ],
+            "kind": "weak/generic"
+          }
+        ],
+        "my_hit": false,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 本表字段不加表名前缀",
+            "rule_name": "本表字段禁止拼接本表表名",
+            "via": "2-gram: 本表"
+          }
+        ]
+      },
+      "N-16": {
+        "expected": [
+          "命名规范 · 金额数量精度",
+          "建库规范 · 禁用 double"
+        ],
+        "module": "naming",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "禁止使用 double 类型",
+          "禁止使用 float 浮点类型",
+          "数量金额统一使用 decimal(20, 6)"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "命名规范 · 金额数量精度",
+            "idx": 3,
+            "rule_name": "数量金额统一使用 decimal(20, 6)",
+            "via": [
+              "数量",
+              "金额"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建库规范 · 禁用 double",
+            "idx": 1,
+            "rule_name": "禁止使用 double 类型",
+            "via": [
+              "double"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 金额数量精度",
+            "rule_name": "数量金额统一使用 decimal(20, 6)",
+            "via": "2-gram: 数量"
+          },
+          {
+            "tier": "semantic",
+            "expected": "命名规范 · 金额数量精度",
+            "rule_name": "数量金额统一使用 decimal(20, 6)",
+            "via": "2-gram: 金额"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 禁用 double",
+            "rule_name": "禁止使用 double 类型",
+            "via": "ASCII: double"
+          }
+        ]
+      },
+      "T-01": {
+        "expected": [
+          "名词术语 · 主键命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "主键字段命名必须为 id",
+          "业务字段必须使用 biz_ 前缀",
+          "非负数字必须加 UNSIGNED"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "名词术语 · 主键命名",
+            "idx": 1,
+            "rule_name": "主键字段命名必须为 id",
+            "via": [
+              "主键"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "名词术语 · 主键命名",
+            "rule_name": "主键字段命名必须为 id",
+            "via": "2-gram: 主键"
+          }
+        ]
+      },
+      "T-02": {
+        "expected": [
+          "名词术语 · 名称命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "本表字段禁止加表名前缀"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "T-03": {
+        "expected": [
+          "名词术语 · 类型命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "禁止使用保留关键字或疑似关键字命名",
+          "命名须使用术语字典标准词"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "T-04": {
+        "expected": [
+          "名词术语 · 上级命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "命名需采用 lower_snake_case"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "T-05": {
+        "expected": [
+          "名词术语 · 状态命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "状态字段应使用 status",
+          "状态字段应使用 status",
+          "状态字段注释需说明枚举值",
+          "状态字段注释需说明枚举值"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "名词术语 · 状态命名",
+            "idx": 1,
+            "rule_name": "状态字段应使用 status",
+            "via": [
+              "状态"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "名词术语 · 状态命名",
+            "idx": 2,
+            "rule_name": "状态字段应使用 status",
+            "via": [
+              "状态"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "名词术语 · 状态命名",
+            "idx": 3,
+            "rule_name": "状态字段注释需说明枚举值",
+            "via": [
+              "状态"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "名词术语 · 状态命名",
+            "idx": 4,
+            "rule_name": "状态字段注释需说明枚举值",
+            "via": [
+              "状态"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "名词术语 · 状态命名",
+            "rule_name": "状态字段应使用 status",
+            "via": "2-gram: 状态"
+          },
+          {
+            "tier": "semantic",
+            "expected": "名词术语 · 状态命名",
+            "rule_name": "状态字段注释需说明枚举值",
+            "via": "2-gram: 状态"
+          }
+        ]
+      },
+      "T-06": {
+        "expected": [
+          "名词术语 · 审核/标识命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "编号编码命名后缀必须为 _code"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "T-07": {
+        "expected": [
+          "名词术语 · 链接/来源命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "命名未使用标准名词术语",
+          "命名未使用标准名词术语",
+          "命名未使用标准名词术语",
+          "命名未使用标准名词术语"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "T-08": {
+        "expected": [
+          "名词术语 · 版本命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "基类字段必须命名为 version",
+          "字段命名须使用标准术语单词"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "T-09": {
+        "expected": [
+          "名词术语 · 删除/禁用命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "缺少基础字段 deleted",
+          "缺少基础字段 disabled"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "T-10": {
+        "expected": [
+          "名词术语 · 关联/路径命名"
+        ],
+        "module": "terminology",
+        "is_compliant": true,
+        "reported_rule_names": [],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "T-11": {
+        "expected": [
+          "名词术语 · 用户字段命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "字段命名必须使用标准名词术语",
+          "字段命名必须使用标准名词术语",
+          "字段命名必须使用标准名词术语",
+          "字段命名必须使用标准名词术语",
+          "字段命名必须使用标准名词术语",
+          "字段命名必须使用标准名词术语",
+          "字段命名必须使用标准名词术语",
+          "字段命名必须使用标准名词术语"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "T-12": {
+        "expected": [
+          "名词术语 · 业务/地址字段命名"
+        ],
+        "module": "terminology",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "字段命名未使用标准术语",
+          "字段命名未使用标准术语",
+          "字段命名未使用标准术语",
+          "字段命名未使用标准术语",
+          "字段命名未使用标准术语",
+          "字段命名未使用标准术语",
+          "字段命名未使用标准术语",
+          "字段命名未使用标准术语"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "M-01": {
+        "expected": [
+          "建表模板 · 缺少基类字段 version"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "缺少实体基类必须字段 version"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 缺少基类字段 version",
+            "idx": 1,
+            "rule_name": "缺少实体基类必须字段 version",
+            "via": [
+              "version",
+              "基类",
+              "缺少"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 version",
+            "rule_name": "缺少实体基类必须字段 version",
+            "via": "ASCII: version"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 version",
+            "rule_name": "缺少实体基类必须字段 version",
+            "via": "2-gram: 基类"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 version",
+            "rule_name": "缺少实体基类必须字段 version",
+            "via": "2-gram: 缺少"
+          }
+        ]
+      },
+      "M-02": {
+        "expected": [
+          "建表模板 · 缺少基类字段 deleted"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "缺少删除标记基类字段 deleted"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 缺少基类字段 deleted",
+            "idx": 1,
+            "rule_name": "缺少删除标记基类字段 deleted",
+            "via": [
+              "deleted",
+              "基类",
+              "缺少"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 deleted",
+            "rule_name": "缺少删除标记基类字段 deleted",
+            "via": "ASCII: deleted"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 deleted",
+            "rule_name": "缺少删除标记基类字段 deleted",
+            "via": "2-gram: 基类"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 deleted",
+            "rule_name": "缺少删除标记基类字段 deleted",
+            "via": "2-gram: 缺少"
+          }
+        ]
+      },
+      "M-03": {
+        "expected": [
+          "建表模板 · 缺少基类字段 disabled"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "缺少实体基类必填字段"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 缺少基类字段 disabled",
+            "idx": 1,
+            "rule_name": "缺少实体基类必填字段",
+            "via": [
+              "基类",
+              "缺少"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 disabled",
+            "rule_name": "缺少实体基类必填字段",
+            "via": "2-gram: 基类"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 disabled",
+            "rule_name": "缺少实体基类必填字段",
+            "via": "2-gram: 缺少"
+          }
+        ]
+      },
+      "M-04": {
+        "expected": [
+          "建表模板 · 缺少基类字段 create_id"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "实体基类必须字段缺失",
+          "数字类型缺少 UNSIGNED"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 缺少基类字段 create_id",
+            "idx": 1,
+            "rule_name": "实体基类必须字段缺失",
+            "via": [
+              "基类"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建表模板 · 缺少基类字段 create_id",
+            "idx": 2,
+            "rule_name": "数字类型缺少 UNSIGNED",
+            "via": [
+              "缺少"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 create_id",
+            "rule_name": "实体基类必须字段缺失",
+            "via": "2-gram: 基类"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 create_id",
+            "rule_name": "数字类型缺少 UNSIGNED",
+            "via": "2-gram: 缺少"
+          }
+        ]
+      },
+      "M-05": {
+        "expected": [
+          "建表模板 · 缺少基类字段 create_time"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "缺少实体基类必须字段 create_time"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 缺少基类字段 create_time",
+            "idx": 1,
+            "rule_name": "缺少实体基类必须字段 create_time",
+            "via": [
+              "create_time",
+              "基类",
+              "缺少"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 create_time",
+            "rule_name": "缺少实体基类必须字段 create_time",
+            "via": "ASCII: create_time"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 create_time",
+            "rule_name": "缺少实体基类必须字段 create_time",
+            "via": "2-gram: 基类"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 create_time",
+            "rule_name": "缺少实体基类必须字段 create_time",
+            "via": "2-gram: 缺少"
+          }
+        ]
+      },
+      "M-06": {
+        "expected": [
+          "建表模板 · 缺少基类字段 modify_id"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "缺少修改人标识字段"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 缺少基类字段 modify_id",
+            "idx": 1,
+            "rule_name": "缺少修改人标识字段",
+            "via": [
+              "缺少"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 modify_id",
+            "rule_name": "缺少修改人标识字段",
+            "via": "2-gram: 缺少"
+          }
+        ]
+      },
+      "M-07": {
+        "expected": [
+          "建表模板 · 缺少基类字段 modify_time"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "实体基类必须字段缺失"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 缺少基类字段 modify_time",
+            "idx": 1,
+            "rule_name": "实体基类必须字段缺失",
+            "via": [
+              "基类"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少基类字段 modify_time",
+            "rule_name": "实体基类必须字段缺失",
+            "via": "2-gram: 基类"
+          }
+        ]
+      },
+      "M-08": {
+        "expected": [
+          "建表模板 · 必须包含通用基类审计字段"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "缺少实体基类必须字段",
+          "本表字段禁止拼接本表表名"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 必须包含通用基类审计字段",
+            "idx": 1,
+            "rule_name": "缺少实体基类必须字段",
+            "via": [
+              "基类"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 必须包含通用基类审计字段",
+            "rule_name": "缺少实体基类必须字段",
+            "via": "2-gram: 基类"
+          }
+        ]
+      },
+      "M-09": {
+        "expected": [
+          "建表模板 · 主键必须为 id"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "本表字段禁止加表名",
+          "主键必须命名为 id"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 主键必须为 id",
+            "idx": 2,
+            "rule_name": "主键必须命名为 id",
+            "via": [
+              "id",
+              "主键"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键必须为 id",
+            "rule_name": "主键必须命名为 id",
+            "via": "ASCII: id"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键必须为 id",
+            "rule_name": "主键必须命名为 id",
+            "via": "2-gram: 主键"
+          }
+        ]
+      },
+      "M-10": {
+        "expected": [
+          "建表模板 · 主键类型必须为 BIGINT UNSIGNED"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "主键必须为 BIGINT UNSIGNED"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 主键类型必须为 BIGINT UNSIGNED",
+            "idx": 1,
+            "rule_name": "主键必须为 BIGINT UNSIGNED",
+            "via": [
+              "bigint",
+              "unsigned",
+              "主键"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键类型必须为 BIGINT UNSIGNED",
+            "rule_name": "主键必须为 BIGINT UNSIGNED",
+            "via": "ASCII: bigint"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键类型必须为 BIGINT UNSIGNED",
+            "rule_name": "主键必须为 BIGINT UNSIGNED",
+            "via": "ASCII: unsigned"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键类型必须为 BIGINT UNSIGNED",
+            "rule_name": "主键必须为 BIGINT UNSIGNED",
+            "via": "2-gram: 主键"
+          }
+        ]
+      },
+      "M-11": {
+        "expected": [
+          "建表模板 · 主键必须 NOT NULL"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "主键必须为 BIGINT UNSIGNED NOT NULL"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 主键必须 NOT NULL",
+            "idx": 1,
+            "rule_name": "主键必须为 BIGINT UNSIGNED NOT NULL",
+            "via": [
+              "not",
+              "null",
+              "主键"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键必须 NOT NULL",
+            "rule_name": "主键必须为 BIGINT UNSIGNED NOT NULL",
+            "via": "ASCII: not"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键必须 NOT NULL",
+            "rule_name": "主键必须为 BIGINT UNSIGNED NOT NULL",
+            "via": "ASCII: null"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键必须 NOT NULL",
+            "rule_name": "主键必须为 BIGINT UNSIGNED NOT NULL",
+            "via": "2-gram: 主键"
+          }
+        ]
+      },
+      "M-12": {
+        "expected": [
+          "建表模板 · 主键雪花算法"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "主键须为雪花算法无自增"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 主键雪花算法",
+            "idx": 1,
+            "rule_name": "主键须为雪花算法无自增",
+            "via": [
+              "主键",
+              "算法",
+              "花算",
+              "雪花"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键雪花算法",
+            "rule_name": "主键须为雪花算法无自增",
+            "via": "2-gram: 主键"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键雪花算法",
+            "rule_name": "主键须为雪花算法无自增",
+            "via": "2-gram: 算法"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键雪花算法",
+            "rule_name": "主键须为雪花算法无自增",
+            "via": "2-gram: 花算"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 主键雪花算法",
+            "rule_name": "主键须为雪花算法无自增",
+            "via": "2-gram: 雪花"
+          }
+        ]
+      },
+      "M-13": {
+        "expected": [
+          "建表模板 · 基类字段类型不符 create_id/modify_id"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "基类字段类型必须符合建表模板",
+          "基类字段类型必须符合建表模板"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 基类字段类型不符 create_id/modify_id",
+            "idx": 1,
+            "rule_name": "基类字段类型必须符合建表模板",
+            "via": [
+              "基类",
+              "类型"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建表模板 · 基类字段类型不符 create_id/modify_id",
+            "idx": 2,
+            "rule_name": "基类字段类型必须符合建表模板",
+            "via": [
+              "基类",
+              "类型"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 基类字段类型不符 create_id/modify_id",
+            "rule_name": "基类字段类型必须符合建表模板",
+            "via": "2-gram: 基类"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 基类字段类型不符 create_id/modify_id",
+            "rule_name": "基类字段类型必须符合建表模板",
+            "via": "2-gram: 类型"
+          }
+        ]
+      },
+      "M-14": {
+        "expected": [
+          "建表模板 · 基类字段类型不符 create_time/modify_time"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP",
+          "modify_time 必须为 DATETIME"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 基类字段类型不符 create_time/modify_time",
+            "idx": 1,
+            "rule_name": "create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP",
+            "via": [
+              "create_time"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建表模板 · 基类字段类型不符 create_time/modify_time",
+            "idx": 2,
+            "rule_name": "modify_time 必须为 DATETIME",
+            "via": [
+              "modify_time"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 基类字段类型不符 create_time/modify_time",
+            "rule_name": "create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP",
+            "via": "ASCII: create_time"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 基类字段类型不符 create_time/modify_time",
+            "rule_name": "modify_time 必须为 DATETIME",
+            "via": "ASCII: modify_time"
+          }
+        ]
+      },
+      "M-15": {
+        "expected": [
+          "建库规范 · TINYINT 统一 TINYINT(4)"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · TINYINT 统一 TINYINT(4)",
+            "idx": 1,
+            "rule_name": "TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED",
+            "via": [
+              "tinyint"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · TINYINT 统一 TINYINT(4)",
+            "rule_name": "TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED",
+            "via": "ASCII: tinyint"
+          }
+        ]
+      },
+      "M-16": {
+        "expected": [
+          "建表模板 · 基类字段类型不符 version"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "基础字段 version 类型错误"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 基类字段类型不符 version",
+            "idx": 1,
+            "rule_name": "基础字段 version 类型错误",
+            "via": [
+              "version",
+              "类型"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 基类字段类型不符 version",
+            "rule_name": "基础字段 version 类型错误",
+            "via": "ASCII: version"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 基类字段类型不符 version",
+            "rule_name": "基础字段 version 类型错误",
+            "via": "2-gram: 类型"
+          }
+        ]
+      },
+      "M-17": {
+        "expected": [
+          "建表模板 · 必须使用 InnoDB 引擎"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "必须使用 InnoDB 引擎"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 必须使用 InnoDB 引擎",
+            "idx": 1,
+            "rule_name": "必须使用 InnoDB 引擎",
+            "via": [
+              "innodb",
+              "引擎"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": true,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "strict",
+            "expected": "建表模板 · 必须使用 InnoDB 引擎",
+            "rule_name": "必须使用 InnoDB 引擎",
+            "via": "子串: 必须使用innodb引擎"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 必须使用 InnoDB 引擎",
+            "rule_name": "必须使用 InnoDB 引擎",
+            "via": "ASCII: innodb"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 必须使用 InnoDB 引擎",
+            "rule_name": "必须使用 InnoDB 引擎",
+            "via": "2-gram: 引擎"
+          }
+        ]
+      },
+      "M-18": {
+        "expected": [
+          "建表模板 · 必须包含表级注释"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "必须包含表级注释"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 必须包含表级注释",
+            "idx": 1,
+            "rule_name": "必须包含表级注释",
+            "via": [
+              "表级"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": true,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "strict",
+            "expected": "建表模板 · 必须包含表级注释",
+            "rule_name": "必须包含表级注释",
+            "via": "子串: 必须包含表级注释"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 必须包含表级注释",
+            "rule_name": "必须包含表级注释",
+            "via": "2-gram: 包含"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 必须包含表级注释",
+            "rule_name": "必须包含表级注释",
+            "via": "2-gram: 含表"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 必须包含表级注释",
+            "rule_name": "必须包含表级注释",
+            "via": "2-gram: 注释"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 必须包含表级注释",
+            "rule_name": "必须包含表级注释",
+            "via": "2-gram: 级注"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 必须包含表级注释",
+            "rule_name": "必须包含表级注释",
+            "via": "2-gram: 表级"
+          }
+        ]
+      },
+      "M-19": {
+        "expected": [
+          "建表模板 · 缺少表级主键约束"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "缺少主键定义",
+          "表名使用库前缀"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表模板 · 缺少表级主键约束",
+            "idx": 1,
+            "rule_name": "缺少主键定义",
+            "via": [
+              "主键",
+              "缺少"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少表级主键约束",
+            "rule_name": "缺少主键定义",
+            "via": "2-gram: 主键"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 缺少表级主键约束",
+            "rule_name": "缺少主键定义",
+            "via": "2-gram: 缺少"
+          }
+        ]
+      },
+      "M-20": {
+        "expected": [
+          "建表模板 · 字段缺少注释"
+        ],
+        "module": "table_template",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "本表字段禁止加表名前缀",
+          "主键必须包含注释",
+          "基类字段必须包含中文注释"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 字段缺少注释",
+            "rule_name": "主键必须包含注释",
+            "via": "2-gram: 注释"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表模板 · 字段缺少注释",
+            "rule_name": "基类字段必须包含中文注释",
+            "via": "2-gram: 注释"
+          }
+        ]
+      },
+      "D-01": {
+        "expected": [
+          "建库规范 · 生产库表名 db_ 前缀"
+        ],
+        "module": "database_rules",
+        "is_compliant": true,
+        "reported_rule_names": [],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "D-02": {
+        "expected": [
+          "建库规范 · 必须使用 InnoDB"
+        ],
+        "module": "database_rules",
+        "is_compliant": true,
+        "reported_rule_names": [],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "D-03": {
+        "expected": [
+          "建库规范 · 表内禁止外键设计"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "禁止外键设计"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · 表内禁止外键设计",
+            "idx": 1,
+            "rule_name": "禁止外键设计",
+            "via": [
+              "外键"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": true,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "strict",
+            "expected": "建库规范 · 表内禁止外键设计",
+            "rule_name": "禁止外键设计",
+            "via": "子串: 表内禁止外键设计"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 表内禁止外键设计",
+            "rule_name": "禁止外键设计",
+            "via": "2-gram: 外键"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 表内禁止外键设计",
+            "rule_name": "禁止外键设计",
+            "via": "2-gram: 设计"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 表内禁止外键设计",
+            "rule_name": "禁止外键设计",
+            "via": "2-gram: 键设"
+          }
+        ]
+      },
+      "D-04": {
+        "expected": [
+          "建库规范 · 表内禁止外键设计"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "表内禁止外键设计"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · 表内禁止外键设计",
+            "idx": 1,
+            "rule_name": "表内禁止外键设计",
+            "via": [
+              "外键",
+              "表内"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": true,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "strict",
+            "expected": "建库规范 · 表内禁止外键设计",
+            "rule_name": "表内禁止外键设计",
+            "via": "子串: 表内禁止外键设计"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 表内禁止外键设计",
+            "rule_name": "表内禁止外键设计",
+            "via": "2-gram: 外键"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 表内禁止外键设计",
+            "rule_name": "表内禁止外键设计",
+            "via": "2-gram: 表内"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 表内禁止外键设计",
+            "rule_name": "表内禁止外键设计",
+            "via": "2-gram: 设计"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 表内禁止外键设计",
+            "rule_name": "表内禁止外键设计",
+            "via": "2-gram: 键设"
+          }
+        ]
+      },
+      "D-05": {
+        "expected": [
+          "建库规范 · 禁止触发器"
+        ],
+        "module": "database_rules",
+        "is_compliant": true,
+        "reported_rule_names": [],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "D-06": {
+        "expected": [
+          "建库规范 · 禁止存储过程/自定义函数"
+        ],
+        "module": "database_rules",
+        "is_compliant": true,
+        "reported_rule_names": [],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "D-07": {
+        "expected": [
+          "建库规范 · 字符集必须 utf8mb4"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "非负数字类型必须加 UNSIGNED"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "D-08": {
+        "expected": [
+          "建库规范 · 字符集必须 utf8mb4",
+          "建表规范 · 字段不手写字符集"
+        ],
+        "module": "database_rules",
+        "is_compliant": true,
+        "reported_rule_names": [],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "D-09": {
+        "expected": [
+          "建库规范 · 表名禁止关键字"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "表名禁止使用保留关键字",
+          "生产表名必须以 db_ 开头"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · 表名禁止关键字",
+            "idx": 1,
+            "rule_name": "表名禁止使用保留关键字",
+            "via": [
+              "关键",
+              "键字"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 表名禁止关键字",
+            "rule_name": "表名禁止使用保留关键字",
+            "via": "2-gram: 关键"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 表名禁止关键字",
+            "rule_name": "表名禁止使用保留关键字",
+            "via": "2-gram: 键字"
+          }
+        ]
+      },
+      "D-10": {
+        "expected": [
+          "建库规范 · 字段名禁止关键字"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "禁止使用保留关键字",
+          "备注统一命名 remark",
+          "禁止使用保留关键字",
+          "禁止使用保留关键字",
+          "排序统一命名 sort",
+          "数字类型非负必须加 UNSIGNED",
+          "禁止使用保留关键字"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · 字段名禁止关键字",
+            "idx": 1,
+            "rule_name": "禁止使用保留关键字",
+            "via": [
+              "关键",
+              "键字"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建库规范 · 字段名禁止关键字",
+            "idx": 3,
+            "rule_name": "禁止使用保留关键字",
+            "via": [
+              "关键",
+              "键字"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建库规范 · 字段名禁止关键字",
+            "idx": 4,
+            "rule_name": "禁止使用保留关键字",
+            "via": [
+              "关键",
+              "键字"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建库规范 · 字段名禁止关键字",
+            "idx": 7,
+            "rule_name": "禁止使用保留关键字",
+            "via": [
+              "关键",
+              "键字"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 字段名禁止关键字",
+            "rule_name": "禁止使用保留关键字",
+            "via": "2-gram: 关键"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 字段名禁止关键字",
+            "rule_name": "禁止使用保留关键字",
+            "via": "2-gram: 键字"
+          }
+        ]
+      },
+      "D-11": {
+        "expected": [
+          "建库规范 · 加字段必须标注 AFTER"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "DDL 增加字段必须标注 AFTER 指定位置"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · 加字段必须标注 AFTER",
+            "idx": 1,
+            "rule_name": "DDL 增加字段必须标注 AFTER 指定位置",
+            "via": [
+              "after",
+              "标注"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": true,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "strict",
+            "expected": "建库规范 · 加字段必须标注 AFTER",
+            "rule_name": "DDL 增加字段必须标注 AFTER 指定位置",
+            "via": "子串: 加字段必须标注after"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 加字段必须标注 AFTER",
+            "rule_name": "DDL 增加字段必须标注 AFTER 指定位置",
+            "via": "ASCII: after"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 加字段必须标注 AFTER",
+            "rule_name": "DDL 增加字段必须标注 AFTER 指定位置",
+            "via": "2-gram: 标注"
+          }
+        ]
+      },
+      "D-12": {
+        "expected": [
+          "建库规范 · 数字类型加 UNSIGNED"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "数字类型需加 UNSIGNED",
+          "数字类型需加 UNSIGNED"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · 数字类型加 UNSIGNED",
+            "idx": 1,
+            "rule_name": "数字类型需加 UNSIGNED",
+            "via": [
+              "unsigned",
+              "字类",
+              "数字",
+              "类型"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建库规范 · 数字类型加 UNSIGNED",
+            "idx": 2,
+            "rule_name": "数字类型需加 UNSIGNED",
+            "via": [
+              "unsigned",
+              "字类",
+              "数字",
+              "类型"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 数字类型加 UNSIGNED",
+            "rule_name": "数字类型需加 UNSIGNED",
+            "via": "ASCII: unsigned"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 数字类型加 UNSIGNED",
+            "rule_name": "数字类型需加 UNSIGNED",
+            "via": "2-gram: 字类"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 数字类型加 UNSIGNED",
+            "rule_name": "数字类型需加 UNSIGNED",
+            "via": "2-gram: 数字"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 数字类型加 UNSIGNED",
+            "rule_name": "数字类型需加 UNSIGNED",
+            "via": "2-gram: 类型"
+          }
+        ]
+      },
+      "D-13": {
+        "expected": [
+          "建库规范 · 避免 NULL"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "避免 NULL 字段"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · 避免 NULL",
+            "idx": 1,
+            "rule_name": "避免 NULL 字段",
+            "via": [
+              "null",
+              "避免"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": true,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "strict",
+            "expected": "建库规范 · 避免 NULL",
+            "rule_name": "避免 NULL 字段",
+            "via": "子串: 避免null"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 避免 NULL",
+            "rule_name": "避免 NULL 字段",
+            "via": "ASCII: null"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 避免 NULL",
+            "rule_name": "避免 NULL 字段",
+            "via": "2-gram: 避免"
+          }
+        ]
+      },
+      "D-14": {
+        "expected": [
+          "建库规范 · 禁用 double"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "金额字段必须使用 decimal(20,6)",
+          "禁止使用 double 类型"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · 禁用 double",
+            "idx": 2,
+            "rule_name": "禁止使用 double 类型",
+            "via": [
+              "double"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 禁用 double",
+            "rule_name": "禁止使用 double 类型",
+            "via": "ASCII: double"
+          }
+        ]
+      },
+      "D-15": {
+        "expected": [
+          "建库规范 · TINYINT 统一 TINYINT(4)"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "TINYINT 统一使用 TINYINT(4)",
+          "TINYINT 统一使用 TINYINT(4)",
+          "TINYINT 统一使用 TINYINT(4)"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · TINYINT 统一 TINYINT(4)",
+            "idx": 1,
+            "rule_name": "TINYINT 统一使用 TINYINT(4)",
+            "via": [
+              "tinyint"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建库规范 · TINYINT 统一 TINYINT(4)",
+            "idx": 2,
+            "rule_name": "TINYINT 统一使用 TINYINT(4)",
+            "via": [
+              "tinyint"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建库规范 · TINYINT 统一 TINYINT(4)",
+            "idx": 3,
+            "rule_name": "TINYINT 统一使用 TINYINT(4)",
+            "via": [
+              "tinyint"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · TINYINT 统一 TINYINT(4)",
+            "rule_name": "TINYINT 统一使用 TINYINT(4)",
+            "via": "ASCII: tinyint"
+          }
+        ]
+      },
+      "D-16": {
+        "expected": [
+          "建库规范 · 关联表 r_ 前缀"
+        ],
+        "module": "database_rules",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "关联表必须以 r_ 开头"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建库规范 · 关联表 r_ 前缀",
+            "idx": 1,
+            "rule_name": "关联表必须以 r_ 开头",
+            "via": [
+              "r_",
+              "关联",
+              "联表"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 关联表 r_ 前缀",
+            "rule_name": "关联表必须以 r_ 开头",
+            "via": "ASCII: r_"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 关联表 r_ 前缀",
+            "rule_name": "关联表必须以 r_ 开头",
+            "via": "2-gram: 关联"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建库规范 · 关联表 r_ 前缀",
+            "rule_name": "关联表必须以 r_ 开头",
+            "via": "2-gram: 联表"
+          }
+        ]
+      },
+      "F-01": {
+        "expected": [
+          "建表规范 · 三方对接表缺 system_source"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "本表字段禁止拼接本表表名",
+          "编号编码字段命名后缀为 code",
+          "三方对接表必须包含系统来源与数据来源"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表规范 · 三方对接表缺 system_source",
+            "idx": 3,
+            "rule_name": "三方对接表必须包含系统来源与数据来源",
+            "via": [
+              "三方",
+              "对接",
+              "接表",
+              "方对"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 三方对接表缺 system_source",
+            "rule_name": "三方对接表必须包含系统来源与数据来源",
+            "via": "2-gram: 三方"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 三方对接表缺 system_source",
+            "rule_name": "三方对接表必须包含系统来源与数据来源",
+            "via": "2-gram: 对接"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 三方对接表缺 system_source",
+            "rule_name": "三方对接表必须包含系统来源与数据来源",
+            "via": "2-gram: 接表"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 三方对接表缺 system_source",
+            "rule_name": "三方对接表必须包含系统来源与数据来源",
+            "via": "2-gram: 方对"
+          }
+        ]
+      },
+      "F-02": {
+        "expected": [
+          "建表规范 · 三方对接表缺 data_source"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "本表字段禁止加表名前缀且编号应使用 code",
+          "三方对接表需包含系统来源和数据来源"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表规范 · 三方对接表缺 data_source",
+            "idx": 2,
+            "rule_name": "三方对接表需包含系统来源和数据来源",
+            "via": [
+              "三方",
+              "对接",
+              "接表",
+              "方对"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 三方对接表缺 data_source",
+            "rule_name": "三方对接表需包含系统来源和数据来源",
+            "via": "2-gram: 三方"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 三方对接表缺 data_source",
+            "rule_name": "三方对接表需包含系统来源和数据来源",
+            "via": "2-gram: 对接"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 三方对接表缺 data_source",
+            "rule_name": "三方对接表需包含系统来源和数据来源",
+            "via": "2-gram: 接表"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 三方对接表缺 data_source",
+            "rule_name": "三方对接表需包含系统来源和数据来源",
+            "via": "2-gram: 方对"
+          }
+        ]
+      },
+      "F-03": {
+        "expected": [
+          "建表规范 · 普通索引 idx_ 前缀"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "普通索引必须以 idx_ 开头",
+          "普通索引必须以 idx_ 开头"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表规范 · 普通索引 idx_ 前缀",
+            "idx": 1,
+            "rule_name": "普通索引必须以 idx_ 开头",
+            "via": [
+              "idx_",
+              "普通",
+              "索引",
+              "通索"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建表规范 · 普通索引 idx_ 前缀",
+            "idx": 2,
+            "rule_name": "普通索引必须以 idx_ 开头",
+            "via": [
+              "idx_",
+              "普通",
+              "索引",
+              "通索"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 普通索引 idx_ 前缀",
+            "rule_name": "普通索引必须以 idx_ 开头",
+            "via": "ASCII: idx_"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 普通索引 idx_ 前缀",
+            "rule_name": "普通索引必须以 idx_ 开头",
+            "via": "2-gram: 普通"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 普通索引 idx_ 前缀",
+            "rule_name": "普通索引必须以 idx_ 开头",
+            "via": "2-gram: 索引"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 普通索引 idx_ 前缀",
+            "rule_name": "普通索引必须以 idx_ 开头",
+            "via": "2-gram: 通索"
+          }
+        ]
+      },
+      "F-04": {
+        "expected": [
+          "建表规范 · 唯一索引 uniq_ 前缀"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "非负数字类型必须加 UNSIGNED"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "F-05": {
+        "expected": [
+          "建表规范 · 布尔类型 TINYINT(4)"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "布尔类型必须使用 TINYINT(4)",
+          "单字符标记必须使用 char(1)"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表规范 · 布尔类型 TINYINT(4)",
+            "idx": 1,
+            "rule_name": "布尔类型必须使用 TINYINT(4)",
+            "via": [
+              "tinyint",
+              "尔类",
+              "布尔",
+              "类型"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 布尔类型 TINYINT(4)",
+            "rule_name": "布尔类型必须使用 TINYINT(4)",
+            "via": "ASCII: tinyint"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 布尔类型 TINYINT(4)",
+            "rule_name": "布尔类型必须使用 TINYINT(4)",
+            "via": "2-gram: 尔类"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 布尔类型 TINYINT(4)",
+            "rule_name": "布尔类型必须使用 TINYINT(4)",
+            "via": "2-gram: 布尔"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 布尔类型 TINYINT(4)",
+            "rule_name": "布尔类型必须使用 TINYINT(4)",
+            "via": "2-gram: 类型"
+          }
+        ]
+      },
+      "F-06": {
+        "expected": [
+          "建表规范 · 布尔字段名用名词"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "基础字段删除标记命名违规",
+          "基础字段停用标记命名违规"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "F-07": {
+        "expected": [
+          "建表规范 · 单字符字段用 char(1)"
+        ],
+        "module": "field_and_index",
+        "is_compliant": true,
+        "reported_rule_names": [],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "F-08": {
+        "expected": [
+          "建表规范 · 单字符字段默认值"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "单字符字段必须带默认值"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表规范 · 单字符字段默认值",
+            "idx": 1,
+            "rule_name": "单字符字段必须带默认值",
+            "via": [
+              "单字",
+              "字符",
+              "认值",
+              "默认"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 单字符字段默认值",
+            "rule_name": "单字符字段必须带默认值",
+            "via": "2-gram: 单字"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 单字符字段默认值",
+            "rule_name": "单字符字段必须带默认值",
+            "via": "2-gram: 字符"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 单字符字段默认值",
+            "rule_name": "单字符字段必须带默认值",
+            "via": "2-gram: 认值"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 单字符字段默认值",
+            "rule_name": "单字符字段必须带默认值",
+            "via": "2-gram: 默认"
+          }
+        ]
+      },
+      "F-09": {
+        "expected": [
+          "建表规范 · 大于1字符用 varchar"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "本表字段禁止加表名前缀",
+          "字符串应使用 varchar(30)",
+          "大于1个字符应默认空串"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表规范 · 大于1字符用 varchar",
+            "idx": 2,
+            "rule_name": "字符串应使用 varchar(30)",
+            "via": [
+              "varchar",
+              "字符"
+            ],
+            "kind": "strong"
+          },
+          {
+            "expected": "建表规范 · 大于1字符用 varchar",
+            "idx": 3,
+            "rule_name": "大于1个字符应默认空串",
+            "via": [
+              "大于",
+              "字符"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 大于1字符用 varchar",
+            "rule_name": "字符串应使用 varchar(30)",
+            "via": "ASCII: varchar"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 大于1字符用 varchar",
+            "rule_name": "大于1个字符应默认空串",
+            "via": "2-gram: 大于"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 大于1字符用 varchar",
+            "rule_name": "字符串应使用 varchar(30)",
+            "via": "2-gram: 字符"
+          },
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 大于1字符用 varchar",
+            "rule_name": "大于1个字符应默认空串",
+            "via": "2-gram: 字符"
+          }
+        ]
+      },
+      "F-10": {
+        "expected": [
+          "建表规范 · 单整数用 TINYINT(4)"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "整数字段类型选择规范",
+          "无负数数字类型必须加 UNSIGNED"
+        ],
+        "my_strong_hits": [
+          {
+            "expected": "建表规范 · 单整数用 TINYINT(4)",
+            "idx": 1,
+            "rule_name": "整数字段类型选择规范",
+            "via": [
+              "整数"
+            ],
+            "kind": "strong"
+          }
+        ],
+        "my_weak_only_matches": [],
+        "my_hit": true,
+        "my_weak_hit": true,
+        "lead_strict": false,
+        "lead_lenient": true,
+        "lead_evidence": [
+          {
+            "tier": "semantic",
+            "expected": "建表规范 · 单整数用 TINYINT(4)",
+            "rule_name": "整数字段类型选择规范",
+            "via": "2-gram: 整数"
+          }
+        ]
+      },
+      "F-11": {
+        "expected": [
+          "建表规范 · 大于1整数用 int"
+        ],
+        "module": "field_and_index",
+        "is_compliant": false,
+        "reported_rule_names": [
+          "数量类字段必须使用 decimal"
+        ],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      },
+      "F-12": {
+        "expected": [
+          "建表规范 · 字段不手写字符集"
+        ],
+        "module": "field_and_index",
+        "is_compliant": true,
+        "reported_rule_names": [],
+        "my_strong_hits": [],
+        "my_weak_only_matches": [],
+        "my_hit": false,
+        "my_weak_hit": false,
+        "lead_strict": false,
+        "lead_lenient": false,
+        "lead_evidence": []
+      }
+    },
+    "my_hit_count": 52,
+    "my_hit_list": [
+      "N-01",
+      "N-03",
+      "N-04",
+      "N-05",
+      "N-06",
+      "N-07",
+      "N-08",
+      "N-09",
+      "N-10",
+      "N-11",
+      "N-12",
+      "N-13",
+      "N-14",
+      "N-16",
+      "T-01",
+      "T-05",
+      "M-01",
+      "M-02",
+      "M-03",
+      "M-04",
+      "M-05",
+      "M-06",
+      "M-07",
+      "M-08",
+      "M-09",
+      "M-10",
+      "M-11",
+      "M-12",
+      "M-13",
+      "M-14",
+      "M-15",
+      "M-16",
+      "M-17",
+      "M-18",
+      "M-19",
+      "D-03",
+      "D-04",
+      "D-09",
+      "D-10",
+      "D-11",
+      "D-12",
+      "D-13",
+      "D-14",
+      "D-15",
+      "D-16",
+      "F-01",
+      "F-02",
+      "F-03",
+      "F-05",
+      "F-08",
+      "F-09",
+      "F-10"
+    ],
+    "my_weak_hit_count": 53,
+    "lead_strict_count_reproduced": 7,
+    "lead_strict_list_reproduced": [
+      "N-01",
+      "M-17",
+      "M-18",
+      "D-03",
+      "D-04",
+      "D-11",
+      "D-13"
+    ],
+    "lead_lenient_count_reproduced": 54,
+    "lead_lenient_list_reproduced": [
+      "N-01",
+      "N-03",
+      "N-04",
+      "N-05",
+      "N-06",
+      "N-07",
+      "N-08",
+      "N-09",
+      "N-10",
+      "N-11",
+      "N-12",
+      "N-13",
+      "N-14",
+      "N-15",
+      "N-16",
+      "T-01",
+      "T-05",
+      "M-01",
+      "M-02",
+      "M-03",
+      "M-04",
+      "M-05",
+      "M-06",
+      "M-07",
+      "M-08",
+      "M-09",
+      "M-10",
+      "M-11",
+      "M-12",
+      "M-13",
+      "M-14",
+      "M-15",
+      "M-16",
+      "M-17",
+      "M-18",
+      "M-19",
+      "M-20",
+      "D-03",
+      "D-04",
+      "D-09",
+      "D-10",
+      "D-11",
+      "D-12",
+      "D-13",
+      "D-14",
+      "D-15",
+      "D-16",
+      "F-01",
+      "F-02",
+      "F-03",
+      "F-05",
+      "F-08",
+      "F-09",
+      "F-10"
+    ],
+    "lead_semantic_miss_given": [
+      "D-01",
+      "D-02",
+      "D-05",
+      "D-06",
+      "D-07",
+      "D-08",
+      "F-04",
+      "F-06",
+      "F-07",
+      "F-11",
+      "F-12",
+      "N-02",
+      "T-02",
+      "T-03",
+      "T-04",
+      "T-06",
+      "T-07",
+      "T-08",
+      "T-09",
+      "T-10",
+      "T-11",
+      "T-12"
+    ],
+    "lead_semantic_miss_matches_reproduction": true,
+    "reproduced_lead_miss": [
+      "D-01",
+      "D-02",
+      "D-05",
+      "D-06",
+      "D-07",
+      "D-08",
+      "F-04",
+      "F-06",
+      "F-07",
+      "F-11",
+      "F-12",
+      "N-02",
+      "T-02",
+      "T-03",
+      "T-04",
+      "T-06",
+      "T-07",
+      "T-08",
+      "T-09",
+      "T-10",
+      "T-11",
+      "T-12"
+    ],
+    "i_hit_but_lead_missed": [],
+    "lead_hit_but_i_missed": [
+      "M-20"
+    ],
+    "i_hit_lead_hit": [
+      "D-03",
+      "D-04",
+      "D-09",
+      "D-10",
+      "D-11",
+      "D-12",
+      "D-13",
+      "D-14",
+      "D-15",
+      "D-16",
+      "F-01",
+      "F-02",
+      "F-03",
+      "F-05",
+      "F-08",
+      "F-09",
+      "F-10",
+      "M-01",
+      "M-02",
+      "M-03",
+      "M-04",
+      "M-05",
+      "M-06",
+      "M-07",
+      "M-08",
+      "M-09",
+      "M-10",
+      "M-11",
+      "M-12",
+      "M-13",
+      "M-14",
+      "M-15",
+      "M-16",
+      "M-17",
+      "M-18",
+      "M-19",
+      "N-01",
+      "N-03",
+      "N-04",
+      "N-05",
+      "N-06",
+      "N-07",
+      "N-08",
+      "N-09",
+      "N-10",
+      "N-11",
+      "N-12",
+      "N-13",
+      "N-14",
+      "N-16",
+      "T-01",
+      "T-05"
+    ],
+    "weak_only_cases": [
+      "N-15"
+    ]
+  },
+  "E": {
+    "D-10": {
+      "n_violations": 7,
+      "duplicate_rule_names": [
+        "禁止使用保留关键字"
+      ],
+      "duplicate_rule_ids": [],
+      "name_counts": {
+        "禁止使用保留关键字": 4
+      },
+      "reported_violation_count_field": 7
+    },
+    "D-12": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "数字类型需加 UNSIGNED"
+      ],
+      "duplicate_rule_ids": [
+        "rule_unsigned_required"
+      ],
+      "name_counts": {
+        "数字类型需加 UNSIGNED": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "D-15": {
+      "n_violations": 3,
+      "duplicate_rule_names": [
+        "TINYINT 统一使用 TINYINT(4)"
+      ],
+      "duplicate_rule_ids": [
+        "rule_tinyint_length"
+      ],
+      "name_counts": {
+        "TINYINT 统一使用 TINYINT(4)": 3
+      },
+      "reported_violation_count_field": 3
+    },
+    "F-03": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "普通索引必须以 idx_ 开头"
+      ],
+      "duplicate_rule_ids": [
+        "rule_index_prefix"
+      ],
+      "name_counts": {
+        "普通索引必须以 idx_ 开头": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "M-13": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "基类字段类型必须符合建表模板"
+      ],
+      "duplicate_rule_ids": [
+        "rule_audit_field_type"
+      ],
+      "name_counts": {
+        "基类字段类型必须符合建表模板": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "N-01": {
+      "n_violations": 3,
+      "duplicate_rule_names": [
+        "采用 lower_snake_case 命名法"
+      ],
+      "duplicate_rule_ids": [
+        "naming_lower_snake_case"
+      ],
+      "name_counts": {
+        "采用 lower_snake_case 命名法": 2
+      },
+      "reported_violation_count_field": 3
+    },
+    "N-02": {
+      "n_violations": 3,
+      "duplicate_rule_names": [
+        "字段使用规范术语"
+      ],
+      "duplicate_rule_ids": [],
+      "name_counts": {
+        "字段使用规范术语": 2
+      },
+      "reported_violation_count_field": 3
+    },
+    "N-04": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "单价字段命名后缀必须为 price"
+      ],
+      "duplicate_rule_ids": [
+        "rule_naming_price"
+      ],
+      "name_counts": {
+        "单价字段命名后缀必须为 price": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "N-05": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "金额字段统一命名后缀 _money"
+      ],
+      "duplicate_rule_ids": [
+        "rule_money_suffix"
+      ],
+      "name_counts": {
+        "金额字段统一命名后缀 _money": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "N-06": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "数量类字段命名与类型规范"
+      ],
+      "duplicate_rule_ids": [
+        "rule_amount_naming"
+      ],
+      "name_counts": {
+        "数量类字段命名与类型规范": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "N-07": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "时间字段命名规范"
+      ],
+      "duplicate_rule_ids": [
+        "rule_time_suffix"
+      ],
+      "name_counts": {
+        "时间字段命名规范": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "N-08": {
+      "n_violations": 3,
+      "duplicate_rule_names": [
+        "业务类字段需用 biz_ 前缀"
+      ],
+      "duplicate_rule_ids": [
+        "rule_naming_biz_prefix"
+      ],
+      "name_counts": {
+        "业务类字段需用 biz_ 前缀": 2
+      },
+      "reported_violation_count_field": 3
+    },
+    "N-09": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "入口类字段需使用 in_ 前缀"
+      ],
+      "duplicate_rule_ids": [
+        "rule_naming_prefix_in"
+      ],
+      "name_counts": {
+        "入口类字段需使用 in_ 前缀": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "N-10": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "出口类字段必须使用 out_ 前缀"
+      ],
+      "duplicate_rule_ids": [
+        "rule_out_prefix"
+      ],
+      "name_counts": {
+        "出口类字段必须使用 out_ 前缀": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "N-14": {
+      "n_violations": 3,
+      "duplicate_rule_names": [
+        "备注字段统一命名为 remark"
+      ],
+      "duplicate_rule_ids": [
+        "rule_naming_remark"
+      ],
+      "name_counts": {
+        "备注字段统一命名为 remark": 2
+      },
+      "reported_violation_count_field": 3
+    },
+    "N-15": {
+      "n_violations": 3,
+      "duplicate_rule_names": [
+        "本表字段禁止拼接本表表名"
+      ],
+      "duplicate_rule_ids": [
+        "rule_no_self_table_prefix"
+      ],
+      "name_counts": {
+        "本表字段禁止拼接本表表名": 3
+      },
+      "reported_violation_count_field": 3
+    },
+    "P-01": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "本表字段名禁止携带本表表名前缀"
+      ],
+      "duplicate_rule_ids": [
+        "rule_no_table_prefix"
+      ],
+      "name_counts": {
+        "本表字段名禁止携带本表表名前缀": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "P-02": {
+      "n_violations": 2,
+      "duplicate_rule_names": [
+        "数字类型必须加 UNSIGNED"
+      ],
+      "duplicate_rule_ids": [
+        "rule_unsigned"
+      ],
+      "name_counts": {
+        "数字类型必须加 UNSIGNED": 2
+      },
+      "reported_violation_count_field": 2
+    },
+    "T-05": {
+      "n_violations": 4,
+      "duplicate_rule_names": [
+        "状态字段应使用 status",
+        "状态字段注释需说明枚举值"
+      ],
+      "duplicate_rule_ids": [
+        "rule_naming_status_term",
+        "rule_status_comment_enum"
+      ],
+      "name_counts": {
+        "状态字段应使用 status": 2,
+        "状态字段注释需说明枚举值": 2
+      },
+      "reported_violation_count_field": 4
+    },
+    "T-07": {
+      "n_violations": 4,
+      "duplicate_rule_names": [
+        "命名未使用标准名词术语"
+      ],
+      "duplicate_rule_ids": [
+        "rule_terminology"
+      ],
+      "name_counts": {
+        "命名未使用标准名词术语": 4
+      },
+      "reported_violation_count_field": 4
+    },
+    "T-11": {
+      "n_violations": 8,
+      "duplicate_rule_names": [
+        "字段命名必须使用标准名词术语"
+      ],
+      "duplicate_rule_ids": [
+        "rule_standard_terminology"
+      ],
+      "name_counts": {
+        "字段命名必须使用标准名词术语": 8
+      },
+      "reported_violation_count_field": 8
+    },
+    "T-12": {
+      "n_violations": 8,
+      "duplicate_rule_names": [
+        "字段命名未使用标准术语"
+      ],
+      "duplicate_rule_ids": [],
+      "name_counts": {
+        "字段命名未使用标准术语": 8
+      },
+      "reported_violation_count_field": 8
+    }
+  },
+  "E_violation_count_field_mismatch": [],
+  "F": {
+    "D-01": {
+      "kind": "negative",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "整体符合基类字段与引擎规范，但 code 字段长度不符合字符串默认长度规范，需调整为 varchar(30)。",
+      "flags": [
+        "不符合"
+      ],
+      "score": 100
+    },
+    "D-02": {
+      "kind": "negative",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "表结构整体符合规范，唯一问题是使用 MyISAM 引擎，违反必须使用 InnoDB 的强制要求，需改为 InnoDB。",
+      "flags": [
+        "违反",
+        "问题"
+      ],
+      "score": 100
+    },
+    "D-05": {
+      "kind": "negative",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "db_order 表结构基本合规，但脚本包含触发器，违反建库规范中禁止触发器的要求，需移除触发器并由业务应用逻辑实现。",
+      "flags": [
+        "违反",
+        "禁止",
+        "应"
+      ],
+      "score": 100
+    },
+    "D-06": {
+      "kind": "negative",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "输入为存储过程和自定义函数，违反规范禁止使用存储过程与自定义函数的规定，需移除并改为应用层实现。",
+      "flags": [
+        "违反",
+        "禁止",
+        "应"
+      ],
+      "score": 100
+    },
+    "D-08": {
+      "kind": "negative",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "表结构主体符合基类字段要求，但字符集使用 latin1，不符合统一 utf8mb4 规范；code 字段手写 CHARACTER SET/COLLATE，需移除。",
+      "flags": [
+        "不符合"
+      ],
+      "score": 100
+    },
+    "F-07": {
+      "kind": "negative",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "DDL 整体基本合规：7 个基类字段齐全，主键、引擎、字符集和注释均符合规范；仅 is_split 字段类型不符合 1 字符字段应使用 char(1) 的要求。",
+      "flags": [
+        "不符合",
+        "应"
+      ],
+      "score": 100
+    },
+    "F-12": {
+      "kind": "negative",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "字段 code 和 remark 手写了字符集和排序规则，违反规范[2]第10条；其余表定义符合规范。",
+      "flags": [
+        "违反"
+      ],
+      "score": 100
+    },
+    "P-03": {
+      "kind": "positive",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "该 DDL 符合建表模板、命名规范、字段设计与基类字段要求，未发现违规项。",
+      "flags": [
+        "违规",
+        "未"
+      ],
+      "score": 100
+    },
+    "P-05": {
+      "kind": "positive",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "该 DDL 符合命名、字段类型、基类字段、索引命名、字符集及三方对接来源字段等规范要求，未发现违规项。",
+      "flags": [
+        "违规",
+        "未"
+      ],
+      "score": 100
+    },
+    "T-10": {
+      "kind": "negative",
+      "is_compliant": true,
+      "n_violations": 0,
+      "summary": "表整体符合建表模板与引擎、字符集、注释要求，7 个基类字段齐备，无外键、无浮点金额字段。唯一问题是关联字段命名 rel_id 未使用标准术语 relation，与同表 relation_code 命名不一致，建议统一为 relation_id。",
+      "flags": [
+        "未",
+        "问题"
+      ],
+      "score": 100
+    }
+  }
+}

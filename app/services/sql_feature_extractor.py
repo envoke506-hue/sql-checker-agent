@@ -39,6 +39,10 @@ class SqlInspectionFeatures(BaseModel):
     redundant_columns: List[str] = Field(default_factory=list, description="冗余表名前缀的字段名")
     
     missing_base_fields: List[str] = Field(default_factory=list, description="缺失的规范必填基类字段")
+    base_field_type_mismatches: List[str] = Field(
+        default_factory=list,
+        description="已声明但类型与规范模板不符的基类字段 (如 create_id 写成 VARCHAR)"
+    )
     has_id_primary_key: bool = Field(default=True, description="是否拥有标准的大整数无符号主键 id")
 
 
@@ -51,6 +55,18 @@ class SqlFeatureExtractor:
     REQUIRED_BASE_FIELDS: Set[str] = {
         "version", "deleted", "disabled",
         "create_id", "create_time", "modify_id", "modify_time"
+    }
+
+    # 规范建表模板中各基类字段的数据类型 (用正则，避免 int 误命中 bigint)
+    BASE_FIELD_TYPE_PATTERNS: Dict[str, str] = {
+        "id": r"\bbigint\s+unsigned\b",
+        "version": r"\bint\b",
+        "deleted": r"\btinyint\s*\(\s*4\s*\)",
+        "disabled": r"\btinyint\s*\(\s*4\s*\)",
+        "create_id": r"\bbigint\s+unsigned\b",
+        "create_time": r"\bdatetime\b",
+        "modify_id": r"\bbigint\s+unsigned\b",
+        "modify_time": r"\bdatetime\b",
     }
 
     # 常见容易被误用作表名的关键字
@@ -100,9 +116,13 @@ class SqlFeatureExtractor:
             lines = re.split(r",\s*(?![^()]*\))", body)
             
             extracted_fields: Set[str] = set()
+            field_definitions: Dict[str, str] = {}
             for line in lines:
                 stripped_line = line.strip()
                 if not stripped_line:
+                    continue
+                # 跳过 SQL 注释行 (如 "-- 通用审计字段")
+                if stripped_line.startswith("--") or stripped_line.startswith("#"):
                     continue
                 # 跳过表级约束如 PRIMARY KEY, KEY, CONSTRAINT, UNIQUE
                 if re.match(r"^(primary\s+key|key|unique|constraint|index|foreign\s+key)", stripped_line, re.IGNORECASE):
@@ -116,6 +136,7 @@ class SqlFeatureExtractor:
                     extracted_fields.add(col_name)
                     features.fields.append(col_name)
                     features.types.append(col_type)
+                    field_definitions[col_name] = re.sub(r"\s+", " ", stripped_line).lower()
 
             # 5. 检查本表字段前缀反例 (如在 order 表中写了 order_id, order_code)
             if features.table_name:
@@ -131,7 +152,14 @@ class SqlFeatureExtractor:
             missing = self.REQUIRED_BASE_FIELDS - extracted_fields
             features.missing_base_fields = sorted(list(missing))
 
-            # 7. 检查主键是否包含 id
+            # 7. 检查已声明的基类字段类型是否与规范模板一致
+            #    (字段"写了"不代表类型对，如 create_id 被写成 VARCHAR(32) 同样是违规)
+            for field_name, type_pattern in self.BASE_FIELD_TYPE_PATTERNS.items():
+                definition = field_definitions.get(field_name)
+                if definition and not re.search(type_pattern, definition):
+                    features.base_field_type_mismatches.append(field_name)
+
+            # 8. 检查主键是否包含 id
             features.has_id_primary_key = "id" in extracted_fields
 
         return features
@@ -161,18 +189,32 @@ class SqlFeatureExtractor:
             queries.append("命名规范 若是本表自己的字段 字段前不需要加表名 反例 order_id 应直接写 id code")
 
         # 意图 5: 基类必填审计字段与建表模板
-        if features.missing_base_fields or not features.has_id_primary_key:
+        # 字段缺失、主键不合规、或字段虽然存在但类型与模板不符时，都必须把模板条款召回来对照
+        if (
+            features.missing_base_fields
+            or features.base_field_type_mismatches
+            or not features.has_id_primary_key
+        ):
             queries.append("建表模板 必须严格包含的基础基类字段 version deleted disabled create_time modify_time 主键 id BIGINT UNSIGNED")
 
-        # 意图 6: 表名以 db_ 开头与保留关键字禁令
-        if not features.has_db_prefix or features.is_table_keyword:
-            queries.append("建库规范 生产数据库均以 db_ 开头 表与字段不允许用关键字")
+        # 意图 6: 表名保留关键字与关联表前缀规范
+        if features.is_table_keyword:
+            queries.append("建库规范 表与字段不允许用关键字 或者看着像关键字的单词")
+        if features.table_name and "relation" in features.table_name and not features.table_name.startswith("r_"):
+            queries.append("建库规范 关联表以 r_ 开头")
 
-        # 意图 7: 字段命名前缀后缀规范 (price, money, amount, time)
-        # 扫描是否有 price, money, time, status 相关字段
+        # 意图 7: 字段命名前缀后缀规范 (price, money, amount, time, code)
         field_types_str = " ".join(features.fields + features.types)
         if any(kw in field_types_str for kw in ["price", "money", "amount", "time", "status", "code"]):
             queries.append("命名规范 单价统一命名后缀 price 金额统一后缀 money 数量后缀 amount 时间后缀 time")
+
+        # 意图 8: 1 个字符与布尔类型规范 (统一 TINYINT(4))
+        if re.search(r"\bchar\s*\(\s*1\s*\)|\bvarchar\s*\(\s*1\s*\)", sql_text, re.IGNORECASE):
+            queries.append("建表规范 1个字符统一使用 TINYINT(4) 字段设计与类型规则")
+
+        # 意图 9: 外键关联字段命名规范 (表名_字段) 与标准术语
+        if any(col in ["uid", "dept", "org", "user", "rel_id"] for col in features.fields):
+            queries.append("命名规范 外键关系采用 表名_字段 的命名方式 关联 relation")
 
         # 兜底查询：若 SQL 非常简单且未触发特殊规则，检索建表与命名通用规范
         if not queries:

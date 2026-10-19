@@ -435,15 +435,15 @@
                 </div>
               </details>
 
-              <!-- 2. 【核心要求：不满足项醒目标红展示卡片】 -->
-              <div v-if="msg.audit_data && !msg.audit_data.is_compliant" class="rounded-xl border-2 border-rose-500 bg-rose-50/80 p-4 space-y-3 shadow-sm">
-                <!-- 违规总评 Header (标红) -->
-                <div class="flex items-center justify-between pb-2 border-b border-rose-200">
+              <!-- 2. 【核心要求：不满足判定醒目标红展示横幅】 -->
+              <div v-if="msg.audit_data && !msg.audit_data.is_compliant" class="rounded-xl border-2 border-rose-500 bg-rose-50/80 p-4 shadow-sm">
+                <!-- 判定 Header (标红) -->
+                <div class="flex items-center justify-between">
                   <div class="flex items-center space-x-2">
                     <span class="text-xl">🚨</span>
                     <div>
                       <h4 class="text-sm font-bold text-rose-800">
-                        合规判定不通过：检出 {{ (msg.audit_data.violations || []).length }} 项不满足规范项
+                        合规判定不通过：存在不满足项
                       </h4>
                       <p class="text-xs text-rose-700 mt-0.5">{{ msg.audit_data.summary }}</p>
                     </div>
@@ -453,47 +453,6 @@
                     <span class="text-[10px] text-rose-500 block font-bold">合规得分</span>
                     <span class="text-2xl font-black text-rose-600">{{ msg.audit_data.score }}</span>
                     <span class="text-xs text-rose-500"> / 100</span>
-                  </div>
-                </div>
-
-                <!-- 逐条标红不满足项清单 -->
-                <div class="space-y-2.5">
-                  <div class="text-xs font-bold text-rose-900 uppercase tracking-wider">
-                    ⚠️ 不满足项明细排查清单 (必须整改)：
-                  </div>
-                  <div 
-                    v-for="(v, vIdx) in msg.audit_data.violations" 
-                    :key="vIdx" 
-                    class="p-3 rounded-lg bg-white border border-rose-300 space-y-2 text-xs shadow-sm">
-                    
-                    <div class="flex items-center justify-between flex-wrap gap-1">
-                      <div class="flex items-center space-x-2">
-                        <!-- 违规对象 (强力红底白字高亮) -->
-                        <span class="px-2 py-0.5 rounded bg-rose-600 text-white font-mono font-bold text-xs shadow-sm">
-                          {{ v.target_object || '违规片段' }}
-                        </span>
-                        <span class="font-bold text-rose-800">{{ v.rule_name }}</span>
-                      </div>
-                      <div class="flex items-center space-x-2">
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-                          :class="v.severity === 'ERROR' ? 'bg-rose-100 text-rose-700 border border-rose-300' : 'bg-amber-100 text-amber-700 border border-amber-300'">
-                          {{ v.severity }}
-                        </span>
-                        <span class="font-mono text-ds-blue font-bold">[{{ v.citation_index }}]</span>
-                      </div>
-                    </div>
-
-                    <!-- 违规原因描述 (红字加深) -->
-                    <div class="text-rose-900 leading-relaxed font-medium">
-                      {{ v.description }}
-                    </div>
-
-                    <!-- 整改建议 (浅绿高亮框) -->
-                    <div v-if="v.suggested_fix" class="text-emerald-800 font-medium bg-emerald-50 p-2 rounded-lg border border-emerald-200 flex items-start space-x-1.5">
-                      <span class="text-emerald-600 mt-0.5">💡</span>
-                      <span><strong>整改建议：</strong>{{ v.suggested_fix }}</span>
-                    </div>
-
                   </div>
                 </div>
               </div>

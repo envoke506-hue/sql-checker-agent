@@ -1,0 +1,904 @@
+A. COMPLETENESS
+{
+  "shard_line_counts": {
+    "shard_1_6.jsonl": 14,
+    "shard_2_6.jsonl": 14,
+    "shard_3_6.jsonl": 14,
+    "shard_4_6.jsonl": 13,
+    "shard_5_6.jsonl": 13,
+    "shard_6_6.jsonl": 13
+  },
+  "total_raw_records": 81,
+  "parse_errors": [],
+  "duplicate_case_ids_in_results": [],
+  "unique_case_ids_in_results": 81,
+  "missing_from_results": [],
+  "extra_in_results_not_in_index": [],
+  "status_counts": {
+    "ok": 81
+  },
+  "non_ok_records": [],
+  "records_with_error_field": [],
+  "sql_exact_mismatch": [],
+  "kind_mismatch": [],
+  "expected_rule_names_mismatch": []
+}
+
+B. VERDICTS
+{
+  "n_negative_expected": 76,
+  "n_positive_expected": 5,
+  "negative_judged_compliant_FALSE_NEGATIVE": [
+    "T-10",
+    "D-01",
+    "D-02",
+    "D-05",
+    "D-06",
+    "D-08",
+    "F-07",
+    "F-12"
+  ],
+  "negative_judged_noncompliant": 68,
+  "negative_verdict_not_boolean": [],
+  "negative_detection_rate_pct": 89.5,
+  "positive_judged_noncompliant_FALSE_ALARM": [
+    "P-01",
+    "P-02",
+    "P-04"
+  ],
+  "positive_judged_compliant": [
+    "P-03",
+    "P-05"
+  ],
+  "negative_with_empty_violations": [
+    "T-10",
+    "D-01",
+    "D-02",
+    "D-05",
+    "D-06",
+    "D-08",
+    "F-07",
+    "F-12"
+  ],
+  "positive_with_nonempty_violations": [
+    "P-01",
+    "P-02",
+    "P-04"
+  ],
+  "verdict_violation_inconsistency": []
+}
+
+C. HIT RATE (own matcher vs reproduced lead matcher)
+my_hit=52 weak=53 | lead strict repro=7 lead lenient repro=54
+lead lenient list == expected miss list: True
+i_hit_but_lead_missed: []
+lead_hit_but_i_missed: ['M-20']
+weak-only cases: ['N-15']
+
+PER-CASE DETAIL
+====================================================================================================
+N-01 [naming] expected=["命名规范 · lower_snake_case"] | compliant=False
+  reported: ["采用 lower_snake_case 命名法", "采用 lower_snake_case 命名法", "本表字段不加表名前缀"]
+  MY strong=[{"expected": "命名规范 · lower_snake_case", "idx": 1, "rule_name": "采用 lower_snake_case 命名法", "via": ["lower_snake_case"], "kind": "strong"}, {"expected": "命名规范 · lower_snake_case", "idx": 2, "rule_name": "采用 lower_snake_case 命名法", "via": ["lower_snake_case"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=True lenient=True
+      [strict] exp=命名规范 · lower_snake_case -> 采用 lower_snake_case 命名法   (子串: lower_snake_case)
+      [semantic] exp=命名规范 · lower_snake_case -> 采用 lower_snake_case 命名法   (ASCII: lower_snake_case)
+====================================================================================================
+N-02 [naming] expected=["命名规范 · 语义尽量简短"] | compliant=False
+  reported: ["表名使用规范术语", "字段使用规范术语", "字段使用规范术语"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+N-03 [naming] expected=["命名规范 · 关联字段命名"] | compliant=False
+  reported: ["关联表命名必须以 r_ 开头"]
+  MY strong=[{"expected": "命名规范 · 关联字段命名", "idx": 1, "rule_name": "关联表命名必须以 r_ 开头", "via": ["关联"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 关联字段命名 -> 关联表命名必须以 r_ 开头   (2-gram: 关联)
+====================================================================================================
+N-04 [naming] expected=["命名规范 · 单价后缀 price"] | compliant=False
+  reported: ["单价字段命名后缀必须为 price", "单价字段命名后缀必须为 price"]
+  MY strong=[{"expected": "命名规范 · 单价后缀 price", "idx": 1, "rule_name": "单价字段命名后缀必须为 price", "via": ["price", "单价", "后缀"], "kind": "strong"}, {"expected": "命名规范 · 单价后缀 price", "idx": 2, "rule_name": "单价字段命名后缀必须为 price", "via": ["price", "单价", "后缀"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 单价后缀 price -> 单价字段命名后缀必须为 price   (ASCII: price)
+      [semantic] exp=命名规范 · 单价后缀 price -> 单价字段命名后缀必须为 price   (2-gram: 单价)
+      [semantic] exp=命名规范 · 单价后缀 price -> 单价字段命名后缀必须为 price   (2-gram: 后缀)
+====================================================================================================
+N-05 [naming] expected=["命名规范 · 金额后缀 money"] | compliant=False
+  reported: ["金额字段统一命名后缀 _money", "金额字段统一命名后缀 _money"]
+  MY strong=[{"expected": "命名规范 · 金额后缀 money", "idx": 1, "rule_name": "金额字段统一命名后缀 _money", "via": ["money", "后缀", "金额"], "kind": "strong"}, {"expected": "命名规范 · 金额后缀 money", "idx": 2, "rule_name": "金额字段统一命名后缀 _money", "via": ["money", "后缀", "金额"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 金额后缀 money -> 金额字段统一命名后缀 _money   (ASCII: money)
+      [semantic] exp=命名规范 · 金额后缀 money -> 金额字段统一命名后缀 _money   (2-gram: 后缀)
+      [semantic] exp=命名规范 · 金额后缀 money -> 金额字段统一命名后缀 _money   (2-gram: 金额)
+====================================================================================================
+N-06 [naming] expected=["命名规范 · 数量后缀 amount"] | compliant=False
+  reported: ["数量类字段命名与类型规范", "数量类字段命名与类型规范"]
+  MY strong=[{"expected": "命名规范 · 数量后缀 amount", "idx": 1, "rule_name": "数量类字段命名与类型规范", "via": ["数量"], "kind": "strong"}, {"expected": "命名规范 · 数量后缀 amount", "idx": 2, "rule_name": "数量类字段命名与类型规范", "via": ["数量"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 数量后缀 amount -> 数量类字段命名与类型规范   (2-gram: 数量)
+====================================================================================================
+N-07 [naming] expected=["命名规范 · 时间后缀 time"] | compliant=False
+  reported: ["时间字段命名规范", "时间字段命名规范"]
+  MY strong=[{"expected": "命名规范 · 时间后缀 time", "idx": 1, "rule_name": "时间字段命名规范", "via": ["时间"], "kind": "strong"}, {"expected": "命名规范 · 时间后缀 time", "idx": 2, "rule_name": "时间字段命名规范", "via": ["时间"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 时间后缀 time -> 时间字段命名规范   (2-gram: 时间)
+====================================================================================================
+N-08 [naming] expected=["命名规范 · 业务类前缀 biz_"] | compliant=False
+  reported: ["业务类字段需用 biz_ 前缀", "业务类字段需用 biz_ 前缀", "非负数字类型必须加 UNSIGNED"]
+  MY strong=[{"expected": "命名规范 · 业务类前缀 biz_", "idx": 1, "rule_name": "业务类字段需用 biz_ 前缀", "via": ["biz_", "业务", "前缀", "务类"], "kind": "strong"}, {"expected": "命名规范 · 业务类前缀 biz_", "idx": 2, "rule_name": "业务类字段需用 biz_ 前缀", "via": ["biz_", "业务", "前缀", "务类"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 业务类前缀 biz_ -> 业务类字段需用 biz_ 前缀   (ASCII: biz_)
+      [semantic] exp=命名规范 · 业务类前缀 biz_ -> 业务类字段需用 biz_ 前缀   (2-gram: 业务)
+      [semantic] exp=命名规范 · 业务类前缀 biz_ -> 业务类字段需用 biz_ 前缀   (2-gram: 前缀)
+      [semantic] exp=命名规范 · 业务类前缀 biz_ -> 业务类字段需用 biz_ 前缀   (2-gram: 务类)
+====================================================================================================
+N-09 [naming] expected=["命名规范 · 入口类前缀 in_"] | compliant=False
+  reported: ["入口类字段需使用 in_ 前缀", "入口类字段需使用 in_ 前缀"]
+  MY strong=[{"expected": "命名规范 · 入口类前缀 in_", "idx": 1, "rule_name": "入口类字段需使用 in_ 前缀", "via": ["in_", "入口", "前缀", "口类"], "kind": "strong"}, {"expected": "命名规范 · 入口类前缀 in_", "idx": 2, "rule_name": "入口类字段需使用 in_ 前缀", "via": ["in_", "入口", "前缀", "口类"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 入口类前缀 in_ -> 入口类字段需使用 in_ 前缀   (ASCII: in_)
+      [semantic] exp=命名规范 · 入口类前缀 in_ -> 入口类字段需使用 in_ 前缀   (2-gram: 入口)
+      [semantic] exp=命名规范 · 入口类前缀 in_ -> 入口类字段需使用 in_ 前缀   (2-gram: 前缀)
+      [semantic] exp=命名规范 · 入口类前缀 in_ -> 入口类字段需使用 in_ 前缀   (2-gram: 口类)
+====================================================================================================
+N-10 [naming] expected=["命名规范 · 出口类前缀 out_"] | compliant=False
+  reported: ["出口类字段必须使用 out_ 前缀", "出口类字段必须使用 out_ 前缀"]
+  MY strong=[{"expected": "命名规范 · 出口类前缀 out_", "idx": 1, "rule_name": "出口类字段必须使用 out_ 前缀", "via": ["out_", "出口", "前缀", "口类"], "kind": "strong"}, {"expected": "命名规范 · 出口类前缀 out_", "idx": 2, "rule_name": "出口类字段必须使用 out_ 前缀", "via": ["out_", "出口", "前缀", "口类"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 出口类前缀 out_ -> 出口类字段必须使用 out_ 前缀   (ASCII: out_)
+      [semantic] exp=命名规范 · 出口类前缀 out_ -> 出口类字段必须使用 out_ 前缀   (2-gram: 出口)
+      [semantic] exp=命名规范 · 出口类前缀 out_ -> 出口类字段必须使用 out_ 前缀   (2-gram: 前缀)
+      [semantic] exp=命名规范 · 出口类前缀 out_ -> 出口类字段必须使用 out_ 前缀   (2-gram: 口类)
+====================================================================================================
+N-11 [naming] expected=["命名规范 · 编号后缀 code"] | compliant=False
+  reported: ["本表字段禁止加本表名前缀", "编号编码字段统一使用 code 后缀"]
+  MY strong=[{"expected": "命名规范 · 编号后缀 code", "idx": 2, "rule_name": "编号编码字段统一使用 code 后缀", "via": ["code", "后缀", "编号"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 编号后缀 code -> 编号编码字段统一使用 code 后缀   (ASCII: code)
+      [semantic] exp=命名规范 · 编号后缀 code -> 编号编码字段统一使用 code 后缀   (2-gram: 后缀)
+      [semantic] exp=命名规范 · 编号后缀 code -> 编号编码字段统一使用 code 后缀   (2-gram: 编号)
+====================================================================================================
+N-12 [naming] expected=["命名规范 · 单位字段后缀 amount_unit"] | compliant=False
+  reported: ["数量含单位字段命名规范", "名词术语规范"]
+  MY strong=[{"expected": "命名规范 · 单位字段后缀 amount_unit", "idx": 1, "rule_name": "数量含单位字段命名规范", "via": ["单位"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 单位字段后缀 amount_unit -> 数量含单位字段命名规范   (2-gram: 单位)
+====================================================================================================
+N-13 [naming] expected=["命名规范 · 排序字段命名"] | compliant=False
+  reported: ["字段命名必须使用 lower_snake_case", "排序字段统一命名 sort"]
+  MY strong=[{"expected": "命名规范 · 排序字段命名", "idx": 2, "rule_name": "排序字段统一命名 sort", "via": ["排序"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 排序字段命名 -> 排序字段统一命名 sort   (2-gram: 排序)
+====================================================================================================
+N-14 [naming] expected=["命名规范 · 备注字段命名"] | compliant=False
+  reported: ["禁止使用保留关键字或类似关键字字段", "备注字段统一命名为 remark", "备注字段统一命名为 remark"]
+  MY strong=[{"expected": "命名规范 · 备注字段命名", "idx": 2, "rule_name": "备注字段统一命名为 remark", "via": ["备注"], "kind": "strong"}, {"expected": "命名规范 · 备注字段命名", "idx": 3, "rule_name": "备注字段统一命名为 remark", "via": ["备注"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 备注字段命名 -> 备注字段统一命名为 remark   (2-gram: 备注)
+====================================================================================================
+N-15 [naming] expected=["命名规范 · 本表字段不加表名前缀"] | compliant=False
+  reported: ["本表字段禁止拼接本表表名", "本表字段禁止拼接本表表名", "本表字段禁止拼接本表表名"]
+  MY strong=[]  weak=[{"expected": "命名规范 · 本表字段不加表名前缀", "idx": 1, "rule_name": "本表字段禁止拼接本表表名", "via": ["本表"], "kind": "weak/generic"}, {"expected": "命名规范 · 本表字段不加表名前缀", "idx": 2, "rule_name": "本表字段禁止拼接本表表名", "via": ["本表"], "kind": "weak/generic"}, {"expected": "命名规范 · 本表字段不加表名前缀", "idx": 3, "rule_name": "本表字段禁止拼接本表表名", "via": ["本表"], "kind": "weak/generic"}]  hit=False
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 本表字段不加表名前缀 -> 本表字段禁止拼接本表表名   (2-gram: 本表)
+====================================================================================================
+N-16 [naming] expected=["命名规范 · 金额数量精度", "建库规范 · 禁用 double"] | compliant=False
+  reported: ["禁止使用 double 类型", "禁止使用 float 浮点类型", "数量金额统一使用 decimal(20, 6)"]
+  MY strong=[{"expected": "命名规范 · 金额数量精度", "idx": 3, "rule_name": "数量金额统一使用 decimal(20, 6)", "via": ["数量", "金额"], "kind": "strong"}, {"expected": "建库规范 · 禁用 double", "idx": 1, "rule_name": "禁止使用 double 类型", "via": ["double"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=命名规范 · 金额数量精度 -> 数量金额统一使用 decimal(20, 6)   (2-gram: 数量)
+      [semantic] exp=命名规范 · 金额数量精度 -> 数量金额统一使用 decimal(20, 6)   (2-gram: 金额)
+      [semantic] exp=建库规范 · 禁用 double -> 禁止使用 double 类型   (ASCII: double)
+====================================================================================================
+T-01 [terminology] expected=["名词术语 · 主键命名"] | compliant=False
+  reported: ["主键字段命名必须为 id", "业务字段必须使用 biz_ 前缀", "非负数字必须加 UNSIGNED"]
+  MY strong=[{"expected": "名词术语 · 主键命名", "idx": 1, "rule_name": "主键字段命名必须为 id", "via": ["主键"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=名词术语 · 主键命名 -> 主键字段命名必须为 id   (2-gram: 主键)
+====================================================================================================
+T-02 [terminology] expected=["名词术语 · 名称命名"] | compliant=False
+  reported: ["本表字段禁止加表名前缀"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+T-03 [terminology] expected=["名词术语 · 类型命名"] | compliant=False
+  reported: ["禁止使用保留关键字或疑似关键字命名", "命名须使用术语字典标准词"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+T-04 [terminology] expected=["名词术语 · 上级命名"] | compliant=False
+  reported: ["命名需采用 lower_snake_case"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+T-05 [terminology] expected=["名词术语 · 状态命名"] | compliant=False
+  reported: ["状态字段应使用 status", "状态字段应使用 status", "状态字段注释需说明枚举值", "状态字段注释需说明枚举值"]
+  MY strong=[{"expected": "名词术语 · 状态命名", "idx": 1, "rule_name": "状态字段应使用 status", "via": ["状态"], "kind": "strong"}, {"expected": "名词术语 · 状态命名", "idx": 2, "rule_name": "状态字段应使用 status", "via": ["状态"], "kind": "strong"}, {"expected": "名词术语 · 状态命名", "idx": 3, "rule_name": "状态字段注释需说明枚举值", "via": ["状态"], "kind": "strong"}, {"expected": "名词术语 · 状态命名", "idx": 4, "rule_name": "状态字段注释需说明枚举值", "via": ["状态"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=名词术语 · 状态命名 -> 状态字段应使用 status   (2-gram: 状态)
+      [semantic] exp=名词术语 · 状态命名 -> 状态字段注释需说明枚举值   (2-gram: 状态)
+====================================================================================================
+T-06 [terminology] expected=["名词术语 · 审核/标识命名"] | compliant=False
+  reported: ["编号编码命名后缀必须为 _code"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+T-07 [terminology] expected=["名词术语 · 链接/来源命名"] | compliant=False
+  reported: ["命名未使用标准名词术语", "命名未使用标准名词术语", "命名未使用标准名词术语", "命名未使用标准名词术语"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+T-08 [terminology] expected=["名词术语 · 版本命名"] | compliant=False
+  reported: ["基类字段必须命名为 version", "字段命名须使用标准术语单词"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+T-09 [terminology] expected=["名词术语 · 删除/禁用命名"] | compliant=False
+  reported: ["缺少基础字段 deleted", "缺少基础字段 disabled"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+T-10 [terminology] expected=["名词术语 · 关联/路径命名"] | compliant=True
+  reported: []
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+T-11 [terminology] expected=["名词术语 · 用户字段命名"] | compliant=False
+  reported: ["字段命名必须使用标准名词术语", "字段命名必须使用标准名词术语", "字段命名必须使用标准名词术语", "字段命名必须使用标准名词术语", "字段命名必须使用标准名词术语", "字段命名必须使用标准名词术语", "字段命名必须使用标准名词术语", "字段命名必须使用标准名词术语"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+T-12 [terminology] expected=["名词术语 · 业务/地址字段命名"] | compliant=False
+  reported: ["字段命名未使用标准术语", "字段命名未使用标准术语", "字段命名未使用标准术语", "字段命名未使用标准术语", "字段命名未使用标准术语", "字段命名未使用标准术语", "字段命名未使用标准术语", "字段命名未使用标准术语"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+M-01 [table_template] expected=["建表模板 · 缺少基类字段 version"] | compliant=False
+  reported: ["缺少实体基类必须字段 version"]
+  MY strong=[{"expected": "建表模板 · 缺少基类字段 version", "idx": 1, "rule_name": "缺少实体基类必须字段 version", "via": ["version", "基类", "缺少"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 缺少基类字段 version -> 缺少实体基类必须字段 version   (ASCII: version)
+      [semantic] exp=建表模板 · 缺少基类字段 version -> 缺少实体基类必须字段 version   (2-gram: 基类)
+      [semantic] exp=建表模板 · 缺少基类字段 version -> 缺少实体基类必须字段 version   (2-gram: 缺少)
+====================================================================================================
+M-02 [table_template] expected=["建表模板 · 缺少基类字段 deleted"] | compliant=False
+  reported: ["缺少删除标记基类字段 deleted"]
+  MY strong=[{"expected": "建表模板 · 缺少基类字段 deleted", "idx": 1, "rule_name": "缺少删除标记基类字段 deleted", "via": ["deleted", "基类", "缺少"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 缺少基类字段 deleted -> 缺少删除标记基类字段 deleted   (ASCII: deleted)
+      [semantic] exp=建表模板 · 缺少基类字段 deleted -> 缺少删除标记基类字段 deleted   (2-gram: 基类)
+      [semantic] exp=建表模板 · 缺少基类字段 deleted -> 缺少删除标记基类字段 deleted   (2-gram: 缺少)
+====================================================================================================
+M-03 [table_template] expected=["建表模板 · 缺少基类字段 disabled"] | compliant=False
+  reported: ["缺少实体基类必填字段"]
+  MY strong=[{"expected": "建表模板 · 缺少基类字段 disabled", "idx": 1, "rule_name": "缺少实体基类必填字段", "via": ["基类", "缺少"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 缺少基类字段 disabled -> 缺少实体基类必填字段   (2-gram: 基类)
+      [semantic] exp=建表模板 · 缺少基类字段 disabled -> 缺少实体基类必填字段   (2-gram: 缺少)
+====================================================================================================
+M-04 [table_template] expected=["建表模板 · 缺少基类字段 create_id"] | compliant=False
+  reported: ["实体基类必须字段缺失", "数字类型缺少 UNSIGNED"]
+  MY strong=[{"expected": "建表模板 · 缺少基类字段 create_id", "idx": 1, "rule_name": "实体基类必须字段缺失", "via": ["基类"], "kind": "strong"}, {"expected": "建表模板 · 缺少基类字段 create_id", "idx": 2, "rule_name": "数字类型缺少 UNSIGNED", "via": ["缺少"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 缺少基类字段 create_id -> 实体基类必须字段缺失   (2-gram: 基类)
+      [semantic] exp=建表模板 · 缺少基类字段 create_id -> 数字类型缺少 UNSIGNED   (2-gram: 缺少)
+====================================================================================================
+M-05 [table_template] expected=["建表模板 · 缺少基类字段 create_time"] | compliant=False
+  reported: ["缺少实体基类必须字段 create_time"]
+  MY strong=[{"expected": "建表模板 · 缺少基类字段 create_time", "idx": 1, "rule_name": "缺少实体基类必须字段 create_time", "via": ["create_time", "基类", "缺少"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 缺少基类字段 create_time -> 缺少实体基类必须字段 create_time   (ASCII: create_time)
+      [semantic] exp=建表模板 · 缺少基类字段 create_time -> 缺少实体基类必须字段 create_time   (2-gram: 基类)
+      [semantic] exp=建表模板 · 缺少基类字段 create_time -> 缺少实体基类必须字段 create_time   (2-gram: 缺少)
+====================================================================================================
+M-06 [table_template] expected=["建表模板 · 缺少基类字段 modify_id"] | compliant=False
+  reported: ["缺少修改人标识字段"]
+  MY strong=[{"expected": "建表模板 · 缺少基类字段 modify_id", "idx": 1, "rule_name": "缺少修改人标识字段", "via": ["缺少"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 缺少基类字段 modify_id -> 缺少修改人标识字段   (2-gram: 缺少)
+====================================================================================================
+M-07 [table_template] expected=["建表模板 · 缺少基类字段 modify_time"] | compliant=False
+  reported: ["实体基类必须字段缺失"]
+  MY strong=[{"expected": "建表模板 · 缺少基类字段 modify_time", "idx": 1, "rule_name": "实体基类必须字段缺失", "via": ["基类"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 缺少基类字段 modify_time -> 实体基类必须字段缺失   (2-gram: 基类)
+====================================================================================================
+M-08 [table_template] expected=["建表模板 · 必须包含通用基类审计字段"] | compliant=False
+  reported: ["缺少实体基类必须字段", "本表字段禁止拼接本表表名"]
+  MY strong=[{"expected": "建表模板 · 必须包含通用基类审计字段", "idx": 1, "rule_name": "缺少实体基类必须字段", "via": ["基类"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 必须包含通用基类审计字段 -> 缺少实体基类必须字段   (2-gram: 基类)
+====================================================================================================
+M-09 [table_template] expected=["建表模板 · 主键必须为 id"] | compliant=False
+  reported: ["本表字段禁止加表名", "主键必须命名为 id"]
+  MY strong=[{"expected": "建表模板 · 主键必须为 id", "idx": 2, "rule_name": "主键必须命名为 id", "via": ["id", "主键"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 主键必须为 id -> 主键必须命名为 id   (ASCII: id)
+      [semantic] exp=建表模板 · 主键必须为 id -> 主键必须命名为 id   (2-gram: 主键)
+====================================================================================================
+M-10 [table_template] expected=["建表模板 · 主键类型必须为 BIGINT UNSIGNED"] | compliant=False
+  reported: ["主键必须为 BIGINT UNSIGNED"]
+  MY strong=[{"expected": "建表模板 · 主键类型必须为 BIGINT UNSIGNED", "idx": 1, "rule_name": "主键必须为 BIGINT UNSIGNED", "via": ["bigint", "unsigned", "主键"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 主键类型必须为 BIGINT UNSIGNED -> 主键必须为 BIGINT UNSIGNED   (ASCII: bigint)
+      [semantic] exp=建表模板 · 主键类型必须为 BIGINT UNSIGNED -> 主键必须为 BIGINT UNSIGNED   (ASCII: unsigned)
+      [semantic] exp=建表模板 · 主键类型必须为 BIGINT UNSIGNED -> 主键必须为 BIGINT UNSIGNED   (2-gram: 主键)
+====================================================================================================
+M-11 [table_template] expected=["建表模板 · 主键必须 NOT NULL"] | compliant=False
+  reported: ["主键必须为 BIGINT UNSIGNED NOT NULL"]
+  MY strong=[{"expected": "建表模板 · 主键必须 NOT NULL", "idx": 1, "rule_name": "主键必须为 BIGINT UNSIGNED NOT NULL", "via": ["not", "null", "主键"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 主键必须 NOT NULL -> 主键必须为 BIGINT UNSIGNED NOT NULL   (ASCII: not)
+      [semantic] exp=建表模板 · 主键必须 NOT NULL -> 主键必须为 BIGINT UNSIGNED NOT NULL   (ASCII: null)
+      [semantic] exp=建表模板 · 主键必须 NOT NULL -> 主键必须为 BIGINT UNSIGNED NOT NULL   (2-gram: 主键)
+====================================================================================================
+M-12 [table_template] expected=["建表模板 · 主键雪花算法"] | compliant=False
+  reported: ["主键须为雪花算法无自增"]
+  MY strong=[{"expected": "建表模板 · 主键雪花算法", "idx": 1, "rule_name": "主键须为雪花算法无自增", "via": ["主键", "算法", "花算", "雪花"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 主键雪花算法 -> 主键须为雪花算法无自增   (2-gram: 主键)
+      [semantic] exp=建表模板 · 主键雪花算法 -> 主键须为雪花算法无自增   (2-gram: 算法)
+      [semantic] exp=建表模板 · 主键雪花算法 -> 主键须为雪花算法无自增   (2-gram: 花算)
+      [semantic] exp=建表模板 · 主键雪花算法 -> 主键须为雪花算法无自增   (2-gram: 雪花)
+====================================================================================================
+M-13 [table_template] expected=["建表模板 · 基类字段类型不符 create_id/modify_id"] | compliant=False
+  reported: ["基类字段类型必须符合建表模板", "基类字段类型必须符合建表模板"]
+  MY strong=[{"expected": "建表模板 · 基类字段类型不符 create_id/modify_id", "idx": 1, "rule_name": "基类字段类型必须符合建表模板", "via": ["基类", "类型"], "kind": "strong"}, {"expected": "建表模板 · 基类字段类型不符 create_id/modify_id", "idx": 2, "rule_name": "基类字段类型必须符合建表模板", "via": ["基类", "类型"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 基类字段类型不符 create_id/modify_id -> 基类字段类型必须符合建表模板   (2-gram: 基类)
+      [semantic] exp=建表模板 · 基类字段类型不符 create_id/modify_id -> 基类字段类型必须符合建表模板   (2-gram: 类型)
+====================================================================================================
+M-14 [table_template] expected=["建表模板 · 基类字段类型不符 create_time/modify_time"] | compliant=False
+  reported: ["create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP", "modify_time 必须为 DATETIME"]
+  MY strong=[{"expected": "建表模板 · 基类字段类型不符 create_time/modify_time", "idx": 1, "rule_name": "create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP", "via": ["create_time"], "kind": "strong"}, {"expected": "建表模板 · 基类字段类型不符 create_time/modify_time", "idx": 2, "rule_name": "modify_time 必须为 DATETIME", "via": ["modify_time"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 基类字段类型不符 create_time/modify_time -> create_time 必须为 DATETIME 并默认 CURRENT_TIMESTAMP   (ASCII: create_time)
+      [semantic] exp=建表模板 · 基类字段类型不符 create_time/modify_time -> modify_time 必须为 DATETIME   (ASCII: modify_time)
+====================================================================================================
+M-15 [table_template] expected=["建库规范 · TINYINT 统一 TINYINT(4)"] | compliant=False
+  reported: ["TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED"]
+  MY strong=[{"expected": "建库规范 · TINYINT 统一 TINYINT(4)", "idx": 1, "rule_name": "TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED", "via": ["tinyint"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建库规范 · TINYINT 统一 TINYINT(4) -> TINYINT 统一使用 TINYINT(4) 且非负数字加 UNSIGNED   (ASCII: tinyint)
+====================================================================================================
+M-16 [table_template] expected=["建表模板 · 基类字段类型不符 version"] | compliant=False
+  reported: ["基础字段 version 类型错误"]
+  MY strong=[{"expected": "建表模板 · 基类字段类型不符 version", "idx": 1, "rule_name": "基础字段 version 类型错误", "via": ["version", "类型"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 基类字段类型不符 version -> 基础字段 version 类型错误   (ASCII: version)
+      [semantic] exp=建表模板 · 基类字段类型不符 version -> 基础字段 version 类型错误   (2-gram: 类型)
+====================================================================================================
+M-17 [table_template] expected=["建表模板 · 必须使用 InnoDB 引擎"] | compliant=False
+  reported: ["必须使用 InnoDB 引擎"]
+  MY strong=[{"expected": "建表模板 · 必须使用 InnoDB 引擎", "idx": 1, "rule_name": "必须使用 InnoDB 引擎", "via": ["innodb", "引擎"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=True lenient=True
+      [strict] exp=建表模板 · 必须使用 InnoDB 引擎 -> 必须使用 InnoDB 引擎   (子串: 必须使用innodb引擎)
+      [semantic] exp=建表模板 · 必须使用 InnoDB 引擎 -> 必须使用 InnoDB 引擎   (ASCII: innodb)
+      [semantic] exp=建表模板 · 必须使用 InnoDB 引擎 -> 必须使用 InnoDB 引擎   (2-gram: 引擎)
+====================================================================================================
+M-18 [table_template] expected=["建表模板 · 必须包含表级注释"] | compliant=False
+  reported: ["必须包含表级注释"]
+  MY strong=[{"expected": "建表模板 · 必须包含表级注释", "idx": 1, "rule_name": "必须包含表级注释", "via": ["表级"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=True lenient=True
+      [strict] exp=建表模板 · 必须包含表级注释 -> 必须包含表级注释   (子串: 必须包含表级注释)
+      [semantic] exp=建表模板 · 必须包含表级注释 -> 必须包含表级注释   (2-gram: 包含)
+      [semantic] exp=建表模板 · 必须包含表级注释 -> 必须包含表级注释   (2-gram: 含表)
+      [semantic] exp=建表模板 · 必须包含表级注释 -> 必须包含表级注释   (2-gram: 注释)
+      [semantic] exp=建表模板 · 必须包含表级注释 -> 必须包含表级注释   (2-gram: 级注)
+      [semantic] exp=建表模板 · 必须包含表级注释 -> 必须包含表级注释   (2-gram: 表级)
+====================================================================================================
+M-19 [table_template] expected=["建表模板 · 缺少表级主键约束"] | compliant=False
+  reported: ["缺少主键定义", "表名使用库前缀"]
+  MY strong=[{"expected": "建表模板 · 缺少表级主键约束", "idx": 1, "rule_name": "缺少主键定义", "via": ["主键", "缺少"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 缺少表级主键约束 -> 缺少主键定义   (2-gram: 主键)
+      [semantic] exp=建表模板 · 缺少表级主键约束 -> 缺少主键定义   (2-gram: 缺少)
+====================================================================================================
+M-20 [table_template] expected=["建表模板 · 字段缺少注释"] | compliant=False
+  reported: ["本表字段禁止加表名前缀", "主键必须包含注释", "基类字段必须包含中文注释"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=True
+      [semantic] exp=建表模板 · 字段缺少注释 -> 主键必须包含注释   (2-gram: 注释)
+      [semantic] exp=建表模板 · 字段缺少注释 -> 基类字段必须包含中文注释   (2-gram: 注释)
+====================================================================================================
+D-01 [database_rules] expected=["建库规范 · 生产库表名 db_ 前缀"] | compliant=True
+  reported: []
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+D-02 [database_rules] expected=["建库规范 · 必须使用 InnoDB"] | compliant=True
+  reported: []
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+D-03 [database_rules] expected=["建库规范 · 表内禁止外键设计"] | compliant=False
+  reported: ["禁止外键设计"]
+  MY strong=[{"expected": "建库规范 · 表内禁止外键设计", "idx": 1, "rule_name": "禁止外键设计", "via": ["外键"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=True lenient=True
+      [strict] exp=建库规范 · 表内禁止外键设计 -> 禁止外键设计   (子串: 表内禁止外键设计)
+      [semantic] exp=建库规范 · 表内禁止外键设计 -> 禁止外键设计   (2-gram: 外键)
+      [semantic] exp=建库规范 · 表内禁止外键设计 -> 禁止外键设计   (2-gram: 设计)
+      [semantic] exp=建库规范 · 表内禁止外键设计 -> 禁止外键设计   (2-gram: 键设)
+====================================================================================================
+D-04 [database_rules] expected=["建库规范 · 表内禁止外键设计"] | compliant=False
+  reported: ["表内禁止外键设计"]
+  MY strong=[{"expected": "建库规范 · 表内禁止外键设计", "idx": 1, "rule_name": "表内禁止外键设计", "via": ["外键", "表内"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=True lenient=True
+      [strict] exp=建库规范 · 表内禁止外键设计 -> 表内禁止外键设计   (子串: 表内禁止外键设计)
+      [semantic] exp=建库规范 · 表内禁止外键设计 -> 表内禁止外键设计   (2-gram: 外键)
+      [semantic] exp=建库规范 · 表内禁止外键设计 -> 表内禁止外键设计   (2-gram: 表内)
+      [semantic] exp=建库规范 · 表内禁止外键设计 -> 表内禁止外键设计   (2-gram: 设计)
+      [semantic] exp=建库规范 · 表内禁止外键设计 -> 表内禁止外键设计   (2-gram: 键设)
+====================================================================================================
+D-05 [database_rules] expected=["建库规范 · 禁止触发器"] | compliant=True
+  reported: []
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+D-06 [database_rules] expected=["建库规范 · 禁止存储过程/自定义函数"] | compliant=True
+  reported: []
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+D-07 [database_rules] expected=["建库规范 · 字符集必须 utf8mb4"] | compliant=False
+  reported: ["非负数字类型必须加 UNSIGNED"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+D-08 [database_rules] expected=["建库规范 · 字符集必须 utf8mb4", "建表规范 · 字段不手写字符集"] | compliant=True
+  reported: []
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+D-09 [database_rules] expected=["建库规范 · 表名禁止关键字"] | compliant=False
+  reported: ["表名禁止使用保留关键字", "生产表名必须以 db_ 开头"]
+  MY strong=[{"expected": "建库规范 · 表名禁止关键字", "idx": 1, "rule_name": "表名禁止使用保留关键字", "via": ["关键", "键字"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建库规范 · 表名禁止关键字 -> 表名禁止使用保留关键字   (2-gram: 关键)
+      [semantic] exp=建库规范 · 表名禁止关键字 -> 表名禁止使用保留关键字   (2-gram: 键字)
+====================================================================================================
+D-10 [database_rules] expected=["建库规范 · 字段名禁止关键字"] | compliant=False
+  reported: ["禁止使用保留关键字", "备注统一命名 remark", "禁止使用保留关键字", "禁止使用保留关键字", "排序统一命名 sort", "数字类型非负必须加 UNSIGNED", "禁止使用保留关键字"]
+  MY strong=[{"expected": "建库规范 · 字段名禁止关键字", "idx": 1, "rule_name": "禁止使用保留关键字", "via": ["关键", "键字"], "kind": "strong"}, {"expected": "建库规范 · 字段名禁止关键字", "idx": 3, "rule_name": "禁止使用保留关键字", "via": ["关键", "键字"], "kind": "strong"}, {"expected": "建库规范 · 字段名禁止关键字", "idx": 4, "rule_name": "禁止使用保留关键字", "via": ["关键", "键字"], "kind": "strong"}, {"expected": "建库规范 · 字段名禁止关键字", "idx": 7, "rule_name": "禁止使用保留关键字", "via": ["关键", "键字"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建库规范 · 字段名禁止关键字 -> 禁止使用保留关键字   (2-gram: 关键)
+      [semantic] exp=建库规范 · 字段名禁止关键字 -> 禁止使用保留关键字   (2-gram: 键字)
+====================================================================================================
+D-11 [database_rules] expected=["建库规范 · 加字段必须标注 AFTER"] | compliant=False
+  reported: ["DDL 增加字段必须标注 AFTER 指定位置"]
+  MY strong=[{"expected": "建库规范 · 加字段必须标注 AFTER", "idx": 1, "rule_name": "DDL 增加字段必须标注 AFTER 指定位置", "via": ["after", "标注"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=True lenient=True
+      [strict] exp=建库规范 · 加字段必须标注 AFTER -> DDL 增加字段必须标注 AFTER 指定位置   (子串: 加字段必须标注after)
+      [semantic] exp=建库规范 · 加字段必须标注 AFTER -> DDL 增加字段必须标注 AFTER 指定位置   (ASCII: after)
+      [semantic] exp=建库规范 · 加字段必须标注 AFTER -> DDL 增加字段必须标注 AFTER 指定位置   (2-gram: 标注)
+====================================================================================================
+D-12 [database_rules] expected=["建库规范 · 数字类型加 UNSIGNED"] | compliant=False
+  reported: ["数字类型需加 UNSIGNED", "数字类型需加 UNSIGNED"]
+  MY strong=[{"expected": "建库规范 · 数字类型加 UNSIGNED", "idx": 1, "rule_name": "数字类型需加 UNSIGNED", "via": ["unsigned", "字类", "数字", "类型"], "kind": "strong"}, {"expected": "建库规范 · 数字类型加 UNSIGNED", "idx": 2, "rule_name": "数字类型需加 UNSIGNED", "via": ["unsigned", "字类", "数字", "类型"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建库规范 · 数字类型加 UNSIGNED -> 数字类型需加 UNSIGNED   (ASCII: unsigned)
+      [semantic] exp=建库规范 · 数字类型加 UNSIGNED -> 数字类型需加 UNSIGNED   (2-gram: 字类)
+      [semantic] exp=建库规范 · 数字类型加 UNSIGNED -> 数字类型需加 UNSIGNED   (2-gram: 数字)
+      [semantic] exp=建库规范 · 数字类型加 UNSIGNED -> 数字类型需加 UNSIGNED   (2-gram: 类型)
+====================================================================================================
+D-13 [database_rules] expected=["建库规范 · 避免 NULL"] | compliant=False
+  reported: ["避免 NULL 字段"]
+  MY strong=[{"expected": "建库规范 · 避免 NULL", "idx": 1, "rule_name": "避免 NULL 字段", "via": ["null", "避免"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=True lenient=True
+      [strict] exp=建库规范 · 避免 NULL -> 避免 NULL 字段   (子串: 避免null)
+      [semantic] exp=建库规范 · 避免 NULL -> 避免 NULL 字段   (ASCII: null)
+      [semantic] exp=建库规范 · 避免 NULL -> 避免 NULL 字段   (2-gram: 避免)
+====================================================================================================
+D-14 [database_rules] expected=["建库规范 · 禁用 double"] | compliant=False
+  reported: ["金额字段必须使用 decimal(20,6)", "禁止使用 double 类型"]
+  MY strong=[{"expected": "建库规范 · 禁用 double", "idx": 2, "rule_name": "禁止使用 double 类型", "via": ["double"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建库规范 · 禁用 double -> 禁止使用 double 类型   (ASCII: double)
+====================================================================================================
+D-15 [database_rules] expected=["建库规范 · TINYINT 统一 TINYINT(4)"] | compliant=False
+  reported: ["TINYINT 统一使用 TINYINT(4)", "TINYINT 统一使用 TINYINT(4)", "TINYINT 统一使用 TINYINT(4)"]
+  MY strong=[{"expected": "建库规范 · TINYINT 统一 TINYINT(4)", "idx": 1, "rule_name": "TINYINT 统一使用 TINYINT(4)", "via": ["tinyint"], "kind": "strong"}, {"expected": "建库规范 · TINYINT 统一 TINYINT(4)", "idx": 2, "rule_name": "TINYINT 统一使用 TINYINT(4)", "via": ["tinyint"], "kind": "strong"}, {"expected": "建库规范 · TINYINT 统一 TINYINT(4)", "idx": 3, "rule_name": "TINYINT 统一使用 TINYINT(4)", "via": ["tinyint"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建库规范 · TINYINT 统一 TINYINT(4) -> TINYINT 统一使用 TINYINT(4)   (ASCII: tinyint)
+====================================================================================================
+D-16 [database_rules] expected=["建库规范 · 关联表 r_ 前缀"] | compliant=False
+  reported: ["关联表必须以 r_ 开头"]
+  MY strong=[{"expected": "建库规范 · 关联表 r_ 前缀", "idx": 1, "rule_name": "关联表必须以 r_ 开头", "via": ["r_", "关联", "联表"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建库规范 · 关联表 r_ 前缀 -> 关联表必须以 r_ 开头   (ASCII: r_)
+      [semantic] exp=建库规范 · 关联表 r_ 前缀 -> 关联表必须以 r_ 开头   (2-gram: 关联)
+      [semantic] exp=建库规范 · 关联表 r_ 前缀 -> 关联表必须以 r_ 开头   (2-gram: 联表)
+====================================================================================================
+F-01 [field_and_index] expected=["建表规范 · 三方对接表缺 system_source"] | compliant=False
+  reported: ["本表字段禁止拼接本表表名", "编号编码字段命名后缀为 code", "三方对接表必须包含系统来源与数据来源"]
+  MY strong=[{"expected": "建表规范 · 三方对接表缺 system_source", "idx": 3, "rule_name": "三方对接表必须包含系统来源与数据来源", "via": ["三方", "对接", "接表", "方对"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表规范 · 三方对接表缺 system_source -> 三方对接表必须包含系统来源与数据来源   (2-gram: 三方)
+      [semantic] exp=建表规范 · 三方对接表缺 system_source -> 三方对接表必须包含系统来源与数据来源   (2-gram: 对接)
+      [semantic] exp=建表规范 · 三方对接表缺 system_source -> 三方对接表必须包含系统来源与数据来源   (2-gram: 接表)
+      [semantic] exp=建表规范 · 三方对接表缺 system_source -> 三方对接表必须包含系统来源与数据来源   (2-gram: 方对)
+====================================================================================================
+F-02 [field_and_index] expected=["建表规范 · 三方对接表缺 data_source"] | compliant=False
+  reported: ["本表字段禁止加表名前缀且编号应使用 code", "三方对接表需包含系统来源和数据来源"]
+  MY strong=[{"expected": "建表规范 · 三方对接表缺 data_source", "idx": 2, "rule_name": "三方对接表需包含系统来源和数据来源", "via": ["三方", "对接", "接表", "方对"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表规范 · 三方对接表缺 data_source -> 三方对接表需包含系统来源和数据来源   (2-gram: 三方)
+      [semantic] exp=建表规范 · 三方对接表缺 data_source -> 三方对接表需包含系统来源和数据来源   (2-gram: 对接)
+      [semantic] exp=建表规范 · 三方对接表缺 data_source -> 三方对接表需包含系统来源和数据来源   (2-gram: 接表)
+      [semantic] exp=建表规范 · 三方对接表缺 data_source -> 三方对接表需包含系统来源和数据来源   (2-gram: 方对)
+====================================================================================================
+F-03 [field_and_index] expected=["建表规范 · 普通索引 idx_ 前缀"] | compliant=False
+  reported: ["普通索引必须以 idx_ 开头", "普通索引必须以 idx_ 开头"]
+  MY strong=[{"expected": "建表规范 · 普通索引 idx_ 前缀", "idx": 1, "rule_name": "普通索引必须以 idx_ 开头", "via": ["idx_", "普通", "索引", "通索"], "kind": "strong"}, {"expected": "建表规范 · 普通索引 idx_ 前缀", "idx": 2, "rule_name": "普通索引必须以 idx_ 开头", "via": ["idx_", "普通", "索引", "通索"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表规范 · 普通索引 idx_ 前缀 -> 普通索引必须以 idx_ 开头   (ASCII: idx_)
+      [semantic] exp=建表规范 · 普通索引 idx_ 前缀 -> 普通索引必须以 idx_ 开头   (2-gram: 普通)
+      [semantic] exp=建表规范 · 普通索引 idx_ 前缀 -> 普通索引必须以 idx_ 开头   (2-gram: 索引)
+      [semantic] exp=建表规范 · 普通索引 idx_ 前缀 -> 普通索引必须以 idx_ 开头   (2-gram: 通索)
+====================================================================================================
+F-04 [field_and_index] expected=["建表规范 · 唯一索引 uniq_ 前缀"] | compliant=False
+  reported: ["非负数字类型必须加 UNSIGNED"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+F-05 [field_and_index] expected=["建表规范 · 布尔类型 TINYINT(4)"] | compliant=False
+  reported: ["布尔类型必须使用 TINYINT(4)", "单字符标记必须使用 char(1)"]
+  MY strong=[{"expected": "建表规范 · 布尔类型 TINYINT(4)", "idx": 1, "rule_name": "布尔类型必须使用 TINYINT(4)", "via": ["tinyint", "尔类", "布尔", "类型"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表规范 · 布尔类型 TINYINT(4) -> 布尔类型必须使用 TINYINT(4)   (ASCII: tinyint)
+      [semantic] exp=建表规范 · 布尔类型 TINYINT(4) -> 布尔类型必须使用 TINYINT(4)   (2-gram: 尔类)
+      [semantic] exp=建表规范 · 布尔类型 TINYINT(4) -> 布尔类型必须使用 TINYINT(4)   (2-gram: 布尔)
+      [semantic] exp=建表规范 · 布尔类型 TINYINT(4) -> 布尔类型必须使用 TINYINT(4)   (2-gram: 类型)
+====================================================================================================
+F-06 [field_and_index] expected=["建表规范 · 布尔字段名用名词"] | compliant=False
+  reported: ["基础字段删除标记命名违规", "基础字段停用标记命名违规"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+F-07 [field_and_index] expected=["建表规范 · 单字符字段用 char(1)"] | compliant=True
+  reported: []
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+F-08 [field_and_index] expected=["建表规范 · 单字符字段默认值"] | compliant=False
+  reported: ["单字符字段必须带默认值"]
+  MY strong=[{"expected": "建表规范 · 单字符字段默认值", "idx": 1, "rule_name": "单字符字段必须带默认值", "via": ["单字", "字符", "认值", "默认"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表规范 · 单字符字段默认值 -> 单字符字段必须带默认值   (2-gram: 单字)
+      [semantic] exp=建表规范 · 单字符字段默认值 -> 单字符字段必须带默认值   (2-gram: 字符)
+      [semantic] exp=建表规范 · 单字符字段默认值 -> 单字符字段必须带默认值   (2-gram: 认值)
+      [semantic] exp=建表规范 · 单字符字段默认值 -> 单字符字段必须带默认值   (2-gram: 默认)
+====================================================================================================
+F-09 [field_and_index] expected=["建表规范 · 大于1字符用 varchar"] | compliant=False
+  reported: ["本表字段禁止加表名前缀", "字符串应使用 varchar(30)", "大于1个字符应默认空串"]
+  MY strong=[{"expected": "建表规范 · 大于1字符用 varchar", "idx": 2, "rule_name": "字符串应使用 varchar(30)", "via": ["varchar", "字符"], "kind": "strong"}, {"expected": "建表规范 · 大于1字符用 varchar", "idx": 3, "rule_name": "大于1个字符应默认空串", "via": ["大于", "字符"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表规范 · 大于1字符用 varchar -> 字符串应使用 varchar(30)   (ASCII: varchar)
+      [semantic] exp=建表规范 · 大于1字符用 varchar -> 大于1个字符应默认空串   (2-gram: 大于)
+      [semantic] exp=建表规范 · 大于1字符用 varchar -> 字符串应使用 varchar(30)   (2-gram: 字符)
+      [semantic] exp=建表规范 · 大于1字符用 varchar -> 大于1个字符应默认空串   (2-gram: 字符)
+====================================================================================================
+F-10 [field_and_index] expected=["建表规范 · 单整数用 TINYINT(4)"] | compliant=False
+  reported: ["整数字段类型选择规范", "无负数数字类型必须加 UNSIGNED"]
+  MY strong=[{"expected": "建表规范 · 单整数用 TINYINT(4)", "idx": 1, "rule_name": "整数字段类型选择规范", "via": ["整数"], "kind": "strong"}]  weak=[]  hit=True
+  LEAD strict=False lenient=True
+      [semantic] exp=建表规范 · 单整数用 TINYINT(4) -> 整数字段类型选择规范   (2-gram: 整数)
+====================================================================================================
+F-11 [field_and_index] expected=["建表规范 · 大于1整数用 int"] | compliant=False
+  reported: ["数量类字段必须使用 decimal"]
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+====================================================================================================
+F-12 [field_and_index] expected=["建表规范 · 字段不手写字符集"] | compliant=True
+  reported: []
+  MY strong=[]  weak=[]  hit=False
+  LEAD strict=False lenient=False
+
+E. DUPLICATE RULE NAMES
+{
+  "D-10": {
+    "n_violations": 7,
+    "duplicate_rule_names": [
+      "禁止使用保留关键字"
+    ],
+    "duplicate_rule_ids": [],
+    "name_counts": {
+      "禁止使用保留关键字": 4
+    },
+    "reported_violation_count_field": 7
+  },
+  "D-12": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "数字类型需加 UNSIGNED"
+    ],
+    "duplicate_rule_ids": [
+      "rule_unsigned_required"
+    ],
+    "name_counts": {
+      "数字类型需加 UNSIGNED": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "D-15": {
+    "n_violations": 3,
+    "duplicate_rule_names": [
+      "TINYINT 统一使用 TINYINT(4)"
+    ],
+    "duplicate_rule_ids": [
+      "rule_tinyint_length"
+    ],
+    "name_counts": {
+      "TINYINT 统一使用 TINYINT(4)": 3
+    },
+    "reported_violation_count_field": 3
+  },
+  "F-03": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "普通索引必须以 idx_ 开头"
+    ],
+    "duplicate_rule_ids": [
+      "rule_index_prefix"
+    ],
+    "name_counts": {
+      "普通索引必须以 idx_ 开头": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "M-13": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "基类字段类型必须符合建表模板"
+    ],
+    "duplicate_rule_ids": [
+      "rule_audit_field_type"
+    ],
+    "name_counts": {
+      "基类字段类型必须符合建表模板": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "N-01": {
+    "n_violations": 3,
+    "duplicate_rule_names": [
+      "采用 lower_snake_case 命名法"
+    ],
+    "duplicate_rule_ids": [
+      "naming_lower_snake_case"
+    ],
+    "name_counts": {
+      "采用 lower_snake_case 命名法": 2
+    },
+    "reported_violation_count_field": 3
+  },
+  "N-02": {
+    "n_violations": 3,
+    "duplicate_rule_names": [
+      "字段使用规范术语"
+    ],
+    "duplicate_rule_ids": [],
+    "name_counts": {
+      "字段使用规范术语": 2
+    },
+    "reported_violation_count_field": 3
+  },
+  "N-04": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "单价字段命名后缀必须为 price"
+    ],
+    "duplicate_rule_ids": [
+      "rule_naming_price"
+    ],
+    "name_counts": {
+      "单价字段命名后缀必须为 price": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "N-05": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "金额字段统一命名后缀 _money"
+    ],
+    "duplicate_rule_ids": [
+      "rule_money_suffix"
+    ],
+    "name_counts": {
+      "金额字段统一命名后缀 _money": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "N-06": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "数量类字段命名与类型规范"
+    ],
+    "duplicate_rule_ids": [
+      "rule_amount_naming"
+    ],
+    "name_counts": {
+      "数量类字段命名与类型规范": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "N-07": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "时间字段命名规范"
+    ],
+    "duplicate_rule_ids": [
+      "rule_time_suffix"
+    ],
+    "name_counts": {
+      "时间字段命名规范": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "N-08": {
+    "n_violations": 3,
+    "duplicate_rule_names": [
+      "业务类字段需用 biz_ 前缀"
+    ],
+    "duplicate_rule_ids": [
+      "rule_naming_biz_prefix"
+    ],
+    "name_counts": {
+      "业务类字段需用 biz_ 前缀": 2
+    },
+    "reported_violation_count_field": 3
+  },
+  "N-09": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "入口类字段需使用 in_ 前缀"
+    ],
+    "duplicate_rule_ids": [
+      "rule_naming_prefix_in"
+    ],
+    "name_counts": {
+      "入口类字段需使用 in_ 前缀": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "N-10": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "出口类字段必须使用 out_ 前缀"
+    ],
+    "duplicate_rule_ids": [
+      "rule_out_prefix"
+    ],
+    "name_counts": {
+      "出口类字段必须使用 out_ 前缀": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "N-14": {
+    "n_violations": 3,
+    "duplicate_rule_names": [
+      "备注字段统一命名为 remark"
+    ],
+    "duplicate_rule_ids": [
+      "rule_naming_remark"
+    ],
+    "name_counts": {
+      "备注字段统一命名为 remark": 2
+    },
+    "reported_violation_count_field": 3
+  },
+  "N-15": {
+    "n_violations": 3,
+    "duplicate_rule_names": [
+      "本表字段禁止拼接本表表名"
+    ],
+    "duplicate_rule_ids": [
+      "rule_no_self_table_prefix"
+    ],
+    "name_counts": {
+      "本表字段禁止拼接本表表名": 3
+    },
+    "reported_violation_count_field": 3
+  },
+  "P-01": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "本表字段名禁止携带本表表名前缀"
+    ],
+    "duplicate_rule_ids": [
+      "rule_no_table_prefix"
+    ],
+    "name_counts": {
+      "本表字段名禁止携带本表表名前缀": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "P-02": {
+    "n_violations": 2,
+    "duplicate_rule_names": [
+      "数字类型必须加 UNSIGNED"
+    ],
+    "duplicate_rule_ids": [
+      "rule_unsigned"
+    ],
+    "name_counts": {
+      "数字类型必须加 UNSIGNED": 2
+    },
+    "reported_violation_count_field": 2
+  },
+  "T-05": {
+    "n_violations": 4,
+    "duplicate_rule_names": [
+      "状态字段应使用 status",
+      "状态字段注释需说明枚举值"
+    ],
+    "duplicate_rule_ids": [
+      "rule_naming_status_term",
+      "rule_status_comment_enum"
+    ],
+    "name_counts": {
+      "状态字段应使用 status": 2,
+      "状态字段注释需说明枚举值": 2
+    },
+    "reported_violation_count_field": 4
+  },
+  "T-07": {
+    "n_violations": 4,
+    "duplicate_rule_names": [
+      "命名未使用标准名词术语"
+    ],
+    "duplicate_rule_ids": [
+      "rule_terminology"
+    ],
+    "name_counts": {
+      "命名未使用标准名词术语": 4
+    },
+    "reported_violation_count_field": 4
+  },
+  "T-11": {
+    "n_violations": 8,
+    "duplicate_rule_names": [
+      "字段命名必须使用标准名词术语"
+    ],
+    "duplicate_rule_ids": [
+      "rule_standard_terminology"
+    ],
+    "name_counts": {
+      "字段命名必须使用标准名词术语": 8
+    },
+    "reported_violation_count_field": 8
+  },
+  "T-12": {
+    "n_violations": 8,
+    "duplicate_rule_names": [
+      "字段命名未使用标准术语"
+    ],
+    "duplicate_rule_ids": [],
+    "name_counts": {
+      "字段命名未使用标准术语": 8
+    },
+    "reported_violation_count_field": 8
+  }
+}
+
+F. CONTRADICTIONS
+--- D-01 kind=negative compliant=True nviol=0 score=100 flags=['不符合']
+    summary: 整体符合基类字段与引擎规范，但 code 字段长度不符合字符串默认长度规范，需调整为 varchar(30)。
+--- D-02 kind=negative compliant=True nviol=0 score=100 flags=['违反', '问题']
+    summary: 表结构整体符合规范，唯一问题是使用 MyISAM 引擎，违反必须使用 InnoDB 的强制要求，需改为 InnoDB。
+--- D-05 kind=negative compliant=True nviol=0 score=100 flags=['违反', '禁止', '应']
+    summary: db_order 表结构基本合规，但脚本包含触发器，违反建库规范中禁止触发器的要求，需移除触发器并由业务应用逻辑实现。
+--- D-06 kind=negative compliant=True nviol=0 score=100 flags=['违反', '禁止', '应']
+    summary: 输入为存储过程和自定义函数，违反规范禁止使用存储过程与自定义函数的规定，需移除并改为应用层实现。
+--- D-08 kind=negative compliant=True nviol=0 score=100 flags=['不符合']
+    summary: 表结构主体符合基类字段要求，但字符集使用 latin1，不符合统一 utf8mb4 规范；code 字段手写 CHARACTER SET/COLLATE，需移除。
+--- F-07 kind=negative compliant=True nviol=0 score=100 flags=['不符合', '应']
+    summary: DDL 整体基本合规：7 个基类字段齐全，主键、引擎、字符集和注释均符合规范；仅 is_split 字段类型不符合 1 字符字段应使用 char(1) 的要求。
+--- F-12 kind=negative compliant=True nviol=0 score=100 flags=['违反']
+    summary: 字段 code 和 remark 手写了字符集和排序规则，违反规范[2]第10条；其余表定义符合规范。
+--- P-03 kind=positive compliant=True nviol=0 score=100 flags=['违规', '未']
+    summary: 该 DDL 符合建表模板、命名规范、字段设计与基类字段要求，未发现违规项。
+--- P-05 kind=positive compliant=True nviol=0 score=100 flags=['违规', '未']
+    summary: 该 DDL 符合命名、字段类型、基类字段、索引命名、字符集及三方对接来源字段等规范要求，未发现违规项。
+--- T-10 kind=negative compliant=True nviol=0 score=100 flags=['未', '问题']
+    summary: 表整体符合建表模板与引擎、字符集、注释要求，7 个基类字段齐备，无外键、无浮点金额字段。唯一问题是关联字段命名 rel_id 未使用标准术语 relation，与同表 relation_code 命名不一致，建议统一为 relation_id。
