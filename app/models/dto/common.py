@@ -34,6 +34,7 @@ class ErrorCode(IntEnum):
     OLLAMA_SERVICE_ERROR = 50001        # 本地 Ollama 向量模型通信异常
     RELAY_LLM_API_ERROR = 50002         # 云端中转站大模型调用异常
     MODEL_TIMEOUT_ERROR = 50003         # 大模型推理超时
+    VECTOR_STORE_ERROR = 50004          # 向量数据库存储或检索异常
 
 
 class ApiResponse(BaseModel, Generic[T]):

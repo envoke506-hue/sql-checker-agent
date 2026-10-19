@@ -98,7 +98,47 @@ class TestChromaVectorStore(unittest.TestCase):
         numpy_repo = VectorStoreRepository(engine_type="numpy")
         self.assertEqual(numpy_repo.active_engine, "numpy")
         print(f"动态切换向量引擎为: {numpy_repo.active_engine}")
-        print("[PASS] 企业级向量仓储 Facade 门面与动态调度验证通过！")
+    def test_04_port_dto_upsert_and_search(self):
+        """测试 4: 验证中立 DTO (VectorRecord / VectorQuery / VectorSearchResult) 隔离契约"""
+        print("\n--- [测试 4] 中立 DTO 端口契约与解包兼容 ---")
+        from app.models.dto.vector_store import VectorRecord, VectorQuery, VectorSearchResult
+
+        records = [
+            VectorRecord(
+                id="doc_audit_1",
+                vector=[0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                metadata={"category": "audit", "author": "dba"}
+            ),
+            VectorRecord(
+                id="doc_audit_2",
+                vector=[0.0, 0.9, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                metadata={"category": "audit", "author": "sec"}
+            )
+        ]
+        self.repo.upsert(records)
+
+        # 强类型查询对象
+        query = VectorQuery(
+            vector=[0.0, 0.95, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            top_k=2,
+            filter_metadata={"category": "audit"}
+        )
+        results = self.repo.search_records(query)
+
+        self.assertEqual(len(results), 2)
+        top_hit = results[0]
+        self.assertIsInstance(top_hit, VectorSearchResult)
+        self.assertEqual(top_hit.id, "doc_audit_1")
+        self.assertGreater(top_hit.score, 0.95)
+        self.assertEqual(top_hit.metadata.get("author"), "dba")
+
+        # 验证支持像元组一样解包: cid, sc = top_hit
+        cid, sc = top_hit
+        self.assertEqual(cid, "doc_audit_1")
+        self.assertAlmostEqual(sc, top_hit.score)
+
+        print(f"中立命中实体: id={top_hit.id}, score={top_hit.score}, metadata={top_hit.metadata}")
+        print("[PASS] 领域中立 DTO 端口契约与防腐隔离验证通过！")
 
 
 if __name__ == "__main__":

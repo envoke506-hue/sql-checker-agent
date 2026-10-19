@@ -13,10 +13,11 @@ NumPy 纯内存稠密向量存储仓储 (NumPy Vector Store Repository)
 
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 import numpy as np
 
 from app.core.config import get_settings
+from app.models.dto.vector_store import VectorQuery, VectorRecord, VectorSearchResult
 from app.repositories.base_vector_store import BaseVectorStoreRepository
 
 
@@ -41,24 +42,19 @@ class NumpyVectorStoreRepository(BaseVectorStoreRepository):
         """检查当前内存中是否已加载向量索引"""
         return self.vector_matrix is None or len(self.chunk_ids) == 0
 
-    def save(
-        self,
-        chunk_ids: List[str],
-        vectors: List[List[float]],
-        metadatas: Optional[List[Dict]] = None
-    ) -> None:
-        """
-        保存切块 ID 列表与向量矩阵到磁盘持久化存储
+    def count(self) -> int:
+        """获取当前加载的切块总数"""
+        return len(self.chunk_ids)
 
-        :param chunk_ids: 切块 ID 列表
-        :param vectors: 对应的 2560 维浮点数组列表
-        :param metadatas: 标量元数据 (NumPy 版保留接口兼容性)
+    def upsert(self, records: List[VectorRecord]) -> None:
         """
-        if len(chunk_ids) != len(vectors):
-            raise ValueError("chunk_ids 数量必须与 vectors 数量严格一致")
+        批量存入中立的 VectorRecord 记录项
+        """
+        if not records:
+            return
 
-        self.chunk_ids = chunk_ids
-        self.vector_matrix = np.array(vectors, dtype=np.float32)
+        self.chunk_ids = [r.id for r in records]
+        self.vector_matrix = np.array([r.vector for r in records], dtype=np.float32)
 
         # 1. 保存向量矩阵 (NumPy 高效二进制格式)
         np.save(self.vector_file, self.vector_matrix)
@@ -88,19 +84,9 @@ class NumpyVectorStoreRepository(BaseVectorStoreRepository):
         """检查磁盘持久化文件是否存在"""
         return self.vector_file.exists() and self.id_map_file.exists()
 
-    def search(
-        self,
-        query_vector: List[float],
-        top_k: int = 5,
-        filter_metadata: Optional[Dict] = None
-    ) -> List[Tuple[str, float]]:
+    def search_records(self, query: VectorQuery) -> List[VectorSearchResult]:
         """
-        计算输入向量与库内所有向量的余弦相似度，并返回 Top-K 结果
-
-        :param query_vector: 用户问题计算后的 2560 维向量
-        :param top_k: 期望召回的候选数量
-        :param filter_metadata: 标量过滤 (NumPy 版保留接口)
-        :return: [(chunk_id, cosine_similarity_score), ...] 按相似度降序排列
+        计算输入向量与库内所有向量的余弦相似度，并返回中立的 VectorSearchResult 列表
         """
         if self.is_empty() and self.exists():
             self.load()
@@ -108,7 +94,7 @@ class NumpyVectorStoreRepository(BaseVectorStoreRepository):
         if self.is_empty():
             return []
 
-        q = np.array(query_vector, dtype=np.float32)
+        q = np.array(query.vector, dtype=np.float32)
 
         # 计算模长 (L2 Norm)
         q_norm = np.linalg.norm(q)
@@ -122,13 +108,19 @@ class NumpyVectorStoreRepository(BaseVectorStoreRepository):
         similarities = np.dot(self.vector_matrix, q) / denominator
 
         # 获取得分最高的 Top-K 索引
-        actual_k = min(top_k, len(self.chunk_ids))
+        actual_k = min(query.top_k, len(self.chunk_ids))
         top_indices = np.argsort(similarities)[::-1][:actual_k]
 
-        results: List[Tuple[str, float]] = []
+        results: List[VectorSearchResult] = []
         for idx in top_indices:
             score = float(similarities[idx])
             chunk_id = self.chunk_ids[idx]
-            results.append((chunk_id, round(score, 4)))
+            results.append(
+                VectorSearchResult(
+                    id=chunk_id,
+                    score=round(score, 4),
+                    metadata={}
+                )
+            )
 
         return results

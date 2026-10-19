@@ -1,25 +1,27 @@
 """
-Chroma 向量数据库仓储 (ChromaDB Vector Store Repository)
+Chroma 向量数据库适配器 (ChromaDB Vector Store Adapter)
 
 【企业级架构规范】
-1. 继承 BaseVectorStoreRepository，严格遵循仓储模式 (Repository Pattern)；
-2. 基于 chromadb.PersistentClient 实现本地磁盘持久化与基于 HNSW 图的高维近邻检索；
-3. 将距离度量配置为余弦空间 (cosine)，并精准转化为 [0, 1] 范围的余弦相似度；
-4. 深度支持标量元数据存储与 where 表达式下推过滤 (Push-down Filtering)。
+1. 实现 BaseVectorStoreRepository 端口契约，作为具体技术驱动适配器；
+2. 彻底封装 chromadb 的所有原生 API 调用（client, collection, query, upsert）；
+3. 异常防腐层：捕获所有 Chroma 底层异常并包装转译为企业统一的 VectorStoreException，防止底层异常泄露；
+4. 距离转译层：将底层余弦距离 (cosine distance) 转换为统一标准化的余弦相似度 (cosine similarity)。
 """
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 
 from app.core.config import get_settings
+from app.core.exceptions import VectorStoreException
+from app.models.dto.vector_store import VectorQuery, VectorRecord, VectorSearchResult
 from app.repositories.base_vector_store import BaseVectorStoreRepository
 
 
 class ChromaVectorStoreRepository(BaseVectorStoreRepository):
     """
-    负责基于 ChromaDB 的向量存储、磁盘持久化、HNSW 索引检索与元数据过滤
+    负责基于 ChromaDB 的向量存储、持久化、HNSW 索引检索与元数据过滤的适配器实现
     """
 
     def __init__(
@@ -38,28 +40,37 @@ class ChromaVectorStoreRepository(BaseVectorStoreRepository):
     def _get_client(self) -> chromadb.PersistentClient:
         """获取或惰性初始化 Chroma 本地持久化客户端"""
         if self._client is None:
-            self._client = chromadb.PersistentClient(
-                path=str(self.persist_dir),
-                settings=ChromaSettings(anonymized_telemetry=False)
-            )
+            try:
+                self._client = chromadb.PersistentClient(
+                    path=str(self.persist_dir),
+                    settings=ChromaSettings(anonymized_telemetry=False)
+                )
+            except Exception as e:
+                raise VectorStoreException(
+                    message="初始化 ChromaDB 客户端失败",
+                    detail=f"路径: {self.persist_dir}, 异常: {str(e)}"
+                ) from e
         return self._client
 
     def _get_collection(self):
         """获取或创建指定名称的 Collection (空间度量设置为余弦距离 cosine)"""
         if self._collection is None:
             client = self._get_client()
-            self._collection = client.get_or_create_collection(
-                name=self.collection_name,
-                metadata={"hnsw:space": "cosine"}
-            )
+            try:
+                self._collection = client.get_or_create_collection(
+                    name=self.collection_name,
+                    metadata={"hnsw:space": "cosine"}
+                )
+            except Exception as e:
+                raise VectorStoreException(
+                    message=f"获取或创建 ChromaDB 集合 '{self.collection_name}' 失败",
+                    detail=str(e)
+                ) from e
         return self._collection
 
     def is_empty(self) -> bool:
         """检查集合中是否有数据"""
-        try:
-            return self._get_collection().count() == 0
-        except Exception:
-            return True
+        return self.count() == 0
 
     def count(self) -> int:
         """获取集合中的向量总数"""
@@ -68,103 +79,100 @@ class ChromaVectorStoreRepository(BaseVectorStoreRepository):
         except Exception:
             return 0
 
-    def save(
-        self,
-        chunk_ids: List[str],
-        vectors: List[List[float]],
-        metadatas: Optional[List[Dict[str, Any]]] = None
-    ) -> None:
+    def upsert(self, records: List[VectorRecord]) -> None:
         """
-        保存/更新切块向量至 ChromaDB Collection 中并持久化
-
-        :param chunk_ids: 切块 ID 列表
-        :param vectors: 对应的 2560 维浮点数组列表
-        :param metadatas: 切块元数据字典列表 (用于标量前置过滤)
+        批量存入或更新中立的 VectorRecord 记录项
         """
-        if len(chunk_ids) != len(vectors):
-            raise ValueError("chunk_ids 数量必须与 vectors 数量严格一致")
+        if not records:
+            return
 
         collection = self._get_collection()
 
-        # Chroma 要求 metadata 字典的值必须是 str, int, float, bool
-        clean_metadatas = []
-        if metadatas:
-            for m in metadatas:
-                clean_m = {}
-                for k, v in m.items():
-                    if isinstance(v, (str, int, float, bool)):
-                        clean_m[k] = v
-                    elif isinstance(v, list):
-                        clean_m[k] = ",".join(str(item) for item in v)
-                    else:
-                        clean_m[k] = str(v)
-                clean_metadatas.append(clean_m)
-        else:
-            clean_metadatas = [{"chunk_id": cid} for cid in chunk_ids]
+        chunk_ids = [r.id for r in records]
+        embeddings = [r.vector for r in records]
 
-        # 使用 upsert 幂等添加或更新
-        collection.upsert(
-            ids=chunk_ids,
-            embeddings=vectors,
-            metadatas=clean_metadatas
-        )
+        # Chroma 标量元数据值清洗 (仅支持 str, int, float, bool)
+        clean_metadatas: List[Dict[str, Any]] = []
+        for r in records:
+            clean_m: Dict[str, Any] = {}
+            for k, v in r.metadata.items():
+                if isinstance(v, (str, int, float, bool)):
+                    clean_m[k] = v
+                elif isinstance(v, list):
+                    clean_m[k] = ",".join(str(item) for item in v)
+                else:
+                    clean_m[k] = str(v)
+            clean_metadatas.append(clean_m)
+
+        try:
+            collection.upsert(
+                ids=chunk_ids,
+                embeddings=embeddings,
+                metadatas=clean_metadatas
+            )
+        except Exception as e:
+            raise VectorStoreException(
+                message="ChromaDB 批量写入/更新向量记录失败",
+                detail=str(e)
+            ) from e
+
+    def search_records(self, query: VectorQuery) -> List[VectorSearchResult]:
+        """
+        在 ChromaDB 中执行近邻检索，并将底层原生数据结构转译为中立的 VectorSearchResult
+        """
+        total = self.count()
+        if total == 0:
+            return []
+
+        actual_k = min(query.top_k, total)
+        col = self._get_collection()
+
+        query_params = {
+            "query_embeddings": [query.vector],
+            "n_results": actual_k,
+            "include": ["distances", "metadatas"]
+        }
+        if query.filter_metadata:
+            query_params["where"] = query.filter_metadata
+
+        try:
+            raw_results = col.query(**query_params)
+        except Exception as e:
+            raise VectorStoreException(
+                message="ChromaDB 执行向量相似度检索失败",
+                detail=str(e)
+            ) from e
+
+        search_results: List[VectorSearchResult] = []
+        ids = raw_results.get("ids", [[]])[0]
+        distances = raw_results.get("distances", [[]])[0]
+        metadatas = raw_results.get("metadatas", [[]])[0] if raw_results.get("metadatas") else [{}] * len(ids)
+
+        for cid, dist, meta in zip(ids, distances, metadatas):
+            # Chroma 在 hnsw:space=cosine 时返回余弦距离 d
+            # 余弦相似度 = 1.0 - d
+            sim = max(0.0, min(1.0, 1.0 - float(dist)))
+            search_results.append(
+                VectorSearchResult(
+                    id=cid,
+                    score=round(sim, 4),
+                    metadata=meta or {}
+                )
+            )
+
+        # 按相似度降序排列
+        search_results.sort(key=lambda x: x.score, reverse=True)
+        return search_results
 
     def load(self) -> bool:
         """
-        验证并连接 Chroma 本地持久化索引
+        验证并探测 Chroma 本地持久化索引
         """
         try:
-            col = self._get_collection()
-            return col.count() > 0
+            return self.count() > 0
         except Exception:
             return False
 
     def exists(self) -> bool:
         """检查 Chroma 持久化目录与集合数据是否存在"""
         return self.persist_dir.exists() and self.count() > 0
-
-    def search(
-        self,
-        query_vector: List[float],
-        top_k: int = 5,
-        filter_metadata: Optional[Dict] = None
-    ) -> List[Tuple[str, float]]:
-        """
-        在 ChromaDB 中基于 HNSW 执行向量余弦相似度检索
-
-        :param query_vector: 用户问题计算后的 2560 维向量
-        :param top_k: 期望召回的候选数量
-        :param filter_metadata: 标量过滤条件 (如 {"category": "naming"})
-        :return: [(chunk_id, cosine_similarity_score), ...] 按相似度降序排列
-        """
-        total = self.count()
-        if total == 0:
-            return []
-
-        actual_k = min(top_k, total)
-        col = self._get_collection()
-
-        query_params = {
-            "query_embeddings": [query_vector],
-            "n_results": actual_k,
-            "include": ["distances", "metadatas"]
-        }
-        if filter_metadata:
-            query_params["where"] = filter_metadata
-
-        results = col.query(**query_params)
-
-        hits: List[Tuple[str, float]] = []
-        ids = results.get("ids", [[]])[0]
-        distances = results.get("distances", [[]])[0]
-
-        for cid, dist in zip(ids, distances):
-            # Chroma 在 hnsw:space 为 cosine 时，返回的是余弦距离 (cosine distance)
-            # cosine distance = 1 - cosine similarity
-            # 因此 cosine similarity = 1 - cosine distance
-            sim = max(0.0, min(1.0, 1.0 - float(dist)))
-            hits.append((cid, round(sim, 4)))
-
-        # 按相似度降序排列
-        hits.sort(key=lambda x: x[1], reverse=True)
-        return hits

@@ -80,3 +80,15 @@ class InvalidSqlException(BusinessException):
             status_code=400,
             detail=detail
         )
+
+
+class VectorStoreException(BusinessException):
+    """向量数据库底层存储、索引或检索异常 (屏蔽底层厂商细节)"""
+
+    def __init__(self, message: str = "向量数据库操作异常", detail: Optional[str] = None):
+        super().__init__(
+            code=ErrorCode.VECTOR_STORE_ERROR,
+            message=message,
+            status_code=500,
+            detail=detail
+        )
