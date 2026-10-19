@@ -86,8 +86,9 @@ class KnowledgeService:
         print(f"🤖 正在调用 Ollama ({self.settings.ollama_embedding_model}) 计算 {len(chunks)} 个切块向量...")
         vectors = await self.ollama_repo.get_embeddings_batch(embedding_texts)
 
-        # 步骤 3: 存入稠密向量仓储并持久化
-        self.vector_repo.save(chunk_ids, vectors)
+        # 步骤 3: 存入稠密向量仓储并持久化 (支持标量元数据存储与过滤)
+        metadatas = [c.metadata.model_dump() for c in chunks]
+        self.vector_repo.save(chunk_ids, vectors, metadatas=metadatas)
 
         # 步骤 4: 构造 BM25 关键词语料并训练持久化
         # 语料由 display_text 加上额外提取的 keywords 组成，强化专业词汇权重

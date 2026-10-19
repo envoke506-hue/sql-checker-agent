@@ -53,6 +53,14 @@ class Settings(BaseSettings):
     # 索引与持久化缓存存储目录
     storage_dir: str = str(Path(__file__).resolve().parent.parent.parent / "data" / "indices")
 
+    # ---------------- 向量数据库配置 (ChromaDB) ----------------
+    # 向量存储引擎类型: "chroma" (企业级) 或 "numpy" (基础教学)
+    vector_store_type: str = "chroma"
+    # Chroma 本地持久化目录
+    chroma_persist_dir: str = str(Path(__file__).resolve().parent.parent.parent / "data" / "indices" / "chroma")
+    # Chroma 集合名称
+    chroma_collection_name: str = "sql_rules_collection"
+
     # ---------------- Pydantic 设置元信息 ----------------
     # 指定加载同级或项目根目录的 .env 文件，编码为 utf-8
     model_config = SettingsConfigDict(

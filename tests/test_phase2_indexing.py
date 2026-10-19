@@ -88,19 +88,19 @@ class TestPhase2Indexing(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(status_info.dimension, 2560)
         self.assertTrue(bool(status_info.doc_hash))
 
-        # 验证磁盘持久化文件是否存在
+        # 验证磁盘持久化文件是否存在 (支持 ChromaDB 与 NumPy)
         storage_dir = Path(self.settings.storage_dir)
-        dense_file = storage_dir / "dense_vectors.npy"
+        vector_repo = VectorStoreRepository()
         bm25_file = storage_dir / "bm25_model.pkl"
         store_file = storage_dir / "chunks_store.json"
         meta_file = storage_dir / "index_meta.json"
 
-        self.assertTrue(dense_file.exists(), f"稠密向量文件缺失: {dense_file}")
+        self.assertTrue(vector_repo.exists(), "稠密向量仓储应成功持久化")
         self.assertTrue(bm25_file.exists(), f"BM25 索引文件缺失: {bm25_file}")
         self.assertTrue(store_file.exists(), f"切块正文文件缺失: {store_file}")
         self.assertTrue(meta_file.exists(), f"索引元信息文件缺失: {meta_file}")
 
-        print(f"[PASS] 索引构建与持久化验证通过！存储路径: {storage_dir}")
+        print(f"[PASS] 索引构建与持久化验证通过！存储路径: {storage_dir} (向量引擎: {vector_repo.active_engine})")
 
     async def test_03_dense_vector_search(self):
         """测试 3: 验证稠密向量余弦相似度检索语义召回能力"""

@@ -11,6 +11,7 @@
 | 专题文档 | 核心内容概述 |
 | :--- | :--- |
 | 🏛️ [**系统架构与核心 RAG 算法**](./doc/architecture.md) | MVC 分层设计、Docs as Code 规范治理、双轨文本职责分离、RRF 融合数学公式、Lost-in-the-Middle 编排、Double Check 防幻觉核验及初学者常见 Q&A |
+| 🗄️ [**向量数据库技术选型方案**](./doc/vector_database_selection.md) | ChromaDB、NumPy、FAISS、Milvus、pgvector、ES 深度横向评测矩阵、企业级决策树与从 NumPy 演进至 Chroma 的收益 |
 | 🚀 [**快速启动与部署运行指南**](./doc/quickstart.md) | Python 3.12+ 与 uv 环境准备、本地 Ollama 向量模型拉取、环境变量 `.env` 配置表、服务启动与 Web 控制台使用说明 |
 | 📡 [**RESTful 核心接口规范**](./doc/api_reference.md) | `POST /sql/audits`、`POST /spec/queries`、`GET /health` 等核心 API 的请求体、响应体信封 `ApiResponse[T]`、业务错误码及示例 |
 | 🧪 [**自动化测试与评测体系**](./doc/testing_and_evaluation.md) | 100% 覆盖率的分阶段自动化测试套件运行命令、76 条反向案例库说明及子代理并发批量评测报告 |

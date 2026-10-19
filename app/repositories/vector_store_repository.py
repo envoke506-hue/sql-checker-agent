@@ -1,122 +1,105 @@
-r"""
-稠密向量存储仓储 (Vector Store Repository)
+"""
+稠密向量存储仓储门面 (Vector Store Repository Facade)
 
-【算法与框架知识点说明】
-1. 向量相似度计算 (对应第 17 篇):
-   - 文本检索优先使用余弦相似度 (Cosine Similarity)，只看多维空间的方向夹角，不受长短影响。
-   - 使用 NumPy 进行矩阵批量向量化点积计算：
-     $$\text{similarity} = \frac{Q \cdot M^T}{\|Q\|_2 \times \|M\|_2}$$
-     利用 NumPy 底层 BLAS C 语言加速，毫秒内完成百万维向量比对。
-2. 索引持久化与零成本恢复 (对应第 16 篇):
-   - 计算 Embedding 非常耗时且消耗模型算力，必须离线持久化为磁盘文件。
-   - 本仓储将向量矩阵保存为 `.npy` 二进制文件，元数据保存为 `.json`，重启时实现 0 毫秒冷启动加载！
+【企业级架构规范】
+1. 采用门面模式 (Facade Pattern) 与策略模式 (Strategy Pattern)，统一向量库对外访问入口；
+2. 默认装配并驱动企业级 ChromaDB 向量数据库 (ChromaVectorStoreRepository)，支持 HNSW 索引与标量元数据过滤；
+3. 支持通过应用配置项 `VECTOR_STORE_TYPE` 在 'chroma' 与 'numpy' 之间灵活无缝切换，实现解耦与多引擎兼容；
+4. 保证 MVC 分层中 Service 层 (KnowledgeService / RetrievalService) 与 Controller 接口契约 100% 向后兼容。
 """
 
-import json
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-import numpy as np
+from typing import Any, Dict, List, Optional, Tuple
 
 from app.core.config import get_settings
+from app.repositories.base_vector_store import BaseVectorStoreRepository
+from app.repositories.chroma_vector_store_repository import ChromaVectorStoreRepository
+from app.repositories.numpy_vector_store_repository import NumpyVectorStoreRepository
 
 
-class VectorStoreRepository:
+class VectorStoreRepository(BaseVectorStoreRepository):
     """
-    负责稠密向量的内存检索、磁盘持久化与元数据映射
+    向量存储仓储门面类，实现统一存储契约与动态引擎调度
     """
 
-    def __init__(self, storage_dir: Optional[str] = None):
+    def __init__(
+        self,
+        storage_dir: Optional[str] = None,
+        engine_type: Optional[str] = None,
+        collection_name: Optional[str] = None
+    ):
         self.settings = get_settings()
-        self.storage_dir = Path(storage_dir or self.settings.storage_dir)
-        self.storage_dir.mkdir(parents=True, exist_ok=True)
+        self.engine_type = (engine_type or self.settings.vector_store_type).lower()
 
-        self.vector_file = self.storage_dir / "dense_vectors.npy"
-        self.id_map_file = self.storage_dir / "vector_ids.json"
+        # 根据配置实例化底层具体存储引擎
+        if self.engine_type == "numpy":
+            self._engine: BaseVectorStoreRepository = NumpyVectorStoreRepository(
+                storage_dir=storage_dir or self.settings.storage_dir
+            )
+        else:
+            # 默认使用企业级 ChromaDB 引擎
+            self._engine = ChromaVectorStoreRepository(
+                persist_dir=storage_dir or self.settings.chroma_persist_dir,
+                collection_name=collection_name or self.settings.chroma_collection_name
+            )
 
-        # 内存数据结构
-        self.chunk_ids: List[str] = []
-        self.vector_matrix: Optional[np.ndarray] = None  # 形状为 (N, Dimension)
+    @property
+    def active_engine(self) -> str:
+        """获取当前激活的存储引擎名称"""
+        return self.engine_type
 
     def is_empty(self) -> bool:
-        """检查当前内存中是否已加载向量索引"""
-        return self.vector_matrix is None or len(self.chunk_ids) == 0
+        """检查底层存储中向量索引是否为空"""
+        return self._engine.is_empty()
 
-    def save(self, chunk_ids: List[str], vectors: List[List[float]]) -> None:
+    def count(self) -> int:
+        """获取向量总数"""
+        if hasattr(self._engine, "count"):
+            return self._engine.count()
+        return 0 if self.is_empty() else len(getattr(self._engine, "chunk_ids", []))
+
+    def save(
+        self,
+        chunk_ids: List[str],
+        vectors: List[List[float]],
+        metadatas: Optional[List[Dict[str, Any]]] = None
+    ) -> None:
         """
-        保存切块 ID 列表与向量矩阵到磁盘持久化存储
+        保存切块 ID、稠密向量列表及可选元数据至底层向量库
 
         :param chunk_ids: 切块 ID 列表
         :param vectors: 对应的 2560 维浮点数组列表
+        :param metadatas: 标量元数据字典列表 (ChromaDB 原生支持过滤)
         """
-        if len(chunk_ids) != len(vectors):
-            raise ValueError("chunk_ids 数量必须与 vectors 数量严格一致")
-
-        self.chunk_ids = chunk_ids
-        self.vector_matrix = np.array(vectors, dtype=np.float32)
-
-        # 1. 保存向量矩阵 (NumPy 高效二进制格式)
-        np.save(self.vector_file, self.vector_matrix)
-
-        # 2. 保存 ID 映射
-        with open(self.id_map_file, "w", encoding="utf-8") as f:
-            json.dump(self.chunk_ids, f, ensure_ascii=False, indent=2)
+        self._engine.save(chunk_ids=chunk_ids, vectors=vectors, metadatas=metadatas)
 
     def load(self) -> bool:
         """
-        从磁盘文件加载向量索引与 ID 映射至内存
+        从底层持久化文件中恢复/探测向量索引
 
-        :return: True 表示加载成功，False 表示文件不存在
+        :return: True 表示可用，False 表示文件不存在或未构建
         """
-        if not self.vector_file.exists() or not self.id_map_file.exists():
-            return False
-
-        try:
-            self.vector_matrix = np.load(self.vector_file)
-            with open(self.id_map_file, "r", encoding="utf-8") as f:
-                self.chunk_ids = json.load(f)
-            return True
-        except Exception:
-            return False
+        return self._engine.load()
 
     def exists(self) -> bool:
-        """检查磁盘持久化文件是否存在"""
-        return self.vector_file.exists() and self.id_map_file.exists()
+        """检查底层向量持久化存储是否存在"""
+        return self._engine.exists()
 
-    def search(self, query_vector: List[float], top_k: int = 5) -> List[Tuple[str, float]]:
+    def search(
+        self,
+        query_vector: List[float],
+        top_k: int = 5,
+        filter_metadata: Optional[Dict] = None
+    ) -> List[Tuple[str, float]]:
         """
-        计算输入向量与库内所有向量的余弦相似度，并返回 Top-K 结果
+        在底层向量库中执行基于余弦相似度的近邻检索并返回 Top-K 结果
 
         :param query_vector: 用户问题计算后的 2560 维向量
         :param top_k: 期望召回的候选数量
+        :param filter_metadata: 可选的标量元数据过滤条件
         :return: [(chunk_id, cosine_similarity_score), ...] 按相似度降序排列
         """
-        if self.is_empty() and self.exists():
-            self.load()
-
-        if self.is_empty():
-            return []
-
-        q = np.array(query_vector, dtype=np.float32)
-
-        # 计算模长 (L2 Norm)
-        q_norm = np.linalg.norm(q)
-        m_norm = np.linalg.norm(self.vector_matrix, axis=1)
-
-        # 避免分母除以 0
-        denominator = (m_norm * q_norm)
-        denominator[denominator == 0] = 1e-10
-
-        # 点积与余弦相似度计算 (利用 NumPy 矩阵乘法快速得出所有候选分数)
-        similarities = np.dot(self.vector_matrix, q) / denominator
-
-        # 获取得分最高的 Top-K 索引
-        actual_k = min(top_k, len(self.chunk_ids))
-        top_indices = np.argsort(similarities)[::-1][:actual_k]
-
-        results: List[Tuple[str, float]] = []
-        for idx in top_indices:
-            score = float(similarities[idx])
-            chunk_id = self.chunk_ids[idx]
-            results.append((chunk_id, round(score, 4)))
-
-        return results
+        return self._engine.search(
+            query_vector=query_vector,
+            top_k=top_k,
+            filter_metadata=filter_metadata
+        )
