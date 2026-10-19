@@ -383,3 +383,6 @@ python doc/negative_cases/validate_cases.py
 4. **如何彻底防御 LLM 幻觉？**
    - 仅仅依赖提示词约束大模型是远远不够的。
    - 本项目通过 `DoubleCheckVerifier` 在 LLM 推理后加了一层**确定性 Python 规则过滤**：反向校验引用的编号与特征词是否白纸黑字出现在 Chunk 中，将幻觉误报在出库前直接掐死，实现真正企业级可靠交付。
+5. **为什么切块实体必须区分 `embedding_text` 与 `display_text`？**
+   - **`embedding_text` 是语义检索钩子**：专供本地向量模型（Ollama）计算稠密向量。头部拼接了层级面包屑路径（如 `【规范层级】数据库规范 > 命名规范 > 规则清单与反例`）作为锚点，即使正文没有出现宏观关键字，也能在多维向量空间准确定位，大幅提高检索召回率。一旦在离线期持久化为 `dense_vectors.npy`，终身不再被业务读取。
+   - **`display_text` 是纯净业务正文**：专供在线审查期喂给大模型（DeepSeek）和在前端 UI 展示。保持纯净的 Markdown 原文排版，避免头部重复的人工标签污染 Prompt、浪费 Token 或导致大模型复读内部标签引起格式歧义。

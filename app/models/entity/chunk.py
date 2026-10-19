@@ -35,16 +35,27 @@ class ChunkMetadata(BaseModel):
 
 class Chunk(BaseModel):
     """
-    标准切块实体 (包含小块向量化、大块送大模型的父子设计)
+    标准切块实体 (包含小块向量化、大块送大模型的双轨设计)
+
+    【核心架构机制：为什么区分 embedding_text 与 display_text？】
+    1. embedding_text (语义检索钩子):
+       - 作用：专供 Embedding 向量模型 (本地 Ollama qwen3-embedding:4b) 计算稠密向量。
+       - 设计原理：将层级面包屑路径 (如 '数据库规范 > 命名规范 > 规则清单与反例') 拼入文本头部作为“语义锚点钩子”。
+         即使正文中没有显式出现“数据库”等宏观字眼，也能牢牢锚定在对应领域向量子空间，大幅提升检索召回率。
+       - 生命周期：仅在离线建索引期使用一次并保存为 dense_vectors.npy，后续在线审查从不与大模型见面。
+    2. display_text (纯净业务呈现):
+       - 作用：真正供推理大模型 (DeepSeek) 推理阅读，并在前端 UI 与 Markdown 整改报告中展示。
+       - 设计原理：保持干净规范的 Markdown 原文排版，避免头部重复的人工标签污染 Prompt、浪费 Token
+         或导致大模型复读内部标签引起格式歧义；同时供 DoubleCheckVerifier 提取白名单规则进行确定性反向交叉断言。
     """
     chunk_id: str = Field(..., description="切块全局唯一 ID")
     parent_id: Optional[str] = Field(default=None, description="所属父块 ID (若采用父子块架构)")
     
-    # 专门用于 Embedding 模型向量化的纯净文本 (头部注入面包屑路径)
-    embedding_text: str = Field(..., description="参与向量计算的增强文本")
+    # 专门用于 Embedding 模型向量化的文本 (以层级面包屑作为钩子，大幅提升召回率)
+    embedding_text: str = Field(..., description="语义检索钩子：头部拼入面包屑路径，专供向量模型计算以大幅提升召回率")
     
-    # 真正喂给大模型并在前端展示的完整上下文正文
-    display_text: str = Field(..., description="实际提供给 LLM 组装与展示的正文")
+    # 真正喂给大模型并在前端展示的完整纯净正文 (避免面包屑污染 Prompt 或引起大模型歧义)
+    display_text: str = Field(..., description="纯净业务正文：供大模型 Prompt 阅读与前端展示，避免内部标签造成歧义与 Token 浪费")
     
     # 丰富的元数据
     metadata: ChunkMetadata = Field(..., description="元数据对象")

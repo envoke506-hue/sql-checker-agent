@@ -112,8 +112,10 @@ class MarkdownASTParser:
                     seen.add(clean_kw.lower())
                     combined_keywords.append(clean_kw)
 
-            # 4. 生成双轨文本 (embedding_text vs display_text)
+            # 4. 生成双轨文本 (embedding_text 与 display_text 职责分离)
+            # display_text: 供大模型 Prompt 阅读与前端呈现的纯净正文，严禁人工标签污染，避免大模型产生格式歧义
             display_text = body_text
+            # embedding_text: 作为语义钩子，头部拼入层级面包屑路径，专供 Ollama 向量模型计算，大幅提升召回准确率
             embedding_text = f"【规范层级】{heading_path}\n{display_text}"
 
             chunks.append(
