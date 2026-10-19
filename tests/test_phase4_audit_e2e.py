@@ -235,9 +235,9 @@ async def test_4b_compliant_sql_positive():
     # 6. InnoDB 引擎、utf8mb4、完整中文注释
     perfect_sql = """
     CREATE TABLE `db_order_info` (
-      `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+      `id` BIGINT UNSIGNED NOT NULL COMMENT '主键ID',
       `code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '订单编码',
-      `order_money` DECIMAL(20, 6) NOT NULL DEFAULT '0.000000' COMMENT '订单金额',
+      `total_money` DECIMAL(20, 6) NOT NULL DEFAULT '0.000000' COMMENT '订单总金额',
       `status` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '订单状态',
       `version` INT NOT NULL DEFAULT 0 COMMENT '乐观锁版本号',
       `deleted` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '逻辑删除',
