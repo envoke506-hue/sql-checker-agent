@@ -87,7 +87,7 @@ class MarkdownASTParser:
         # 步骤 3: 循环遍历扫描到的每个规范切片
         # =========================================================================
         for i, match in enumerate(matches):
-            # 3.1 提取 Frontmatter 内部的 YAML 文本
+            # 3.1 提取 Frontmatter 内部的 YAML 文本 这里group(0)为---, group(1)为---开始和---结束之间的内容group(2)为---结束
             raw_yaml = match.group(1).strip()
 
             # 3.2 计算当前切片正文 (Body) 的起止字符偏移量
