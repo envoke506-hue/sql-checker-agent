@@ -6,11 +6,18 @@
 
 ## 🌟 核心技术亮点与课程深度落地
 
-### 1. 结构化 AST 语义自闭环原子切块 (落地第 15、16 篇)
+### 1. 企业级 Docs as Code 规范治理与通用 Markdown AST / Frontmatter 动态解析 (落地第 15、16 篇)
 
-- **痛点解决**：传统滑动窗口按字数暴力切分极易把“正例”与“反例”切断在两个不同块中，导致 LLM 把“反例 `order_id`”误当成规范学习；也容易将建表模板的基类字段切成碎片。
-- **方案落地**：针对《数据库规范.md》实现专门的 AST 结构化解析器（`ChunkingService`），实现 **正反例强绑定**、**建表模板基类字段黑盒保护**、**建库规范 15 条禁令原子归纳**，切出 6 个高内聚自闭环原子块。
-- **溯源元数据**：每个切块注入层次面包屑路径（如 `数据库规范 > 命名规范 > 规则清单`）、分类标签（`naming`、`template`、`ddl_rule`）与 ACL 访问控制权限。
+- **痛点解决**：
+  1. 传统滑动窗口按字数暴力切分极易把“正例”与“反例”切断在两个不同块中，导致 LLM 把“反例 `order_id`”误当成规范学习；也容易将建表模板的基类字段切成碎片。
+  2. 传统切块在代码中写死千行静态常量或特定业务正则，脆弱易崩，源文件改动无法动态感知与闭环。
+- **方案落地 (Docs as Code & AST)**：
+  - **源文档 Frontmatter 治理**：《数据库规范.md》采用标准 Docs as Code 架构，头部声明 YAML Frontmatter（定义 `chunk_id`、`heading_path`、`category` 与专有词表），正文保持高可读性 Markdown；
+  - **通用 `MarkdownASTParser`**：0 业务硬编码，基于标准 AST 边界切分，自适应提取反引号代码词动态扩充 BM25 词表，支持普通 Markdown H2 优雅降级；
+  - **双轨职责分离 (Dual Representation)**：
+    * `embedding_text`：头部拼接全局面包屑路径作为“语义检索钩子”，专供本地 Ollama 计算 2560 维高精向量；
+    * `display_text`：纯净 Markdown 正文，专供 DeepSeek 大模型 Prompt 与前端 UI，彻底消除人工标签污染与格式歧义；
+  - **动态增量闭环**：`ChunkingService` 0 硬编码，源文件一旦修改，SHA-256 自动感知并触发双路增量重建。
 
 ### 2. 双路离线索引构建与增量哈希校验 Pipeline (落地第 16、17 篇)
 
@@ -86,7 +93,8 @@ sql-checker-agent/
 │   │
 │   ├── services/                # S 层: 业务逻辑与编排服务
 │   │   ├── health_service.py        # 全链路并发健康体检服务
-│   │   ├── chunking_service.py      # 基于 AST 的 Markdown 语义自闭环原子切块
+│   │   ├── markdown_ast_parser.py   # 通用 Markdown AST 与 YAML Frontmatter 动态解析器
+│   │   ├── chunking_service.py      # 知识库结构化切块服务 (委托 MarkdownASTParser)
 │   │   ├── knowledge_service.py     # 知识库离线索引 Pipeline 与增量哈希守卫
 │   │   ├── sql_feature_extractor.py # SQL 语法与合规特征提取器 (意图分解)
 │   │   ├── retrieval_service.py     # 双路混合检索与 RRF 融合排序引擎
@@ -108,15 +116,20 @@ sql-checker-agent/
 │   │
 │   └── main.py                  # FastAPI 应用入口与全局异常拦截器挂载
 │
-├── data/indices/                # 离线持久化索引目录
-│   ├── dense_vectors.npy        # 稠密向量矩阵 (2560维 NumPy 二进制)
-│   ├── vector_ids.json          # 向量 ID 映射
-│   ├── bm25_model.pkl           # BM25 倒排索引模型
-│   ├── chunks_store.json        # 切块完整实体与元数据 JSON
-│   └── index_meta.json          # 索引元信息与源文件 SHA-256 哈希
+├── data/
+│   ├── indices/                 # 离线持久化索引目录
+│   │   ├── dense_vectors.npy    # 稠密向量矩阵 (2560维 NumPy 二进制)
+│   │   ├── vector_ids.json      # 向量 ID 映射
+│   │   ├── bm25_model.pkl       # BM25 倒排索引模型
+│   │   ├── chunks_store.json    # 切块完整实体与元数据 JSON
+│   │   └── index_meta.json      # 索引元信息与源文件 SHA-256 哈希
+│   │
+│   └── chunks_preview/          # 切块结果可视化 Markdown 独立导览与预览目录
+│       ├── README.md            # 切块总览导航看板
+│       └── 01_chunk_*.md        # 各切块详细元数据、正文与关键词卡片
 │
 ├── doc/                         # 规范文档与反向案例语料
-│   ├── 数据库规范.md             # 规范原文占位文件 (实际路径由 .env 的 SPEC_DOC_PATH 指定)
+│   ├── 数据库规范.md             # 遵循 YAML Frontmatter 规范标准的源知识库文档
 │   └── negative_cases/          # 反向案例库 (74 条，按规范模块分文件)
 │       ├── README.md            # 案例索引、覆盖率矩阵与口径说明
 │       ├── 01_naming.md         # 命名规范反例 N-01 ~ N-16
@@ -127,6 +140,8 @@ sql-checker-agent/
 │       └── validate_cases.py    # 案例库结构 + 静态检出率校验脚本
 │
 └── tests/                       # 自动化测试套件 (覆盖率 100%)
+    ├── test_dynamic_ast_chunking.py # 动态 AST 切块与规范扩展性专项单元测试
+    ├── demo_parse_step_by_step.py   # MarkdownASTParser 逐步解析与变量追踪实战演示
     ├── test_phase1_skeleton.py      # 骨架层、异步仓储与连接池测试
     ├── test_phase1_controllers.py   # RESTful 控制器与全局异常拦截测试
     ├── test_phase2_indexing.py      # AST 切块、向量检索、BM25 检索测试
@@ -219,26 +234,30 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 项目拥有完整的单元测试与集成测试覆盖，在项目根目录下运行：
 
 ```bash
-# 1. 运行 Phase 1: 异步连接池与异常拦截测试
+# 1. 运行 Docs as Code 动态 AST 切块与规范扩展性测试 (秒级完成)
+python tests/test_dynamic_ast_chunking.py
+python tests/demo_parse_step_by_step.py
+
+# 2. 运行 Phase 1: 异步连接池与异常拦截测试
 python tests/test_phase1_skeleton.py
 python tests/test_phase1_controllers.py
 
-# 2. 运行 Phase 2: 知识库切块与双路检索索引构建测试
+# 3. 运行 Phase 2: 知识库切块与双路检索索引构建测试
 python tests/test_phase2_indexing.py
 
-# 3. 运行 Phase 3: SQL 特征提取与 RRF 融合检索测试
+# 4. 运行 Phase 3: SQL 特征提取与 RRF 融合检索测试
 python tests/test_phase3_retrieval.py
 
-# 4. 运行 Phase 4: 端到端智能审查与规范问答全链路测试
+# 5. 运行 Phase 4: 端到端智能审查与规范问答全链路测试
 python tests/test_phase4_audit_e2e.py
 
-# 5. 运行精简 Markdown 整改回复渲染单元测试 (无需大模型，可离线执行)
+# 6. 运行精简 Markdown 整改回复渲染单元测试 (无需大模型，可离线执行)
 python tests/test_audit_report_renderer.py
 
-# 6. 运行 SQL 审查服务离线链路测试 (桩化 LLM，含解析失败严禁伪判合规的兜底校验)
+# 7. 运行 SQL 审查服务离线链路测试 (桩化 LLM，含解析失败严禁伪判合规的兜底校验)
 python tests/test_sql_audit_service_offline.py
 
-# 7. 运行 Web UI 前端交互与路由端点测试
+# 8. 运行 Web UI 前端交互与路由端点测试
 python tests/test_web_ui.py
 ```
 
