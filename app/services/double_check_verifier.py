@@ -61,6 +61,7 @@ class DoubleCheckVerifier:
         "index_naming": ["uniq_", "idx_", "唯一索引", "普通索引", "索引命名", "btree"],
         "engine_type": ["innodb", "myisam", "引擎", "engine"],
         "table_prefix_r": ["r_", "关联表"],
+        "spelling_typo": ["拼写", "typo", "笔误", "拼写错误", "spelling", "单词拼写", "命名规范"],
         "terminology_words": [
             "术语", "标准词", "name", "parent", "audit", "tag", "relation", "rel_id",
             "status", "type", "dept", "organ", "goods", "address", "zip", "phone",

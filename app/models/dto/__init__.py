@@ -16,6 +16,12 @@ from app.models.dto.knowledge import (
     IndexStatusResponseData,
     ChunkSummary,
 )
+from app.models.dto.sql_rule import (
+    SqlRuleViolation,
+    StatementRuleResult,
+    SqlValidateRequest,
+    SqlValidateResponseData,
+)
 
 __all__ = [
     "ApiResponse",
@@ -31,4 +37,8 @@ __all__ = [
     "ReindexRequest",
     "IndexStatusResponseData",
     "ChunkSummary",
+    "SqlRuleViolation",
+    "StatementRuleResult",
+    "SqlValidateRequest",
+    "SqlValidateResponseData",
 ]

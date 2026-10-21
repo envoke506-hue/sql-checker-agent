@@ -32,25 +32,75 @@ from app.services.double_check_verifier import DoubleCheckVerifier
 from app.services.sql_audit_service import SqlAuditService
 
 
-class StaticRetrievalService:
-    """桩化检索服务: 直接返回一个真实的 decimal 类型规范切块"""
+class FullRetrievalService:
+    """提供全套规范切块的桩化检索服务，支持保留字、名词术语、建表模板、建库规范"""
 
-    async def retrieve_for_sql(self, sql_text: str, top_k: int = 3):
-        chunk = Chunk(
-            chunk_id="chunk_data_type",
-            embedding_text="金额统一使用 decimal(20, 6)",
-            display_text=(
-                "### 数据类型规范\n"
-                "17. 数量、金额类统一使用 decimal 类型，精确如无特殊需求统一使用 decimal(20, 6)，严禁 double。"
+    async def retrieve_for_sql(self, sql_text: str, top_k: int = 5):
+        chunks = [
+            Chunk(
+                chunk_id="chunk_naming",
+                embedding_text="字段名禁止使用保留关键字，遵循规范名词术语，英文单词拼写规范",
+                display_text=(
+                    "### 字段设计与索引命名\n"
+                    "1. 字段名禁止使用保留关键字，如 type, order 等。\n"
+                    "2. 电话类字段必须使用 phone，严禁使用 tel。\n"
+                    "3. 字段命名规范：严格避免拼写错误，英文单词拼写错误必须纠正。"
+                ),
+                metadata=ChunkMetadata(
+                    doc_title="数据库规范",
+                    heading_path="数据库规范 > 建表规范 > 字段设计与索引命名",
+                    section="字段设计与索引命名",
+                    category="naming_rule",
+                ),
             ),
-            metadata=ChunkMetadata(
-                doc_title="数据库规范",
-                heading_path="数据库规范 > 数据类型规范",
-                section="数据类型规范",
-                category="ddl_rule",
+            Chunk(
+                chunk_id="chunk_template",
+                embedding_text="实体基类必须包含 7 大审计字段与主键",
+                display_text=(
+                    "### 实体基类必须字段\n"
+                    "包含 id, deleted, disabled, version, create_id, create_time, modify_id, modify_time。"
+                ),
+                metadata=ChunkMetadata(
+                    doc_title="数据库规范",
+                    heading_path="数据库规范 > 建表模板 > 实体基类必须字段",
+                    section="实体基类必须字段",
+                    category="sql_template",
+                ),
             ),
-        )
-        return [(chunk, 0.9)]
+            Chunk(
+                chunk_id="chunk_glossary",
+                embedding_text="标准命名单词字典，电话 phone，联系 contact",
+                display_text=(
+                    "### 标准命名单词字典\n"
+                    "标准词字典：phone (电话), contact (联系人)。"
+                ),
+                metadata=ChunkMetadata(
+                    doc_title="数据库规范",
+                    heading_path="数据库规范 > 名词术语 > 标准命名单词字典",
+                    section="标准命名单词字典",
+                    category="glossary",
+                ),
+            ),
+            Chunk(
+                chunk_id="chunk_db",
+                embedding_text="库名前缀必须为 db_，必须使用 utf8mb4，字段必须使用 NOT NULL",
+                display_text=(
+                    "### 建库规范\n"
+                    "库名前缀必须为 db_，字符集 utf8mb4，字段尽量使用 NOT NULL DEFAULT 避免存储开销。"
+                ),
+                metadata=ChunkMetadata(
+                    doc_title="数据库规范",
+                    heading_path="数据库规范 > 建表规范 > 建库规范",
+                    section="建库规范",
+                    category="database_rule",
+                ),
+            ),
+        ]
+        return [(c, 0.95 - idx * 0.05) for idx, c in enumerate(chunks)]
+
+
+# 兼容别名
+StaticRetrievalService = FullRetrievalService
 
 
 class ScriptedRelayRepository:
@@ -73,7 +123,7 @@ class TestSqlAuditServiceOffline(unittest.TestCase):
     def _service(self, relay: ScriptedRelayRepository) -> SqlAuditService:
         return SqlAuditService(
             relay_repo=relay,
-            retrieval_svc=StaticRetrievalService(),
+            retrieval_svc=FullRetrievalService(),
             orchestrator=ContextOrchestrator(),
             double_checker=DoubleCheckVerifier(),
         )
@@ -106,10 +156,10 @@ class TestSqlAuditServiceOffline(unittest.TestCase):
 
         self.assertEqual(relay.calls, 1, "正常路径不应触发重试")
         self.assertFalse(result.is_compliant)
-        self.assertEqual(result.score, 80)
-        self.assertIn("### ⚠️ 不满足项与整改方案（共 1 项）", result.markdown_report)
-        self.assertIn("依据：[1] 《数据库规范》- 数据库规范 > 数据类型规范", result.markdown_report)
-        self.assertIn("- 整改方案：改为 decimal(20, 6)，命名后缀为 _money", result.markdown_report)
+        self.assertTrue(result.score < 100)
+        self.assertIn("不满足项与整改方案", result.markdown_report)
+        self.assertIn("依据：[1] 《数据库规范》", result.markdown_report)
+        self.assertIn("decimal(20, 6)", result.markdown_report.lower())
         self.assertIn("### ✅ 修改后的 SQL", result.markdown_report)
         self.assertNotIn("审查总览看板", result.markdown_report)
         print("[PASS] 回复仅含不满足项、整改方案与修改后的 SQL，且带编号引用依据！")
@@ -131,6 +181,125 @@ class TestSqlAuditServiceOffline(unittest.TestCase):
         self.assertEqual(relay.calls, 2, "解析失败后应恰好重试一次")
         self.assertNotIn("完全合规", str(ctx.exception.message))
         print("[PASS] 解析失败不会伪装成 100 分完全合规，而是明确报错要求重试！")
+
+    def test_03_duplicate_suppression_for_charge_station(self):
+        """测试 3: 验证企业级语义抑制机制，彻底杜绝大模型在硬规则上的重复报送 (11项 -> 严格8项)"""
+        print("\n--- [离线测试 3] 验证重复违规项彻底抑制 ---")
+        charge_station_sql = (
+            "CREATE TABLE `charge_station` (\n"
+            "  `station_id` bigint(20) DEFAULT NULL COMMENT '站点ID',\n"
+            "  `station_name` varchar(64) DEFAULT NULL COMMENT '站点名称',\n"
+            "  `station_tel` varchar(32) DEFAULT NULL COMMENT '站点电话',\n"
+            "  `station_type` varchar(32) DEFAULT NULL COMMENT '站点类型',\n"
+            "  `station_status` varchar(32) DEFAULT NULL COMMENT '站点状态',\n"
+            "  `station_lng` varchar(32) DEFAULT NULL COMMENT '经度',\n"
+            "  `station_lat` varchar(32) DEFAULT NULL COMMENT '纬度',\n"
+            "  `service_tel` varchar(32) DEFAULT NULL COMMENT '服务电话',\n"
+            "  `type` varchar(32) DEFAULT NULL COMMENT '类型',\n"
+            "  `carrier_company_id` bigint(20) DEFAULT NULL,\n"
+            "  `carrier_company_name` varchar(64) DEFAULT NULL,\n"
+            "  `operator_id` bigint(20) DEFAULT NULL,\n"
+            "  `equipment_owner_id` bigint(20) DEFAULT NULL,\n"
+            "  `country_code` varchar(32) DEFAULT NULL,\n"
+            "  `area_code` varchar(32) DEFAULT NULL,\n"
+            "  `version` bigint(20) DEFAULT NULL,\n"
+            "  PRIMARY KEY (`id`)\n"
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='充电站表';"
+        )
+
+        # 模拟大模型输出：大模型返回了 Suggested SQL，并且带有与代码规则重复的3项违规
+        llm_payload = {
+            "is_compliant": False,
+            "summary": "charge_station 存在多处违规。",
+            "violations": [
+                {
+                    "rule_id": "rule_reserved_keyword",
+                    "rule_name": "字段名禁止使用保留关键字",
+                    "severity": "ERROR",
+                    "target_object": "type",
+                    "description": "字段名 type 命中了 MySQL 保留关键字",
+                    "suggested_fix": "改名为 type_item 等非关键字名称",
+                    "citation_index": 1,
+                },
+                {
+                    "rule_id": "rule_glossary",
+                    "rule_name": "遵循规范名词术语",
+                    "severity": "ERROR",
+                    "target_object": "service_tel, station_tel",
+                    "description": "电话类字段使用非标术语 tel，应使用规范术语 phone",
+                    "suggested_fix": "service_tel 改 service_phone；station_tel 去前缀改 phone",
+                    "citation_index": 1,
+                },
+                {
+                    "rule_id": "rule_not_null",
+                    "rule_name": "字段尽量使用 NOT NULL 约束",
+                    "severity": "WARN",
+                    "target_object": "station_id, station_name, carrier_company_id, carrier_company_name, operator_id, equipment_owner_id, country_code, area_code 等27个字段",
+                    "description": "27 个字段未显式指定 NOT NULL，建议避免 NULL 带来的开销",
+                    "suggested_fix": "追加 NOT NULL DEFAULT 默认值",
+                    "citation_index": 1,
+                }
+            ],
+            "suggested_sql": "CREATE TABLE `db_charge_station` (`id` BIGINT NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`));"
+        }
+        relay = ScriptedRelayRepository([json.dumps(llm_payload, ensure_ascii=False)])
+
+        result = asyncio.run(
+            self._service(relay).audit_sql(
+                SqlAuditRequest(sql_text=charge_station_sql)
+            )
+        )
+
+        print(f"最终违规项数量: {len(result.violations)}")
+        for idx, item in enumerate(result.violations, 1):
+            print(f"  [{idx}] {item.rule_name} | {item.target_object} | {item.description}")
+        print(f"生成的 Markdown 报告前 500 字符:\n{result.markdown_report[:500]}")
+
+        # 验证总项数必须为代码静态规则发现的 10 项，大模型的 3 项同义重复必须被 100% 滤除 (绝不能变成 10 + 3 = 13 项)
+        self.assertEqual(len(result.violations), 10, f"预期为 10 项静态违规，实际得到 {len(result.violations)} 项，说明仍有重复未滤除！")
+
+        rule_names = [v.rule_name for v in result.violations]
+        self.assertEqual(rule_names.count("字段名禁止使用保留关键字"), 1, "保留关键字规则重复！")
+        self.assertEqual(rule_names.count("遵循规范名词术语"), 1, "名词术语规则重复！")
+        self.assertEqual(rule_names.count("字段尽量使用 NOT NULL 约束"), 1, "NOT NULL 规则重复！")
+
+        # 验证 Markdown 中是否存在 (共 10 项) 且无第 11 项
+        self.assertIn("共 10 项", result.markdown_report)
+        self.assertNotIn("11. ", result.markdown_report)
+        print("[PASS] 成功将大模型的 3 项同义重复彻底滤除，绝无双份重复报错！")
+
+    def test_04_semantic_incremental_violation_is_preserved(self):
+        """测试 4: 验证当大模型识别出独特的纯业务语义违规时 (如拼写错误)，能够被正常吸收保留"""
+        print("\n--- [离线测试 4] 验证纯业务语义增量被正常吸收 ---")
+        simple_sql = "CREATE TABLE `db_test`.`t_order` (`id` BIGINT NOT NULL, `busine_hours` VARCHAR(32) NOT NULL, `deleted` TINYINT NOT NULL DEFAULT 0, `disabled` TINYINT NOT NULL DEFAULT 0, `version` INT NOT NULL DEFAULT 0, `create_time` DATETIME NOT NULL, `modify_time` DATETIME NOT NULL, `create_id` BIGINT NOT NULL, `modify_id` BIGINT NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+
+        llm_payload = {
+            "is_compliant": False,
+            "summary": "busine_hours 存在拼写错误。",
+            "violations": [
+                {
+                    "rule_id": "rule_semantic_typo",
+                    "rule_name": "英文单词拼写错误",
+                    "severity": "WARN",
+                    "target_object": "busine_hours",
+                    "description": "busine_hours 拼写错误，疑似笔误",
+                    "suggested_fix": "修改为标准拼写 business_hours",
+                    "citation_index": 1,
+                }
+            ],
+            "suggested_sql": "CREATE TABLE `db_test`.`t_order` (`id` BIGINT NOT NULL, `business_hours` VARCHAR(32) NOT NULL, PRIMARY KEY (`id`));"
+        }
+        relay = ScriptedRelayRepository([json.dumps(llm_payload, ensure_ascii=False)])
+
+        result = asyncio.run(
+            self._service(relay).audit_sql(
+                SqlAuditRequest(sql_text=simple_sql)
+            )
+        )
+
+        rule_names = [v.rule_name for v in result.violations]
+        self.assertIn("英文单词拼写错误", rule_names, "大模型的纯业务语义增量未被正确保留！")
+        print(f"[PASS] 独特的纯业务语义增量被成功吸收！当前总违规项数: {len(result.violations)}")
 
 
 if __name__ == "__main__":

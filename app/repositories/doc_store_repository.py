@@ -21,16 +21,42 @@ class DocStoreRepository:
     """
 
     def __init__(self, storage_dir: Optional[str] = None):
+        """
+        初始化存储仓库 (Repository)。
+
+        职责：管理知识库切块与索引元数据的**持久化**（JSON 文件读写 + 内存缓存），
+        不负责切块逻辑、向量计算等业务，只做"存/取"。
+
+        :param storage_dir: 自定义存储目录；为 None 时使用配置中的默认目录
+        """
+        # 读取全局配置（单例，通常带缓存），用于拿默认存储路径等
         self.settings = get_settings()
+
+        # 确定存储目录：
+        #   - 若显式传入 storage_dir，优先用传入值
+        #   - 否则回退到 settings.storage_dir（配置文件里的默认值）
+        # 用 Path 包装以获得跨平台的路径操作能力
         self.storage_dir = Path(storage_dir or self.settings.storage_dir)
+
+        # 确保目录存在：parents=True 递归创建多级父目录，exist_ok=True 目录已存在时不报错
+        # 这样后续写文件时不会因为目录缺失而失败
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 
+        # 切块数据落盘文件：所有 Chunk 的序列化存储（JSON）
+        # 内存中的 chunk_map 与它保持"加载时同步、变更时写回"的关系
         self.store_file = self.storage_dir / "chunks_store.json"
+
+        # 索引全局元数据落盘文件：记录 doc_hash、last_updated、chunk_count、dimension 等
+        # 核心用途是"缓存失效判断"——通过 doc_hash 比对决定是否复用已有索引
         self.meta_file = self.storage_dir / "index_meta.json"
 
         # 内存映射字典: {chunk_id: Chunk}
+        # 以 chunk_id 为键做 O(1) 查找，避免每次按 id 取块时线性扫描列表；
+        # 同时天然保证 chunk_id 唯一（重复 id 会覆盖，可在写入时校验）
         self.chunk_map: Dict[str, Chunk] = {}
+
         # 索引全局元数据: {doc_hash, last_updated, chunk_count...}
+        # 内存中保存一份，避免频繁读 meta_file；与磁盘文件在加载/保存时保持一致
         self.metadata: Dict = {}
 
     def is_empty(self) -> bool:
@@ -56,6 +82,7 @@ class DocStoreRepository:
     def load(self) -> bool:
         """
         从磁盘加载已持久化的切块实体与元数据
+        chunks_store.json 和 index_meta.json 这两个文件，只要有一个不存在，就立即返回 False
         """
         if not self.store_file.exists() or not self.meta_file.exists():
             return False

@@ -163,7 +163,9 @@ app.include_router(knowledge_router, prefix="/api/v1")
 # ---------------- 注册 Web UI 界面路由 (挂载在根路径 / 与 /ui) ----------------
 app.include_router(web_router)
 
-
+"""
+ FastAPI 项目里启动 Web 服务的入口
+"""
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(

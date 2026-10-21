@@ -31,6 +31,7 @@ from app.services.audit_report_renderer import AuditReportRenderer
 from app.services.context_orchestrator import ContextOrchestrator, OrchestratedContext
 from app.services.double_check_verifier import DoubleCheckVerifier
 from app.services.retrieval_service import RetrievalService
+from app.services.sql_rule.engine import SqlRuleEngine
 
 
 # 单次审查的大模型输出上限：deepseek 系列会把思考过程计入 completion_tokens，
@@ -114,12 +115,14 @@ class SqlAuditService:
         retrieval_svc: Optional[RetrievalService] = None,
         orchestrator: Optional[ContextOrchestrator] = None,
         double_checker: Optional[DoubleCheckVerifier] = None,
+        rule_engine: Optional[SqlRuleEngine] = None,
     ):
         self.ollama_repo = ollama_repo or OllamaEmbeddingRepository()
         self.relay_repo = relay_repo or RelayLlmRepository()
         self.retrieval_svc = retrieval_svc or RetrievalService(ollama_repo=self.ollama_repo)
         self.orchestrator = orchestrator or ContextOrchestrator()
         self.double_checker = double_checker or DoubleCheckVerifier()
+        self.rule_engine = rule_engine or SqlRuleEngine()
 
     @staticmethod
     def _extract_json_from_llm(llm_output: str) -> Dict[str, Any]:
@@ -232,14 +235,47 @@ class SqlAuditService:
         )
         return cleaned
 
+    @staticmethod
+    def _resolve_citation_index(category: str, chunk_index_map: Dict[int, Any]) -> int:
+        """根据规则分类在动态切块映射中寻址最匹配的规范章节引用编号"""
+        if not chunk_index_map:
+            return 1
+        for idx, chunk in chunk_index_map.items():
+            heading = (chunk.metadata.heading_path or "").lower()
+            sec = (chunk.metadata.section or "").lower()
+            cid = (chunk.chunk_id or "").lower()
+
+            if category == "database_rule":
+                if any(kw in heading or kw in sec or kw in cid for kw in ["建库规范", "database_rule", "建库"]):
+                    return idx
+            elif category == "sql_template":
+                if any(kw in heading or kw in sec or kw in cid for kw in ["建表模板", "table_template", "基类"]):
+                    return idx
+            elif category == "naming_rule":
+                if any(kw in heading or kw in sec or kw in cid for kw in ["命名规范", "naming_rule", "命名"]):
+                    return idx
+            elif category == "glossary":
+                if any(kw in heading or kw in sec or kw in cid for kw in ["名词术语", "terminology", "单词"]):
+                    return idx
+
+        # 若未精准匹配，默认返回首个有效引用序号
+        return min(chunk_index_map.keys()) if chunk_index_map else 1
+
     async def audit_sql(self, request: SqlAuditRequest) -> SqlAuditResponseData:
         """
-        异步执行端到端的 SQL 规范合规审查全流程
+        异步执行端到端的 SQL 规范合规审查全流程 (企业级双环模型):
+        1. 阶段一: 代码静态规则引擎 (AST驱动) 先行执行 100% 确定性硬规则与降噪聚合
+        2. 阶段二: 大模型 (AI Copilot) 结合确定性违规事实进行深层语义拼写识别与完整 DDL 重构
+        3. 阶段三: 精简输出终态报告，杜绝双重曝光与刷屏
         """
+        # =========================================================================
+        # 步骤 0: 阶段一 - 代码静态规则引擎先行执行 (聚合降噪 + 闭环安全建议)
+        # =========================================================================
+        static_result = self.rule_engine.validate(request.sql_text)
+
         # 步骤 1: 双路特征感知与混合检索 (Retrieval)
         ranked_chunks = await self.retrieval_svc.retrieve_for_sql(
             sql_text=request.sql_text,
-            # 知识库规模较小，放宽到 Top-5 以保证建表模板等基础条款不会被相邻条款挤掉
             top_k=5
         )
 
@@ -249,14 +285,45 @@ class SqlAuditService:
             enable_reorder=True
         )
 
-        # 步骤 3: 构造 System Prompt 与 User Prompt
+        # 为代码静态规则违规项精准绑定动态切块引用序号 (消除写死 [1] 的依据失真)
+        static_violations: List[ViolationDetail] = []
+        for stmt_res in static_result.results:
+            for v in stmt_res.violations:
+                cit_idx = self._resolve_citation_index(v.category, orchestrated_ctx.chunk_index_map)
+                static_violations.append(
+                    ViolationDetail(
+                        rule_id=v.rule_id,
+                        rule_name=v.rule_name,
+                        severity=v.severity,
+                        target_object=v.target_object,
+                        description=v.message,
+                        suggested_fix=v.suggested_fix,
+                        citation_index=cit_idx,
+                    )
+                )
+
+        # 步骤 3: 构造 System Prompt 与 User Prompt (告知大模型已确定的硬伤，让其专注语义与重构)
+        static_hints = ""
+        if static_violations:
+            hints_list = [f"- [{v.severity}] {v.rule_name} (对象: {v.target_object}): {v.description} -> 终态建议: {v.suggested_fix}" for v in static_violations]
+            static_hints = (
+                f"\n\n### 【代码静态规则引擎已确定的违规事实（已完成聚合与建议防冲突，不可推翻）】:\n"
+                f"{chr(10).join(hints_list)}\n\n"
+                f"【大模型任务纪律要求】:\n"
+                f"1. 上述清单属于客观确凿事实，你【严禁】在返回的 violations 中对上述同类硬性规则拆分字段重复输出；\n"
+                f"2. 你主要负责两件事：\n"
+                f"   ① 语义与拼写检查：如在字段名或注释中发现代码无法识别的深层业务语义笔误（如拼写错误 busine_hours 应为 business_hours），可在 violations 中补充；若无补充则保持 violations 为空；\n"
+                f"   ② 完整重构 SQL (suggested_sql)：必须综合上述所有违规项，输出一份修复纠正后的、符合全部规范的完整建表 DDL SQL！"
+            )
+
         system_content = self.SYSTEM_PROMPT_TEMPLATE
         user_content = (
             f"### 【待审查 DDL SQL】:\n"
-            f"```sql\n{request.sql_text.strip()}\n```\n\n"
+            f"```sql\n{request.sql_text.strip()}\n```\n"
+            f"{static_hints}\n\n"
             f"### 【参考数据库设计规范依据】:\n"
             f"{orchestrated_ctx.formatted_context_text}\n\n"
-            f"请根据上述规范依据对该 SQL 进行严格审查，输出符合上述约定的完整 JSON。"
+            f"请根据上述规范依据与已知违规事实输出符合约定的完整 JSON。"
         )
 
         messages = [
@@ -264,7 +331,7 @@ class SqlAuditService:
             {"role": "user", "content": user_content},
         ]
 
-        # 步骤 4: 调用大模型进行推理审查 (强制 JSON 格式输出，低温度以确保严谨)
+        # 步骤 4: 调用大模型进行推理审查与重构 SQL 生成
         raw_output = await self.relay_repo.generate(
             messages=messages,
             temperature=0.1,
@@ -272,8 +339,7 @@ class SqlAuditService:
             response_format={"type": "json_object"}
         )
 
-        # 步骤 5: 结构化解析 LLM 结果
-        # 解析失败时严禁伪装成「完全合规」，而是追加严格 JSON 约束重试一次；仍失败则显式报错，由研发人员重试
+        # 步骤 5: 结构化解析 LLM 结果 (带失败重试机制)
         try:
             payload = self._build_audit_payload(raw_output)
         except Exception as first_error:
@@ -312,21 +378,83 @@ class SqlAuditService:
             sql_text=request.sql_text
         )
 
-        # 步骤 7: 渲染精简 Markdown 整改回复 (不满足项 + 整改方案 + 修改后的 SQL)
+        # 步骤 7: 企业级违规项融合 (代码硬性违规为主体，彻底抑制大模型在同类硬规则上的重复报错，仅吸收独特的纯语义增量)
+        # 代码规则引擎管辖的所有硬规则语义特征词 (中英文、小写)
+        static_managed_keywords = {
+            # 库名前缀与显式声明
+            "库名", "建库", "db_", "schema", "database",
+            # 字符集与存储引擎
+            "字符集", "utf8", "utf8mb4", "charset", "collate", "排序规则", "编码",
+            "存储引擎", "innodb", "engine", "引擎",
+            # 基类审计字段与主键规范
+            "基类", "审计字段", "建表模板", "base_entity", "template", "模板",
+            "deleted", "disabled", "version", "create_time", "modify_time", "create_id", "modify_id",
+            "主键", "primary key", "自增",
+            # 保留关键字与命名规则
+            "保留字", "关键字", "keyword", "reserved",
+            "本表字段", "表名前缀", "加表名", "去掉表名", "prefix",
+            # 规范名词术语字典
+            "名词术语", "规范名词", "术语", "标准命名单词", "单词字典", "glossary", "term", "phone", "tel",
+            # 字段约束与数据类型
+            "not null", "not_null", "非空",
+            "double", "float", "tinyint", "decimal", "浮点数", "unsigned", "数据类型",
+            # 字段级字符集与高级数据库对象
+            "字段字符集", "column charset",
+            "外键", "foreign key", "触发器", "trigger", "存储过程", "procedure", "视图", "view",
+            "after", "first", "列顺序",
+        }
+
+        combined_violations: List[ViolationDetail] = list(static_violations)
+        
+        # 收集代码静态违规项中涉及的所有目标对象 token（转为小写集合，按逗号/空格切分）
+        existing_target_tokens = set()
+        for v in static_violations:
+            for token in v.target_object.replace(",", " ").replace("，", " ").split():
+                cleaned = token.strip("`'\"()（） ").lower()
+                if cleaned and cleaned not in {"等", "共", "个字段", "字段"}:
+                    existing_target_tokens.add(cleaned)
+
+        for v in check_result.verified_violations:
+            v_text = f"{v.rule_id} {v.rule_name} {v.description}".lower()
+
+            # 判定 1: 若大模型违规项命中了代码规则引擎管辖的硬规则范畴，无条件抑制过滤 (绝不重复报送)
+            if any(kw in v_text for kw in static_managed_keywords):
+                continue
+
+            # 判定 2: 若为大模型语义违规，但涉及的字段对象已在静态规则中被完全覆盖，且规则同名，予以防重过滤
+            v_target_tokens = {
+                t.strip("`'\"()（） ").lower()
+                for t in v.target_object.replace(",", " ").replace("，", " ").split()
+                if t.strip("`'\"()（） ") and t.strip("`'\"()（） ") not in {"等", "共", "个字段", "字段"}
+            }
+            if v_target_tokens and v_target_tokens.issubset(existing_target_tokens) and v.rule_name in {ev.rule_name for ev in combined_violations}:
+                continue
+
+            # 保留大模型独特的纯语义增量 (如纯业务拼写错误 busine_hours -> business_hours)
+            combined_violations.append(v)
+
+        # 步骤 8: 动态计算合规状态与最终评分
+        has_error = any(v.severity == "ERROR" for v in combined_violations)
+        final_is_compliant = not has_error
+        error_count = sum(1 for v in combined_violations if v.severity == "ERROR")
+        warn_count = sum(1 for v in combined_violations if v.severity == "WARN")
+        final_score = max(0, 100 - (error_count * 15 + warn_count * 5))
+
+        # 步骤 9: 渲染精简 Markdown 整改回复
         markdown_report = AuditReportRenderer.render(
-            is_compliant=check_result.is_compliant,
-            score=check_result.score,
-            violations=check_result.verified_violations,
+            is_compliant=final_is_compliant,
+            score=final_score,
+            violations=combined_violations,
             suggested_sql=suggested_sql,
             citations=orchestrated_ctx.citations,
         )
 
-        # 步骤 8: 组装输出标准响应 DTO
+        # 步骤 10: 组装输出标准响应 DTO
         return SqlAuditResponseData(
-            is_compliant=check_result.is_compliant,
-            score=check_result.score,
+            is_compliant=final_is_compliant,
+            score=final_score,
             summary=summary,
-            violations=check_result.verified_violations,
+            violations=combined_violations,
             suggested_sql=suggested_sql,
             citations=orchestrated_ctx.citations,
             markdown_report=markdown_report

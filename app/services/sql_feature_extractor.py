@@ -143,8 +143,8 @@ class SqlFeatureExtractor:
                 pure_name = features.table_name[3:] if features.has_db_prefix else features.table_name
                 prefix_pattern = f"{pure_name}_"
                 for col in features.fields:
-                    # 如果本表名称包含在该字段开头 (如 order_id, order_name, order_status)，判定为冗余前缀
-                    if col.startswith(prefix_pattern) and col not in ["order_price", "order_amount", "order_money"]:
+                    # 本表自己的字段前不需要加表名 (如 order 表的 order_id, order_code, order_name, order_money 等均违规)
+                    if col.startswith(prefix_pattern):
                         features.has_table_prefix_in_column = True
                         features.redundant_columns.append(col)
 
@@ -153,7 +153,7 @@ class SqlFeatureExtractor:
             features.missing_base_fields = sorted(list(missing))
 
             # 7. 检查已声明的基类字段类型是否与规范模板一致
-            #    (字段"写了"不代表类型对，如 create_id 被写成 VARCHAR(32) 同样是违规)
+            #    基础字段类型和 BASE_FIELD_TYPE_PATTERNS 中定义的类型不一致时进行收集
             for field_name, type_pattern in self.BASE_FIELD_TYPE_PATTERNS.items():
                 definition = field_definitions.get(field_name)
                 if definition and not re.search(type_pattern, definition):
@@ -200,10 +200,10 @@ class SqlFeatureExtractor:
         # 意图 6: 表名保留关键字与关联表前缀规范
         if features.is_table_keyword:
             queries.append("建库规范 表与字段不允许用关键字 或者看着像关键字的单词")
-        if features.table_name and "relation" in features.table_name and not features.table_name.startswith("r_"):
+        if features.table_name and "relation" in features.table_name and not features.table_name.startswith("r_"): #表名非空，且表名里含有 relation，但又不是以 r_ 开头。
             queries.append("建库规范 关联表以 r_ 开头")
 
-        # 意图 7: 字段命名前缀后缀规范 (price, money, amount, time, code)
+        # 意图 7: 根据表里的字段名和字段类型，判断是否可能涉及“金额/价格/数量/时间/状态/编码”这类业务字段，如果涉及，就往 queries 里追加一条命名规范提示。
         field_types_str = " ".join(features.fields + features.types)
         if any(kw in field_types_str for kw in ["price", "money", "amount", "time", "status", "code"]):
             queries.append("命名规范 单价统一命名后缀 price 金额统一后缀 money 数量后缀 amount 时间后缀 time")

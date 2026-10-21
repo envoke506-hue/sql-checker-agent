@@ -19,6 +19,7 @@ from app.services.context_orchestrator import ContextOrchestrator
 from app.services.double_check_verifier import DoubleCheckVerifier
 from app.services.sql_audit_service import SqlAuditService
 from app.services.spec_query_service import SpecQueryService
+from app.services.sql_rule.engine import SqlRuleEngine
 
 
 # ---------------- 1. 仓储层 Repository 与工具组件依赖提供者 (单例) ----------------
@@ -133,12 +134,19 @@ def get_retrieval_service(
     )
 
 
+@lru_cache
+def get_sql_rule_engine() -> SqlRuleEngine:
+    """提供 SQL 静态规则校验引擎单例"""
+    return SqlRuleEngine()
+
+
 def get_sql_audit_service(
     ollama_repo: OllamaEmbeddingRepository = Depends(get_ollama_repository),
     relay_repo: RelayLlmRepository = Depends(get_relay_llm_repository),
     retrieval_svc: RetrievalService = Depends(get_retrieval_service),
     orchestrator: ContextOrchestrator = Depends(get_context_orchestrator),
     double_checker: DoubleCheckVerifier = Depends(get_double_check_verifier),
+    rule_engine: SqlRuleEngine = Depends(get_sql_rule_engine),
 ) -> SqlAuditService:
     """组装 SQL 规范审查核心服务"""
     return SqlAuditService(
@@ -147,6 +155,7 @@ def get_sql_audit_service(
         retrieval_svc=_resolve(retrieval_svc, get_retrieval_service),
         orchestrator=_resolve(orchestrator, get_context_orchestrator),
         double_checker=_resolve(double_checker, get_double_check_verifier),
+        rule_engine=_resolve(rule_engine, get_sql_rule_engine),
     )
 
 
@@ -163,3 +172,4 @@ def get_spec_query_service(
         retrieval_svc=_resolve(retrieval_svc, get_retrieval_service),
         orchestrator=_resolve(orchestrator, get_context_orchestrator),
     )
+
